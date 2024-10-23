@@ -1,3 +1,13 @@
 
 /PCComponents/API/obj
 /PCComponents/API/bin
+
+
+/PCComponents/Application/obj
+/PCComponents/Application/bin
+
+/PCComponents/Domain/obj
+/PCComponents/Domain/bin
+
+/PCComponents/Infrastructure/obj
+/PCComponents/Infrastructure/bin
