@@ -1,4 +1,4 @@
-﻿using Domain.Cases;
+﻿using Domain.Products;
 
 namespace Domain.Manufacturers
 {
@@ -7,7 +7,7 @@ namespace Domain.Manufacturers
         public ManufacturerId Id { get; } // Унікальний ідентифікатор виробника
         public string Name { get; private set; } // Назва виробника
         
-        public List<Case> Cases { get; } = new();
+        public List<Product> Products { get; } = new();
         
         // Конструктор для Manufacturer
         private Manufacturer(ManufacturerId id, string name)

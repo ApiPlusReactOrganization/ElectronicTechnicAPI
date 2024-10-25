@@ -1,4 +1,4 @@
-﻿using Domain.Cases;
+﻿using Domain.ComponentCharacteristics;
 
 namespace Domain.FormFactors
 {
@@ -6,7 +6,7 @@ namespace Domain.FormFactors
     {
         public FormFactorId Id { get; } // Унікальний ідентифікатор виробника
         public string Name { get; private set; } // Назва виробника
-        public List<Case> Cases { get; } = new();
+        public List<ComponentCharacteristic> ComponentCharacteristics { get; } = new();
         
         // Конструктор для Manufacturer
         private FormFactor(FormFactorId id, string name)

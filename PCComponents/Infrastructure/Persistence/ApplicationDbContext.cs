@@ -1,5 +1,5 @@
 using System.Reflection;
-using Domain.Cases;
+using Domain.ComponentCharacteristics;
 using Domain.FormFactors;
 using Domain.Manufacturers;
 using Domain.ProductMaterials;
@@ -11,7 +11,7 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; }
-    public DbSet<Case> Cases { get; set; }
+    public DbSet<ComponentCharacteristic> ComponentCharacteristics { get; set; }
     public DbSet<Manufacturer> Manufacturers { get; set; }
     public DbSet<FormFactor> FormFactors { get; set; }
     public DbSet<ProductMaterial> ProductMaterials { get; set; }
