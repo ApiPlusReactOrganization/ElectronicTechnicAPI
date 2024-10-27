@@ -21,11 +21,6 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
             
-            builder.HasOne(p => p.Category)
-                .WithMany()
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
             
             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
