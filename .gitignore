@@ -1,3 +1,4 @@
+PCComponents/.vs/
 
-/PCComponents/API/obj
-/PCComponents/API/bin
+obj/
+bin/
