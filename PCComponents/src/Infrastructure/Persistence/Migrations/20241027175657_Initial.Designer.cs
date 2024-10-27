@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241027173416_Initial")]
+    [Migration("20241027175657_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -67,10 +67,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("category_id");
-
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
@@ -97,9 +93,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
-                    b.HasIndex("CategoryId")
-                        .HasDatabaseName("ix_products_category_id");
-
                     b.HasIndex("ManufacturerId")
                         .HasDatabaseName("ix_products_manufacturer_id");
 
@@ -108,13 +101,6 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Products.Product", b =>
                 {
-                    b.HasOne("Domain.Categories.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_products_categories_category_id");
-
                     b.HasOne("Domain.Manufacturers.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
@@ -174,8 +160,6 @@ namespace Infrastructure.Persistence.Migrations
 
                             b1.Navigation("Case");
                         });
-
-                    b.Navigation("Category");
 
                     b.Navigation("ComponentCharacteristic")
                         .IsRequired();
