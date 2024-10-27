@@ -32,8 +32,35 @@ namespace Infrastructure.Persistence.Configurations
                 {
                     caseBuilder.Property(x => x.CoolingSystem).HasJsonPropertyName("cooling system");
                     caseBuilder.Property(x => x.NumberOfFans).HasJsonPropertyName("number of fans");
-                        
                     caseBuilder.Property(x => x.FormFactors).HasJsonPropertyName("form factors");
+                });
+                
+                productBuilder.OwnsOne(x => x.CPU, cpuBuilder =>
+                {
+                    cpuBuilder.Property(x => x.Socket).HasJsonPropertyName("socket");
+                    cpuBuilder.Property(x => x.NumberOfCores).HasJsonPropertyName("number of cores");
+                    cpuBuilder.Property(x => x.NumberOfThreads).HasJsonPropertyName("number of threads");
+                    cpuBuilder.Property(x => x.BaseClock).HasJsonPropertyName("base clock");
+                });
+                
+                productBuilder.OwnsOne(x => x.Motherboard, motherboard =>
+                {
+                    motherboard.Property(x => x.Socket).HasJsonPropertyName("socket");
+                    motherboard.Property(x => x.FormFactors).HasJsonPropertyName("form factors");
+                    motherboard.Property(x => x.RAMDescription).HasJsonPropertyName("RAM description");
+                    motherboard.Property(x => x.NetworkDescription).HasJsonPropertyName("network description");
+                    motherboard.Property(x => x.PowerDescription).HasJsonPropertyName("power description");
+                    motherboard.Property(x => x.AudioDescription).HasJsonPropertyName("audio description");
+                    motherboard.Property(x => x.ExternalConnectorsDescription).HasJsonPropertyName("external onnectors description");
+                });
+                
+                productBuilder.OwnsOne(x => x.PSU, psuBuilder =>
+                {
+                    psuBuilder.Property(x => x.PowerCapacity).HasJsonPropertyName("power capacity");
+                    psuBuilder.Property(x => x.InputVoltageRange).HasJsonPropertyName("input voltage range");
+                    psuBuilder.Property(x => x.FanTypeAndSize).HasJsonPropertyName("fan type and Size");
+                    psuBuilder.Property(x => x.Protections).HasJsonPropertyName("protections");
+                    psuBuilder.Property(x => x.Connectors).HasJsonPropertyName("connectors");
                 });
             });
         }

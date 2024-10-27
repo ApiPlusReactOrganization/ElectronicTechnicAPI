@@ -18,13 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Common\Interfaces\Queries\" />
-      <Folder Include="Common\Interfaces\Repositories\" />
-      <Folder Include="Faculties\Commands\" />
-      <Folder Include="Faculties\Exceptions\" />
-      <Folder Include="Files\Commands\" />
-      <Folder Include="Users\Commands\" />
-      <Folder Include="Users\Exceptions\" />
+      <Folder Include="Manufacturer\Commands\" />
+      <Folder Include="Manufacturer\Exceptions\" />
     </ItemGroup>
 
 </Project>
