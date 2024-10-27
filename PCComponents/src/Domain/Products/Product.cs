@@ -1,4 +1,5 @@
-﻿using Domain.ComponentCharacteristics;
+﻿using Domain.Categories;
+using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
 
 namespace Domain.Products
@@ -13,6 +14,9 @@ namespace Domain.Products
         public int StockQuantity { get; private set; }
         public ManufacturerId ManufacturerId { get; set; } 
         public Manufacturer? Manufacturer { get; set; }
+        
+        public CategoryId CategoryId { get; set; } 
+        public Category? Category { get; set; }
 
         private Product(ProductId id, string name, decimal price, string description, int stockQuantity, ManufacturerId manufacturerId)
         {
