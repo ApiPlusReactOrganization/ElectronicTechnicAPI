@@ -1,4 +1,5 @@
 using System.Reflection;
+using Domain.Categories;
 using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
 using Domain.Products;
@@ -11,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Product> Products { get; set; }
     public DbSet<ComponentCharacteristic> ComponentCharacteristics { get; set; }
     public DbSet<Manufacturer> Manufacturers { get; set; }
+    public DbSet<Category> Categories { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

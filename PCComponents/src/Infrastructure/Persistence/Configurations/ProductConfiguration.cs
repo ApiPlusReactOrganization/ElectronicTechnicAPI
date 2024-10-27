@@ -21,6 +21,7 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
             
+            
             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
                 productBuilder.ToJson("component characteristic");
