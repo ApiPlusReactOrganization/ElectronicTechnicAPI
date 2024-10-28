@@ -21,6 +21,12 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
             
+            builder.HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+            
             
             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
@@ -34,6 +40,13 @@ namespace Infrastructure.Persistence.Configurations
                     caseBuilder.Property(x => x.NumberOfFans).HasJsonPropertyName("number of fans");
                         
                     caseBuilder.Property(x => x.FormFactors).HasJsonPropertyName("form factors");
+                });
+                
+                productBuilder.OwnsOne(x => x.Processor, caseBuilder =>
+                {
+                    caseBuilder.Property(x => x.Series).HasJsonPropertyName("cooling system");
+                    caseBuilder.Property(x => x.NumberOfСores).HasJsonPropertyName("2");
+                    caseBuilder.Property(x => x.NumberOfStreams).HasJsonPropertyName("12");
                 });
             });
         }

@@ -1,3 +1,6 @@
+using Application.Common.Interfaces.Queries;
+using Application.Common.Interfaces.Repositories;
+using Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +31,18 @@ public static class ConfigurePersistence
 
     private static void AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<ProductRepository>();
+        services.AddScoped<IProductRepository>(provider => provider.GetRequiredService<ProductRepository>());
+        services.AddScoped<IProductQueries>(provider => provider.GetRequiredService<ProductRepository>());
+        
+        services.AddScoped<CategoryRepository>();
+        services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
+        services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
+        
+        services.AddScoped<ManufacturerRepository>();
+        services.AddScoped<IManufacturerRepository>(provider => provider.GetRequiredService<ManufacturerRepository>());
+        services.AddScoped<IManufacturerQueries>(provider => provider.GetRequiredService<ManufacturerRepository>());
+        
         
     }
 }
