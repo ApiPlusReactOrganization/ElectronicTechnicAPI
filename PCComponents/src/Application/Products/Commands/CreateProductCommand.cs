@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.Common.Interfaces.Repositories;
 using Application.Products.Exceptions;
+using Domain;
 using Domain.Categories;
 using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
@@ -17,24 +18,30 @@ public record CreateProductCommand : IRequest<Result<Product, ProductException>>
     public int StockQuantity { get; init; }
     public ManufacturerId ManufacturerId { get; init; }
     public CategoryId CategoryId { get; init; }
-    
-    public Case Case { get; init; }
+    public ComponentCharacteristic componentCharacteristic { get; init; }
 }
 
 public class CreateProductCommandHandler(
-    IProductRepository ProductRepository)
+    IProductRepository ProductRepository,
+    ICategoryRepository CategoryRepository)
     : IRequestHandler<CreateProductCommand, Result<Product, ProductException>>
 {
     public async Task<Result<Product, ProductException>> Handle(
         CreateProductCommand request,
         CancellationToken cancellationToken)
     {
-        var existingProduct = await ProductRepository.SearchByName(request.Name, cancellationToken);
+        var existingCategory = await CategoryRepository.GetById(request.CategoryId, cancellationToken);
+        return await existingCategory.Match<Task<Result<Product, ProductException>>>(
+            async c =>
+            {
+                var existingProduct = await ProductRepository.SearchByName(request.Name, cancellationToken);
+                return await existingProduct.Match(
+                p => Task.FromResult<Result<Product, ProductException>>(new ProductAlreadyExistsException(p.Id)),
+                async () => await CreateEntity(request.Name, request.Price, request.Description, request.StockQuantity,
+                    request.ManufacturerId, c, request.componentCharacteristic, cancellationToken));
+            },
+            () => Task.FromResult<Result<Product, ProductException>>(new ProductCategoryNotFoundException(request.CategoryId)));
 
-        return await existingProduct.Match(
-            p => Task.FromResult<Result<Product, ProductException>>(new ProductAlreadyExistsException(p.Id)),
-            async () => await CreateEntity(request.Name, request.Price, request.Description, request.StockQuantity,
-                request.ManufacturerId, request.CategoryId, request.Case, cancellationToken));
     }
 
     private async Task<Result<Product, ProductException>> CreateEntity(
@@ -43,21 +50,37 @@ public class CreateProductCommandHandler(
         string description,
         int stockQuantity,
         ManufacturerId manufacturerId,
-        CategoryId categoryId,
-        Case Case,
+        Category category,
+        ComponentCharacteristic componentCharacteristic,
         CancellationToken cancellationToken)
     {
         try
         {
-            
-            
-            var entity = Product.New(ProductId.New(), name, price, description, stockQuantity, manufacturerId,
-                categoryId, ComponentCharacteristic.NewCaseCharacteristic(Case));
+            ComponentCharacteristic characteristic = category.Name switch
+            {
+                PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case),
+                PCComponentsNames.CPU => ComponentCharacteristic.NewCpu(componentCharacteristic.Cpu),
+                PCComponentsNames.GPU => ComponentCharacteristic.NewGpu(componentCharacteristic.Gpu),
+                _ => throw new ArgumentException("Invalid component type")
+            };
+
+            var entity = Product.New(
+                ProductId.New(),
+                name,
+                price,
+                description,
+                stockQuantity,
+                manufacturerId,
+                category.Id,
+                characteristic
+            );
+
             return await ProductRepository.Add(entity, cancellationToken);
         }
         catch (Exception exception)
         {
             return new ProductUnknownException(ProductId.Empty, exception);
         }
+
     }
 }

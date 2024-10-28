@@ -14,7 +14,7 @@ public record ProductDto
     int StockQuantity,
     ManufacturerId ManufacturerId,
     CategoryId CategoryId,
-    Case Case
+    ComponentCharacteristic ComponentCharacteristic
     
 )
 {
@@ -28,7 +28,7 @@ public record ProductDto
             product.StockQuantity,
             product.ManufacturerId,
             product.CategoryId,
-            product.ComponentCharacteristic.Case
+            product.ComponentCharacteristic
         );
     }
 
