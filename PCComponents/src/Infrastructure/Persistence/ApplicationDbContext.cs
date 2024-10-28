@@ -10,7 +10,6 @@ namespace Infrastructure.Persistence;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; }
-    public DbSet<ComponentCharacteristic> ComponentCharacteristics { get; set; }
     public DbSet<Manufacturer> Manufacturers { get; set; }
     public DbSet<Category> Categories { get; set; }
     
@@ -18,5 +17,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+        
+        builder.Seed();
     }
 }

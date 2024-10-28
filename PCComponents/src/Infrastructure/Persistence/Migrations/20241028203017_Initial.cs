@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
@@ -56,13 +58,23 @@ namespace Infrastructure.Persistence.Migrations
                         column: x => x.category_id,
                         principalTable: "categories",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_products_manufacturers_manufacturer_id",
                         column: x => x.manufacturer_id,
                         principalTable: "manufacturers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "categories",
+                columns: new[] { "id", "name" },
+                values: new object[,]
+                {
+                    { new Guid("0816f7ef-66f6-4b9d-bb24-a6d532ad4d8e"), "Graphics Card" },
+                    { new Guid("2f394474-36a7-4ab9-a780-5dca03c09757"), "Processor" },
+                    { new Guid("40e45fa6-00a6-4c4d-b2c9-13d262fcbfb2"), "Computer case" }
                 });
 
             migrationBuilder.CreateIndex(
