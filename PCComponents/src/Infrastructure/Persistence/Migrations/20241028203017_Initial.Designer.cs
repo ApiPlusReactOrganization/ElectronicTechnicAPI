@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241028111654_Initial")]
+    [Migration("20241028203017_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -41,6 +41,23 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_categories");
 
                     b.ToTable("categories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("2f394474-36a7-4ab9-a780-5dca03c09757"),
+                            Name = "Processor"
+                        },
+                        new
+                        {
+                            Id = new Guid("40e45fa6-00a6-4c4d-b2c9-13d262fcbfb2"),
+                            Name = "Computer case"
+                        },
+                        new
+                        {
+                            Id = new Guid("0816f7ef-66f6-4b9d-bb24-a6d532ad4d8e"),
+                            Name = "Graphics Card"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Manufacturers.Manufacturer", b =>
@@ -111,7 +128,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasOne("Domain.Categories.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_products_categories_category_id");
 
@@ -127,11 +144,6 @@ namespace Infrastructure.Persistence.Migrations
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<string>("Type")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasAnnotation("Relational:JsonPropertyName", "type");
-
                             b1.HasKey("ProductId");
 
                             b1.ToTable("products");
@@ -141,6 +153,43 @@ namespace Infrastructure.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ProductId")
                                 .HasConstraintName("fk_products_products_id");
+
+                            b1.OwnsOne("Domain.ComponentCharacteristics.CPU", "Cpu", b2 =>
+                                {
+                                    b2.Property<Guid>("ComponentCharacteristicProductId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<double>("BaseClock")
+                                        .HasColumnType("decimal(5, 2)")
+                                        .HasAnnotation("Relational:JsonPropertyName", "base clock");
+
+                                    b2.Property<double>("BoostClock")
+                                        .HasColumnType("decimal(5, 2)")
+                                        .HasAnnotation("Relational:JsonPropertyName", "boost clock");
+
+                                    b2.Property<int>("Cores")
+                                        .HasColumnType("integer")
+                                        .HasAnnotation("Relational:JsonPropertyName", "cores");
+
+                                    b2.Property<string>("Model")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasAnnotation("Relational:JsonPropertyName", "model");
+
+                                    b2.Property<int>("Threads")
+                                        .HasColumnType("integer")
+                                        .HasAnnotation("Relational:JsonPropertyName", "threads");
+
+                                    b2.HasKey("ComponentCharacteristicProductId");
+
+                                    b2.ToTable("products");
+
+                                    b2.ToJson("component_characteristic");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ComponentCharacteristicProductId")
+                                        .HasConstraintName("fk_products_products_component_characteristic_product_id");
+                                });
 
                             b1.OwnsOne("Domain.ComponentCharacteristics.Case", "Case", b2 =>
                                 {
@@ -172,23 +221,32 @@ namespace Infrastructure.Persistence.Migrations
                                         .HasConstraintName("fk_products_products_component_characteristic_product_id");
                                 });
 
-                            b1.OwnsOne("Domain.ComponentCharacteristics.Processor", "Processor", b2 =>
+                            b1.OwnsOne("Domain.ComponentCharacteristics.GPU", "Gpu", b2 =>
                                 {
                                     b2.Property<Guid>("ComponentCharacteristicProductId")
                                         .HasColumnType("uuid");
 
-                                    b2.Property<int>("NumberOfStreams")
-                                        .HasColumnType("integer")
-                                        .HasAnnotation("Relational:JsonPropertyName", "12");
+                                    b2.Property<decimal>("BoostClock")
+                                        .HasColumnType("decimal(6, 2)")
+                                        .HasAnnotation("Relational:JsonPropertyName", "boost clock");
 
-                                    b2.Property<int>("NumberOfСores")
-                                        .HasColumnType("integer")
-                                        .HasAnnotation("Relational:JsonPropertyName", "2");
+                                    b2.Property<decimal>("CoreClock")
+                                        .HasColumnType("decimal(6, 2)")
+                                        .HasAnnotation("Relational:JsonPropertyName", "core clock");
 
-                                    b2.Property<string>("Series")
+                                    b2.Property<int>("MemorySize")
+                                        .HasColumnType("integer")
+                                        .HasAnnotation("Relational:JsonPropertyName", "memory size");
+
+                                    b2.Property<string>("MemoryType")
                                         .IsRequired()
                                         .HasColumnType("text")
-                                        .HasAnnotation("Relational:JsonPropertyName", "cooling system");
+                                        .HasAnnotation("Relational:JsonPropertyName", "memory type");
+
+                                    b2.Property<string>("Model")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasAnnotation("Relational:JsonPropertyName", "model");
 
                                     b2.HasKey("ComponentCharacteristicProductId");
 
@@ -203,7 +261,9 @@ namespace Infrastructure.Persistence.Migrations
 
                             b1.Navigation("Case");
 
-                            b1.Navigation("Processor");
+                            b1.Navigation("Cpu");
+
+                            b1.Navigation("Gpu");
                         });
 
                     b.Navigation("Category");

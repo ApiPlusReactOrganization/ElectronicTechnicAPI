@@ -24,15 +24,13 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
             
             
             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
                 productBuilder.ToJson("component characteristic");
-
-                // productBuilder.Property(x => x.Category).HasJsonPropertyName("category");
 
                 productBuilder.OwnsOne(x => x.Case, caseBuilder =>
                 {
