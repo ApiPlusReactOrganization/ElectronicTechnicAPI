@@ -64,6 +64,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
+
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
@@ -90,6 +94,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_products_category_id");
+
                     b.HasIndex("ManufacturerId")
                         .HasDatabaseName("ix_products_manufacturer_id");
 
@@ -98,6 +105,13 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Products.Product", b =>
                 {
+                    b.HasOne("Domain.Categories.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_products_categories_category_id");
+
                     b.HasOne("Domain.Manufacturers.Manufacturer", "Manufacturer")
                         .WithMany("Products")
                         .HasForeignKey("ManufacturerId")
@@ -155,8 +169,41 @@ namespace Infrastructure.Persistence.Migrations
                                         .HasConstraintName("fk_products_products_component_characteristic_product_id");
                                 });
 
+                            b1.OwnsOne("Domain.ComponentCharacteristics.Processor", "Processor", b2 =>
+                                {
+                                    b2.Property<Guid>("ComponentCharacteristicProductId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("NumberOfStreams")
+                                        .HasColumnType("integer")
+                                        .HasAnnotation("Relational:JsonPropertyName", "12");
+
+                                    b2.Property<int>("NumberOfСores")
+                                        .HasColumnType("integer")
+                                        .HasAnnotation("Relational:JsonPropertyName", "2");
+
+                                    b2.Property<string>("Series")
+                                        .IsRequired()
+                                        .HasColumnType("text")
+                                        .HasAnnotation("Relational:JsonPropertyName", "cooling system");
+
+                                    b2.HasKey("ComponentCharacteristicProductId");
+
+                                    b2.ToTable("products");
+
+                                    b2.ToJson("component_characteristic");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("ComponentCharacteristicProductId")
+                                        .HasConstraintName("fk_products_products_component_characteristic_product_id");
+                                });
+
                             b1.Navigation("Case");
+
+                            b1.Navigation("Processor");
                         });
+
+                    b.Navigation("Category");
 
                     b.Navigation("ComponentCharacteristic")
                         .IsRequired();

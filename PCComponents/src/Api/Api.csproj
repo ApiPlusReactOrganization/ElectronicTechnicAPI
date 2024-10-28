@@ -23,8 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Modules\Errors\" />
       <Folder Include="Modules\Validators\" />
     </ItemGroup>
 
