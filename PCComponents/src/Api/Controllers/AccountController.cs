@@ -1,19 +1,59 @@
-﻿using Api.Dtos;
+﻿using Api.Dtos.Authentication;
+using Api.Modules.Errors;
+using Application.Authentications;
+using Application.Authentications.Commands;
 using Application.Common.Interfaces.Queries;
-using Domain.Auth.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [Route("[controller]")]
+[ApiController]
 public class AccountController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await userQueries.GetAll(cancellationToken);
-        
+
         return entities.Select(UserDto.FromDomainModel).ToList();
+    }
+
+    [HttpPost("signup")]
+    public async Task<ActionResult<SignUpDto>> SignUpAsync(
+        [FromBody] SignUpDto request,
+        CancellationToken cancellationToken)
+    {
+        var input = new CreateUserCommand
+        {
+            Email = request.email,
+            Password = request.password,
+            Name = request.name,
+        };
+        
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<SignUpDto>>(
+            f => SignUpDto.FromDomainModel(f),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPost("signin")]
+    public async Task<ActionResult<ServiceResponse>> SignUpAsync(
+        [FromBody] SignInDto request,
+        CancellationToken cancellationToken)
+    {
+        var input = new SignInCommand
+        {
+            Email = request.email,
+            Password = request.password
+        };
+        
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ServiceResponse>>(
+            f => f,
+            e => e.ToObjectResult());
     }
 }

@@ -1,6 +1,6 @@
-﻿using Domain.Auth.Roles;
+﻿using Domain.Authentications.Roles;
 
-namespace Domain.Auth.Users;
+namespace Domain.Authentications.Users;
 
 public class User
 {
@@ -20,6 +20,6 @@ public class User
         Image = image;
     }
 
-    public static User New(UserId id, string email, string? name, string passwordHash, string? image)
+    public static User New(UserId id, string email, string? name, string passwordHash, string? image = null)
         => new(id, email, name, passwordHash, image);
 }

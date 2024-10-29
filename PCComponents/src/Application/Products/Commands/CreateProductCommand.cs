@@ -15,6 +15,8 @@ public record CreateProductCommand : IRequest<Result<Product, ProductException>>
     public decimal Price { get; init; }
     public string? Description { get; init; }
     public int StockQuantity { get; init; }
+    
+    //todo, id переробити в просто guid, як в красюка в прикладі
     public ManufacturerId ManufacturerId { get; init; }
     public CategoryId CategoryId { get; init; }
     public ComponentCharacteristic componentCharacteristic { get; init; }

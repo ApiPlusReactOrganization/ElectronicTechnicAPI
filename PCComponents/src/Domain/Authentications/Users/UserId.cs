@@ -1,4 +1,4 @@
-﻿namespace Domain.Auth.Users;
+﻿namespace Domain.Authentications.Users;
 
 public record UserId(Guid Value)
 {

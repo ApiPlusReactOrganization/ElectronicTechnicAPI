@@ -1,6 +1,6 @@
 using System.Reflection;
-using Domain.Auth.Roles;
-using Domain.Auth.Users;
+using Domain.Authentications.Roles;
+using Domain.Authentications.Users;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;

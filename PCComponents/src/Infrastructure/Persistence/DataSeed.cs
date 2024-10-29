@@ -1,6 +1,6 @@
 ﻿using Domain;
-using Domain.Auth;
-using Domain.Auth.Roles;
+using Domain.Authentications;
+using Domain.Authentications.Roles;
 using Domain.Categories;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;

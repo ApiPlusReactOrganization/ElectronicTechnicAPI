@@ -1,17 +1,23 @@
+using System.Text;
+using Application.Authentications.Services.TokenService;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Infrastructure.Persistence.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 
 namespace Infrastructure.Persistence;
 
 public static class ConfigurePersistence
 {
-    public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static void AddPersistence(this IServiceCollection services, IConfiguration configuration, WebApplicationBuilder builder)
     {
         var dataSourceBuild = new NpgsqlDataSourceBuilder(configuration.GetConnectionString("Default"));
         dataSourceBuild.EnableDynamicJson();
@@ -27,6 +33,7 @@ public static class ConfigurePersistence
 
         services.AddScoped<ApplicationDbContextInitialiser>();
         services.AddRepositories();
+        services.AddJwtTokenAuth(builder);
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -46,5 +53,29 @@ public static class ConfigurePersistence
         services.AddScoped<UserRepository>();
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
+        
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+    }
+
+    private static void AddJwtTokenAuth(this IServiceCollection services, WebApplicationBuilder builder)
+    {
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    RequireExpirationTime = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:key"])),
+                    ValidIssuer = builder.Configuration["AuthSettings:issuer"],
+                    ValidAudience = builder.Configuration["AuthSettings:audience"]
+                };
+            });
     }
 }

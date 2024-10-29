@@ -1,6 +1,6 @@
-﻿using Domain.Auth.Roles;
+﻿using Domain.Authentications.Roles;
 
-namespace Api.Dtos;
+namespace Api.Dtos.Authentication;
 
 public record RoleDto(string name)
 {

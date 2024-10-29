@@ -11,8 +11,8 @@ public record ProductDto
     decimal Price ,
     string? Description,
     int StockQuantity,
-    ManufacturerId ManufacturerId,
-    CategoryId CategoryId,
+    Guid? ManufacturerId,
+    Guid? CategoryId,
     ComponentCharacteristic ComponentCharacteristic
     
 )
@@ -25,14 +25,9 @@ public record ProductDto
             product.Price,
             product.Description,
             product.StockQuantity,
-            product.ManufacturerId,
-            product.CategoryId,
+            product.ManufacturerId.Value,
+            product.CategoryId.Value,
             product.ComponentCharacteristic
         );
     }
-
-    // => new(
-    //         course.Id.Value,
-    //         course.Name,
-    //     );
 }

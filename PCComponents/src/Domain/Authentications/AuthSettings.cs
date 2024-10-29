@@ -1,9 +1,9 @@
-﻿namespace Domain.Auth;
+﻿namespace Domain.Authentications;
 
 public class AuthSettings
 {
-    public static string UserRole = "User";
-    public static string AdminRole = "Administrator";
+    public const string UserRole = "User";
+    public const string AdminRole = "Administrator";
 
     public static readonly List<string> ListOfRoles = new()
     {
