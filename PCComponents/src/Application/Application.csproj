@@ -18,8 +18,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Manufacturer\Commands\" />
-      <Folder Include="Manufacturer\Exceptions\" />
+      <Folder Include="Faculties\Commands\" />
+      <Folder Include="Faculties\Exceptions\" />
+      <Folder Include="Files\Commands\" />
+      <Folder Include="Users\Commands\" />
+      <Folder Include="Users\Exceptions\" />
     </ItemGroup>
 
 </Project>

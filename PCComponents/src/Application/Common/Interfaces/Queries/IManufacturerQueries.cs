@@ -1,10 +1,8 @@
-using Domain.Manufacturers;
-using Optional;
+﻿using Domain.Manufacturers;
 
 namespace Application.Common.Interfaces.Queries;
 
 public interface IManufacturerQueries
 {
     Task<IReadOnlyList<Manufacturer>> GetAll(CancellationToken cancellationToken);
-    Task<Option<Manufacturer>> GetById(ManufacturerId id, CancellationToken cancellationToken);
 }

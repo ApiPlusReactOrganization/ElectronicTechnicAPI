@@ -15,8 +15,11 @@ namespace Domain.Products
         public ManufacturerId ManufacturerId { get; set; } 
         public Manufacturer? Manufacturer { get; set; }
         
+        public CategoryId CategoryId { get; set; } 
+        public Category? Category { get; set; }
+        
 
-        private Product(ProductId id, string name, decimal price, string description, int stockQuantity, ManufacturerId manufacturerId)
+        private Product(ProductId id, string name, decimal price, string description, int stockQuantity, ManufacturerId manufacturerId, CategoryId categoryId)
         {
             Id = id;
             Name = name;
@@ -24,11 +27,12 @@ namespace Domain.Products
             Description = description;
             StockQuantity = stockQuantity;
             ManufacturerId = manufacturerId;
+            CategoryId = categoryId;
         } 
         
         public static Product New(ProductId id, string name, decimal price, string description, int stockQuantity, 
-            ManufacturerId manufacturerId, ComponentCharacteristic componentCharacteristic)
-            => new(id, name, price, description, stockQuantity, manufacturerId) {ComponentCharacteristic = componentCharacteristic};
+            ManufacturerId manufacturerId, CategoryId categoryId , ComponentCharacteristic componentCharacteristic)
+            => new(id, name, price, description, stockQuantity, manufacturerId, categoryId) {ComponentCharacteristic = componentCharacteristic};
         
         public void UpdateDetails(string name, decimal price, string description, int stockQuantity)
         {

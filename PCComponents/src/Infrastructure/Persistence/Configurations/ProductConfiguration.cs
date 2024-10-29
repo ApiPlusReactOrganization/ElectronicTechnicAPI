@@ -21,12 +21,16 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
             
+            builder.HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+            
             
             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
                 productBuilder.ToJson("component characteristic");
-
-                productBuilder.Property(x => x.Type).HasJsonPropertyName("type");
 
                 productBuilder.OwnsOne(x => x.Case, caseBuilder =>
                 {
@@ -34,33 +38,23 @@ namespace Infrastructure.Persistence.Configurations
                     caseBuilder.Property(x => x.NumberOfFans).HasJsonPropertyName("number of fans");
                     caseBuilder.Property(x => x.FormFactors).HasJsonPropertyName("form factors");
                 });
-                
-                productBuilder.OwnsOne(x => x.CPU, cpuBuilder =>
+
+                productBuilder.OwnsOne(x => x.Cpu, cpuBuilder =>
                 {
-                    cpuBuilder.Property(x => x.Socket).HasJsonPropertyName("socket");
-                    cpuBuilder.Property(x => x.NumberOfCores).HasJsonPropertyName("number of cores");
-                    cpuBuilder.Property(x => x.NumberOfThreads).HasJsonPropertyName("number of threads");
-                    cpuBuilder.Property(x => x.BaseClock).HasJsonPropertyName("base clock");
+                    cpuBuilder.Property(x => x.Model).HasJsonPropertyName("model");
+                    cpuBuilder.Property(x => x.Cores).HasJsonPropertyName("cores");
+                    cpuBuilder.Property(x => x.Threads).HasJsonPropertyName("threads");
+                    cpuBuilder.Property(x => x.BaseClock).HasJsonPropertyName("base clock").HasColumnType("decimal(5, 2)");
+                    cpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock").HasColumnType("decimal(5, 2)");
                 });
-                
-                productBuilder.OwnsOne(x => x.Motherboard, motherboard =>
+
+                productBuilder.OwnsOne(x => x.Gpu, gpuBuilder =>
                 {
-                    motherboard.Property(x => x.Socket).HasJsonPropertyName("socket");
-                    motherboard.Property(x => x.FormFactors).HasJsonPropertyName("form factors");
-                    motherboard.Property(x => x.RAMDescription).HasJsonPropertyName("RAM description");
-                    motherboard.Property(x => x.NetworkDescription).HasJsonPropertyName("network description");
-                    motherboard.Property(x => x.PowerDescription).HasJsonPropertyName("power description");
-                    motherboard.Property(x => x.AudioDescription).HasJsonPropertyName("audio description");
-                    motherboard.Property(x => x.ExternalConnectorsDescription).HasJsonPropertyName("external onnectors description");
-                });
-                
-                productBuilder.OwnsOne(x => x.PSU, psuBuilder =>
-                {
-                    psuBuilder.Property(x => x.PowerCapacity).HasJsonPropertyName("power capacity");
-                    psuBuilder.Property(x => x.InputVoltageRange).HasJsonPropertyName("input voltage range");
-                    psuBuilder.Property(x => x.FanTypeAndSize).HasJsonPropertyName("fan type and Size");
-                    psuBuilder.Property(x => x.Protections).HasJsonPropertyName("protections");
-                    psuBuilder.Property(x => x.Connectors).HasJsonPropertyName("connectors");
+                    gpuBuilder.Property(x => x.Model).HasJsonPropertyName("model");
+                    gpuBuilder.Property(x => x.MemorySize).HasJsonPropertyName("memory size");
+                    gpuBuilder.Property(x => x.MemoryType).HasJsonPropertyName("memory type");
+                    gpuBuilder.Property(x => x.CoreClock).HasJsonPropertyName("core clock").HasColumnType("decimal(6, 2)");
+                    gpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock").HasColumnType("decimal(6, 2)");
                 });
             });
         }
