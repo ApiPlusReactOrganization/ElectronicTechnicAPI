@@ -6,7 +6,6 @@ namespace Domain.Manufacturers
     {
         public ManufacturerId Id { get; }
         public string Name { get; private set; }
-        
         public List<Product> Products { get; } = new();
         private Manufacturer(ManufacturerId id, string name)
         {

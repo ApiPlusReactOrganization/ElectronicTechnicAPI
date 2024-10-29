@@ -14,7 +14,6 @@ namespace Domain.Products
         public int StockQuantity { get; private set; }
         public ManufacturerId ManufacturerId { get; set; } 
         public Manufacturer? Manufacturer { get; set; }
-        
         public CategoryId CategoryId { get; set; } 
         public Category? Category { get; set; }
         
