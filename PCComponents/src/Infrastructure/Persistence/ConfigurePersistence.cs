@@ -43,6 +43,8 @@ public static class ConfigurePersistence
         services.AddScoped<IManufacturerRepository>(provider => provider.GetRequiredService<ManufacturerRepository>());
         services.AddScoped<IManufacturerQueries>(provider => provider.GetRequiredService<ManufacturerRepository>());
         
-        
+        services.AddScoped<UserRepository>();
+        services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
+        services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
     }
 }

@@ -3,7 +3,6 @@ using Application.Common.Interfaces.Repositories;
 using Application.Products.Exceptions;
 using Domain;
 using Domain.Categories;
-using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
 using Domain.Products;
 using MediatR;
