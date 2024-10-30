@@ -5,12 +5,12 @@ using Application.Common.Interfaces.Repositories;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Npgsql;
 
 namespace Infrastructure.Persistence;
@@ -34,6 +34,7 @@ public static class ConfigurePersistence
         services.AddScoped<ApplicationDbContextInitialiser>();
         services.AddRepositories();
         services.AddJwtTokenAuth(builder);
+        services.AddSwaggerAuth();
     }
 
     private static void AddRepositories(this IServiceCollection services)
@@ -78,4 +79,38 @@ public static class ConfigurePersistence
                 };
             });
     }
+
+    private static void AddSwaggerAuth(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = "NPR321", Version = "v1" });
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "Введіть JWT токен"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
+        });
+    }
+
 }

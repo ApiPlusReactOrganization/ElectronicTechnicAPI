@@ -8,32 +8,32 @@ using Domain.Authentications;
 
 namespace Application.Authentications.Commands;
 
-public class CreateUserCommand : IRequest<Result<User, AuthenticationException>>
+public class SignUpCommand : IRequest<Result<User, AuthenticationException>>
 {
     public required string Email { get; init; }
     public required string Password { get; init; }
-    public required string Name { get; init; }
+    public required string? Name { get; init; }
 }
 
 public class CreateUserCommandHandler(
     IUserRepository userRepository)
-    : IRequestHandler<CreateUserCommand, Result<User, AuthenticationException>>
+    : IRequestHandler<SignUpCommand, Result<User, AuthenticationException>>
 {
     public async Task<Result<User, AuthenticationException>> Handle(
-        CreateUserCommand request,
+        SignUpCommand request,
         CancellationToken cancellationToken)
     {
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
 
         return await existingUser.Match(
             u => Task.FromResult<Result<User, AuthenticationException>>(new UserByThisEmailAlreadyExistsException(u.Id)),
-            async () => await CreateEntity(request.Email, request.Password, request.Name, cancellationToken));
+            async () => await SignUp(request.Email, request.Password, request.Name, cancellationToken));
     }
 
-    private async Task<Result<User, AuthenticationException>> CreateEntity(
+    private async Task<Result<User, AuthenticationException>> SignUp(
         string email,
         string password,
-        string name,
+        string? name,
         CancellationToken cancellationToken)
     {
         try

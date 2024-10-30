@@ -1,4 +1,4 @@
-﻿using Api.Dtos.Authentication;
+﻿using Api.Dtos.Authentications;
 using Api.Modules.Errors;
 using Application.Authentications;
 using Application.Authentications.Commands;
@@ -12,20 +12,12 @@ namespace Api.Controllers;
 [ApiController]
 public class AccountController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll(CancellationToken cancellationToken)
-    {
-        var entities = await userQueries.GetAll(cancellationToken);
-
-        return entities.Select(UserDto.FromDomainModel).ToList();
-    }
-
     [HttpPost("signup")]
     public async Task<ActionResult<SignUpDto>> SignUpAsync(
         [FromBody] SignUpDto request,
         CancellationToken cancellationToken)
     {
-        var input = new CreateUserCommand
+        var input = new SignUpCommand
         {
             Email = request.email,
             Password = request.password,

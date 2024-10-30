@@ -1,6 +1,6 @@
 ﻿using Domain.Authentications.Users;
 
-namespace Api.Dtos.Authentication;
+namespace Api.Dtos.Users;
 
 public record UserDto(Guid? id, string email, string? name, string? image, List<RoleDto>? roles)
 {

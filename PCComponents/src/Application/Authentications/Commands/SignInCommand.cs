@@ -22,12 +22,12 @@ public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenServi
         CancellationToken cancellationToken)
     {
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
-
+        
         return await existingUser.Match(
-            async u => await SignIn(u, request.Password, jwtTokenService, cancellationToken),
+            u => Task.FromResult(SignIn(u, request.Password, jwtTokenService, cancellationToken)),
             () => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(new EmailOrPasswordAreIncorrect()));
     }
-    private async Task<Result<ServiceResponse, AuthenticationException>> SignIn(
+    private Result<ServiceResponse, AuthenticationException> SignIn(
          User user,
          string password,
          IJwtTokenService jwtTokenService,
