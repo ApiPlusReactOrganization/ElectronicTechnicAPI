@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(p => p.StockQuantity).IsRequired();
             
             builder.HasOne(p => p.Manufacturer)
-                .WithMany(m => m.Products)
+                .WithMany()
                 .HasForeignKey(p => p.ManufacturerId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();

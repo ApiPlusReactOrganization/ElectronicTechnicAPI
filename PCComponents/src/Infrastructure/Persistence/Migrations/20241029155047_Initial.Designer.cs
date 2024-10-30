@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241028203017_Initial")]
+    [Migration("20241029155047_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,66 @@ namespace Infrastructure.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Auth.Roles.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
+
+                    b.ToTable("roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "User",
+                            Name = "User"
+                        },
+                        new
+                        {
+                            Id = "Administrator",
+                            Name = "Administrator"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Auth.Users.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("text")
+                        .HasColumnName("image");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", (string)null);
+                });
 
             modelBuilder.Entity("Domain.Categories.Category", b =>
                 {
@@ -45,17 +105,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2f394474-36a7-4ab9-a780-5dca03c09757"),
+                            Id = new Guid("5aae21a1-ec96-42c1-808a-c3dcdc6c6fec"),
                             Name = "Processor"
                         },
                         new
                         {
-                            Id = new Guid("40e45fa6-00a6-4c4d-b2c9-13d262fcbfb2"),
+                            Id = new Guid("e1d401da-d336-4a44-8de9-b5824c636bba"),
                             Name = "Computer case"
                         },
                         new
                         {
-                            Id = new Guid("0816f7ef-66f6-4b9d-bb24-a6d532ad4d8e"),
+                            Id = new Guid("09b3b6f4-8107-44d4-9324-adf8b2fb301d"),
                             Name = "Graphics Card"
                         });
                 });
@@ -123,6 +183,25 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("products", (string)null);
                 });
 
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<string>("RolesId")
+                        .HasColumnType("text")
+                        .HasColumnName("roles_id");
+
+                    b.Property<Guid>("UsersId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("users_id");
+
+                    b.HasKey("RolesId", "UsersId")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("UsersId")
+                        .HasDatabaseName("ix_user_roles_users_id");
+
+                    b.ToTable("userRoles", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Products.Product", b =>
                 {
                     b.HasOne("Domain.Categories.Category", "Category")
@@ -133,13 +212,13 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_products_categories_category_id");
 
                     b.HasOne("Domain.Manufacturers.Manufacturer", "Manufacturer")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_products_manufacturers_manufacturer_id");
 
-                    b.OwnsOne("Domain.ComponentCharacteristics.ComponentCharacteristic", "ComponentCharacteristic", b1 =>
+                    b.OwnsOne("Domain.Products.ComponentCharacteristic", "ComponentCharacteristic", b1 =>
                         {
                             b1.Property<Guid>("ProductId")
                                 .HasColumnType("uuid");
@@ -154,7 +233,7 @@ namespace Infrastructure.Persistence.Migrations
                                 .HasForeignKey("ProductId")
                                 .HasConstraintName("fk_products_products_id");
 
-                            b1.OwnsOne("Domain.ComponentCharacteristics.CPU", "Cpu", b2 =>
+                            b1.OwnsOne("Domain.Products.CPU", "Cpu", b2 =>
                                 {
                                     b2.Property<Guid>("ComponentCharacteristicProductId")
                                         .HasColumnType("uuid");
@@ -191,7 +270,7 @@ namespace Infrastructure.Persistence.Migrations
                                         .HasConstraintName("fk_products_products_component_characteristic_product_id");
                                 });
 
-                            b1.OwnsOne("Domain.ComponentCharacteristics.Case", "Case", b2 =>
+                            b1.OwnsOne("Domain.Products.Case", "Case", b2 =>
                                 {
                                     b2.Property<Guid>("ComponentCharacteristicProductId")
                                         .HasColumnType("uuid");
@@ -221,7 +300,7 @@ namespace Infrastructure.Persistence.Migrations
                                         .HasConstraintName("fk_products_products_component_characteristic_product_id");
                                 });
 
-                            b1.OwnsOne("Domain.ComponentCharacteristics.GPU", "Gpu", b2 =>
+                            b1.OwnsOne("Domain.Products.GPU", "Gpu", b2 =>
                                 {
                                     b2.Property<Guid>("ComponentCharacteristicProductId")
                                         .HasColumnType("uuid");
@@ -274,9 +353,21 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Manufacturer");
                 });
 
-            modelBuilder.Entity("Domain.Manufacturers.Manufacturer", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.Navigation("Products");
+                    b.HasOne("Domain.Auth.Roles.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_roles_id");
+
+                    b.HasOne("Domain.Auth.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_users_id");
                 });
 #pragma warning restore 612, 618
         }

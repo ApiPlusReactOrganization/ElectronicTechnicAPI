@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
-using Domain.Categories;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -22,8 +21,6 @@ public class ProductRepository : IProductRepository, IProductQueries
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
-
-
     public async Task<Option<Product>> GetById(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Products

@@ -1,4 +1,4 @@
-﻿namespace Domain.ComponentCharacteristics
+﻿namespace Domain.Products
 {
     public class ComponentCharacteristic
     { 

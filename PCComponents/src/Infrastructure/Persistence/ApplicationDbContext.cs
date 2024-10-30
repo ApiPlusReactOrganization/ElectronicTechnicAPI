@@ -1,6 +1,7 @@
 using System.Reflection;
+using Domain.Authentications.Roles;
+using Domain.Authentications.Users;
 using Domain.Categories;
-using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Product> Products { get; set; }
     public DbSet<Manufacturer> Manufacturers { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
     
     protected override void OnModelCreating(ModelBuilder builder)
     {
