@@ -6,6 +6,7 @@ namespace Domain.FormFactors
     {
         public FormFactorId Id { get; }
         public string Name { get; private set; }
+
         private FormFactor(FormFactorId id, string name)
         {
             Id = id;

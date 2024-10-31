@@ -6,6 +6,7 @@ namespace Domain.Sockets
     {
         public SocketId Id { get; }
         public string Name { get; private set; }
+
         private Socket(SocketId id, string name)
         {
             Id = id;
