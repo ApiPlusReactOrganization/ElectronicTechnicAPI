@@ -1,5 +1,4 @@
 ﻿using Domain.Categories;
-using Domain.ComponentCharacteristics;
 using Domain.Manufacturers;
 
 namespace Domain.Products

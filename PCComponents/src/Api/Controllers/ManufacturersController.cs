@@ -2,12 +2,17 @@
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Manufacturers.Commands;
+using Domain.Authentications;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [Route("manufacturers")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ManufacturersController(ISender sender, IManufacturerQueries ManufacturerQueries) : ControllerBase
 {

@@ -2,12 +2,19 @@
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Products.Commands;
+using Domain.Authentications;
+using Domain.Categories;
+using Domain.Manufacturers;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [Route("products")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries ProductQueries) : ControllerBase
 {
@@ -24,14 +31,15 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
         [FromBody] ProductDto request,
         CancellationToken cancellationToken)
     {
+        //todo, id переробити в просто guid, як в красюка в прикладі
         var input = new CreateProductCommand
         {
             Name = request.Name,
             Price = request.Price,
             Description = request.Description,
             StockQuantity = request.StockQuantity,
-            ManufacturerId = request.ManufacturerId,
-            CategoryId = request.CategoryId,
+            ManufacturerId = new ManufacturerId(request.ManufacturerId.Value),
+            CategoryId = new CategoryId(request.CategoryId.Value),
             componentCharacteristic = request.ComponentCharacteristic,
         };
 

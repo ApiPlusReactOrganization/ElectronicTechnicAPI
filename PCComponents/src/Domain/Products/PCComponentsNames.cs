@@ -1,4 +1,4 @@
-﻿namespace Domain;
+﻿namespace Domain.Products;
 
 public class PCComponentsNames
 {
@@ -9,7 +9,7 @@ public class PCComponentsNames
     public const string PSU = "Power Supply Unit";
     public const string Motherboard = "Motherboard";
     
-    public static readonly List<string> ListOfComponents = new List<string>
+    public static readonly List<string> ListOfComponents = new()
     {
         CPU,
         Case,
