@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241029155047_Initial")]
+    [Migration("20241031205500_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Auth.Roles.Role", b =>
+            modelBuilder.Entity("Domain.Authentications.Roles.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text")
@@ -54,7 +54,7 @@ namespace Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Domain.Auth.Users.User", b =>
+            modelBuilder.Entity("Domain.Authentications.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -83,6 +83,22 @@ namespace Infrastructure.Persistence.Migrations
                         .HasName("pk_users");
 
                     b.ToTable("users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6b8fb8c9-7738-47f5-aab1-77e2f80898b9"),
+                            Email = "admin@example.com",
+                            Name = "admin",
+                            PasswordHash = "h53rF0VZCfumzG2JxLdQJg==:SOlCSGol6FH3JtxX7RxKc+Kkz29lI8xU0gAQwuftDzg="
+                        },
+                        new
+                        {
+                            Id = new Guid("77d6496b-17e7-416d-a90f-bb26a24c520a"),
+                            Email = "user@example.com",
+                            Name = "user",
+                            PasswordHash = "rTZacLUHOFyPJYkLOj8RlQ==:qPJIT184tRYDHU7kNb2FYTAJ3fgghFsg5pP8vYXAfrQ="
+                        });
                 });
 
             modelBuilder.Entity("Domain.Categories.Category", b =>
@@ -105,17 +121,17 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5aae21a1-ec96-42c1-808a-c3dcdc6c6fec"),
+                            Id = new Guid("4391aa11-e822-41b3-8985-54d85967de6c"),
                             Name = "Processor"
                         },
                         new
                         {
-                            Id = new Guid("e1d401da-d336-4a44-8de9-b5824c636bba"),
+                            Id = new Guid("9cc369db-f4ff-4a71-b952-c4e3de2c87e2"),
                             Name = "Computer case"
                         },
                         new
                         {
-                            Id = new Guid("09b3b6f4-8107-44d4-9324-adf8b2fb301d"),
+                            Id = new Guid("c308514a-4d02-4991-ac2d-d7fd76fe2500"),
                             Name = "Graphics Card"
                         });
                 });
@@ -200,6 +216,18 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("ix_user_roles_users_id");
 
                     b.ToTable("userRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RolesId = "Administrator",
+                            UsersId = new Guid("6b8fb8c9-7738-47f5-aab1-77e2f80898b9")
+                        },
+                        new
+                        {
+                            RolesId = "User",
+                            UsersId = new Guid("77d6496b-17e7-416d-a90f-bb26a24c520a")
+                        });
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
@@ -355,14 +383,14 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("Domain.Auth.Roles.Role", null)
+                    b.HasOne("Domain.Authentications.Roles.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_roles_roles_roles_id");
 
-                    b.HasOne("Domain.Auth.Users.User", null)
+                    b.HasOne("Domain.Authentications.Users.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)

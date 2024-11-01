@@ -11,7 +11,7 @@ public class User
     public string? Image { get; set; }
     public List<Role> Roles { get; set; } = new();
 
-    public User(UserId id, string email, string? name, string passwordHash, string? image)
+    private User(UserId id, string email, string? name, string passwordHash, string? image)
     {
         Id = id;
         Email = email;

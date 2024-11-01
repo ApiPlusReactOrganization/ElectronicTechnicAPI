@@ -22,6 +22,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(options => options
+    .WithOrigins(new[] { "http://localhost:5173" })
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+);
+
 await app.InitialiseDb();
 app.MapControllers();
 
