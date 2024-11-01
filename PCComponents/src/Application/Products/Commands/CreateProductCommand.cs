@@ -62,6 +62,12 @@ public class CreateProductCommandHandler(
                 PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case),
                 PCComponentsNames.CPU => ComponentCharacteristic.NewCpu(componentCharacteristic.Cpu),
                 PCComponentsNames.GPU => ComponentCharacteristic.NewGpu(componentCharacteristic.Gpu),
+                PCComponentsNames.Motherboard => ComponentCharacteristic.NewMotherboard(componentCharacteristic.Motherboard),
+                PCComponentsNames.Psu => ComponentCharacteristic.NewPsu(componentCharacteristic.Psu),
+                PCComponentsNames.Ram => ComponentCharacteristic.NewRam(componentCharacteristic.Ram),
+                PCComponentsNames.Cooler => ComponentCharacteristic.NewCooler(componentCharacteristic.Cooler),
+                PCComponentsNames.Hdd => ComponentCharacteristic.NewHdd(componentCharacteristic.Hdd),
+                PCComponentsNames.Sdd => ComponentCharacteristic.NewSDD(componentCharacteristic.Sdd),
                 _ => throw new ArgumentException("Invalid component type")
             };
 

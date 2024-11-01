@@ -75,7 +75,7 @@ namespace Infrastructure.Persistence.Migrations
                     stock_quantity = table.Column<int>(type: "integer", nullable: false),
                     manufacturer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     category_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    component_characteristic = table.Column<string>(type: "jsonb", nullable: false)
+                    component_characteristics = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -123,9 +123,15 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "id", "name" },
                 values: new object[,]
                 {
-                    { new Guid("4391aa11-e822-41b3-8985-54d85967de6c"), "Processor" },
-                    { new Guid("9cc369db-f4ff-4a71-b952-c4e3de2c87e2"), "Computer case" },
-                    { new Guid("c308514a-4d02-4991-ac2d-d7fd76fe2500"), "Graphics Card" }
+                    { new Guid("33a0e59a-97f1-406e-b379-22e54cbe14d5"), "Hdd" },
+                    { new Guid("34ca2b06-3f33-40a6-9f22-3c966508661e"), "Sdd" },
+                    { new Guid("35427fb9-c82e-4f8b-8ce7-bf5f6bb3476d"), "Cooler" },
+                    { new Guid("443b51a2-cd7e-4930-8772-a52d5756a786"), "Processor" },
+                    { new Guid("51d2f9df-1904-4bb3-8c31-e5732a3e5da7"), "Ram" },
+                    { new Guid("5260ee46-19ea-4084-a9ea-c49146077d54"), "Psu" },
+                    { new Guid("60d465fc-72cc-49e5-bf36-48bdd839e0fd"), "Computer case" },
+                    { new Guid("719d528a-571d-43ea-aabb-2fad0bd83929"), "Graphics Card" },
+                    { new Guid("854c71f0-2c55-4277-8453-98ef121511e2"), "Motherboard" }
                 });
 
             migrationBuilder.InsertData(
@@ -142,8 +148,8 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "id", "email", "image", "name", "password_hash" },
                 values: new object[,]
                 {
-                    { new Guid("6b8fb8c9-7738-47f5-aab1-77e2f80898b9"), "admin@example.com", null, "admin", "h53rF0VZCfumzG2JxLdQJg==:SOlCSGol6FH3JtxX7RxKc+Kkz29lI8xU0gAQwuftDzg=" },
-                    { new Guid("77d6496b-17e7-416d-a90f-bb26a24c520a"), "user@example.com", null, "user", "rTZacLUHOFyPJYkLOj8RlQ==:qPJIT184tRYDHU7kNb2FYTAJ3fgghFsg5pP8vYXAfrQ=" }
+                    { new Guid("299f3c4f-8537-428a-b1e8-eb0794bc6e49"), "user@example.com", null, "user", "PvpQ0/xa69pXsyublcJ1lw==:F4Uw34hFvVb820linGngxtWLqdTqzNFwUvnz+O3knjw=" },
+                    { new Guid("84da1939-bc9a-4270-9ed4-253e28cf0f81"), "admin@example.com", null, "admin", "wA6CToNJF8tbW9U6wX2e1w==:AckPrtzfcQ/BeUB/+X/rIWiQcxmTpf7EaT9jab/BThs=" }
                 });
 
             migrationBuilder.InsertData(
@@ -151,8 +157,8 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "roles_id", "users_id" },
                 values: new object[,]
                 {
-                    { "Administrator", new Guid("6b8fb8c9-7738-47f5-aab1-77e2f80898b9") },
-                    { "User", new Guid("77d6496b-17e7-416d-a90f-bb26a24c520a") }
+                    { "Administrator", new Guid("84da1939-bc9a-4270-9ed4-253e28cf0f81") },
+                    { "User", new Guid("299f3c4f-8537-428a-b1e8-eb0794bc6e49") }
                 });
 
             migrationBuilder.CreateIndex(
