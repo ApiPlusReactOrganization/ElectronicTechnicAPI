@@ -14,20 +14,21 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(p => p.Price).IsRequired();
             builder.Property(p => p.Description).HasMaxLength(500);
             builder.Property(p => p.StockQuantity).IsRequired();
-
+            
             builder.HasOne(p => p.Manufacturer)
                 .WithMany()
                 .HasForeignKey(p => p.ManufacturerId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
-
+            
             builder.HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
-
-            builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
+            
+            
+             builder.OwnsOne(x => x.ComponentCharacteristic, productBuilder =>
             {
                 productBuilder.ToJson("component characteristics");
 
@@ -36,6 +37,8 @@ namespace Infrastructure.Persistence.Configurations
                     caseBuilder.Property(x => x.CoolingSystem).HasJsonPropertyName("cooling system");
                     caseBuilder.Property(x => x.NumberOfFans).HasJsonPropertyName("number of fans");
                     caseBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
+
+                    
                 });
 
                 productBuilder.OwnsOne(x => x.Cpu, cpuBuilder =>
@@ -48,6 +51,9 @@ namespace Infrastructure.Persistence.Configurations
                     cpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock")
                         .HasColumnType("decimal(5, 2)");
                     cpuBuilder.Property(x => x.Socket).HasJsonPropertyName("socket");
+
+
+        
                 });
 
                 productBuilder.OwnsOne(x => x.Gpu, gpuBuilder =>
@@ -60,6 +66,8 @@ namespace Infrastructure.Persistence.Configurations
                     gpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock")
                         .HasColumnType("decimal(6, 2)");
                     gpuBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
+
+
                 });
 
                 productBuilder.OwnsOne(x => x.Motherboard, motherboardBuilder =>
@@ -72,6 +80,7 @@ namespace Infrastructure.Persistence.Configurations
                         .HasJsonPropertyName("external connectors description");
                     motherboardBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
                     motherboardBuilder.Property(x => x.Socket).HasJsonPropertyName("socket");
+
                 });
 
                 productBuilder.OwnsOne(x => x.Psu, psuBuilder =>
@@ -86,7 +95,7 @@ namespace Infrastructure.Persistence.Configurations
                 productBuilder.OwnsOne(x => x.Ram, psuBuilder =>
                 {
                     psuBuilder.Property(x => x.MemoryAmount).HasJsonPropertyName("memory amount");
-                    psuBuilder.Property(x => x.MemorySpeed).HasJsonPropertyName("memory speed");
+                    psuBuilder.Property(x=> x.MemorySpeed).HasJsonPropertyName("memory speed");
                     psuBuilder.Property(x => x.MemoryType).HasJsonPropertyName("memory type");
                     psuBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
                     psuBuilder.Property(x => x.Voltage).HasJsonPropertyName("voltage");
@@ -102,6 +111,7 @@ namespace Infrastructure.Persistence.Configurations
                     coolerBuilder.Property(x => x.MaxTDP).HasJsonPropertyName("max tdp");
                     coolerBuilder.Property(x => x.FanSupply).HasJsonPropertyName("fan supply");
                     coolerBuilder.Property(x => x.Sockets).HasJsonPropertyName("sockets");
+                    
                 });
 
                 productBuilder.OwnsOne(x => x.Hdd, hddBuilder =>
@@ -112,7 +122,7 @@ namespace Infrastructure.Persistence.Configurations
                     hddBuilder.Property(x => x.ReadSpeed).HasJsonPropertyName("read speed");
                     hddBuilder.Property(x => x.WriteSpeed).HasJsonPropertyName("write speed");
                 });
-
+                
                 productBuilder.OwnsOne(x => x.Sdd, sddBuilder =>
                 {
                     sddBuilder.Property(x => x.MemoryAmount).HasJsonPropertyName("memory amount");
