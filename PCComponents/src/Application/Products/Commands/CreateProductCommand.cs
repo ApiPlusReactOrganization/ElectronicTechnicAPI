@@ -19,7 +19,7 @@ public record CreateProductCommand : IRequest<Result<Product, ProductException>>
     //todo, id переробити в просто guid, як в красюка в прикладі
     public ManufacturerId ManufacturerId { get; init; }
     public CategoryId CategoryId { get; init; }
-    public ComponentCharacteristic componentCharacteristic { get; init; }
+    public ComponentCharacteristic ComponentCharacteristic { get; init; }
 }
 
 public class CreateProductCommandHandler(
@@ -37,9 +37,10 @@ public class CreateProductCommandHandler(
             {
                 var existingProduct = await ProductRepository.SearchByName(request.Name, cancellationToken);
                 return await existingProduct.Match(
-                p => Task.FromResult<Result<Product, ProductException>>(new ProductAlreadyExistsException(p.Id)),
+                p => Task.FromResult<Result<Product, ProductException>>
+                    (new ProductUnderCurrentCategoryAlreadyExistsException(request.CategoryId)),
                 async () => await CreateEntity(request.Name, request.Price, request.Description, request.StockQuantity,
-                    request.ManufacturerId, c, request.componentCharacteristic, cancellationToken));
+                    request.ManufacturerId, c, request.ComponentCharacteristic, cancellationToken));
             },
             () => Task.FromResult<Result<Product, ProductException>>(new ProductCategoryNotFoundException(request.CategoryId)));
 
@@ -62,6 +63,9 @@ public class CreateProductCommandHandler(
                 PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case),
                 PCComponentsNames.CPU => ComponentCharacteristic.NewCpu(componentCharacteristic.Cpu),
                 PCComponentsNames.GPU => ComponentCharacteristic.NewGpu(componentCharacteristic.Gpu),
+                PCComponentsNames.Motherboard => ComponentCharacteristic.NewMotherboard(componentCharacteristic.Motherboard),
+                PCComponentsNames.RAM => ComponentCharacteristic.NewRam(componentCharacteristic.Ram),
+                PCComponentsNames.PSU => ComponentCharacteristic.NewPsu(componentCharacteristic.Psu),
                 _ => throw new ArgumentException("Invalid component type")
             };
 

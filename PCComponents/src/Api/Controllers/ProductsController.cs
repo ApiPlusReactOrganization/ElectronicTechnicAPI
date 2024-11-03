@@ -40,7 +40,7 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
             StockQuantity = request.StockQuantity,
             ManufacturerId = new ManufacturerId(request.ManufacturerId.Value),
             CategoryId = new CategoryId(request.CategoryId.Value),
-            componentCharacteristic = request.ComponentCharacteristic,
+            ComponentCharacteristic = request.ComponentCharacteristic,
         };
 
         var result = await sender.Send(input, cancellationToken);

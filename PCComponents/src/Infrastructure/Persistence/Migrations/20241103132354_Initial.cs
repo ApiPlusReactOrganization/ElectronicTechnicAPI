@@ -71,11 +71,11 @@ namespace Infrastructure.Persistence.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     price = table.Column<decimal>(type: "numeric", nullable: false),
-                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     stock_quantity = table.Column<int>(type: "integer", nullable: false),
                     manufacturer_id = table.Column<Guid>(type: "uuid", nullable: false),
                     category_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    component_characteristic = table.Column<string>(type: "jsonb", nullable: false)
+                    component_characteristics = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -123,9 +123,12 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "id", "name" },
                 values: new object[,]
                 {
-                    { new Guid("09b3b6f4-8107-44d4-9324-adf8b2fb301d"), "Graphics Card" },
-                    { new Guid("5aae21a1-ec96-42c1-808a-c3dcdc6c6fec"), "Processor" },
-                    { new Guid("e1d401da-d336-4a44-8de9-b5824c636bba"), "Computer case" }
+                    { new Guid("04903708-2bb2-4d27-a8b0-aa057f251a1b"), "Computer case" },
+                    { new Guid("3fd58a39-e8ac-4779-99d3-2ff9296dda03"), "Processor" },
+                    { new Guid("461784e4-b0e7-4cc6-bcff-a50789821531"), "Graphics Card" },
+                    { new Guid("48d43937-cd21-4f2d-9f5e-bd8ed529fbdc"), "RAM" },
+                    { new Guid("ad73b891-2d08-4c82-94fd-ee41b5182646"), "Power Supply Unit" },
+                    { new Guid("d42a1996-bddc-4c8a-bb79-5d9046678ec0"), "Motherboard" }
                 });
 
             migrationBuilder.InsertData(

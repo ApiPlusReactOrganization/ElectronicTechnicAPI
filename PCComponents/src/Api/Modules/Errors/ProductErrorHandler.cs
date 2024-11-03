@@ -10,9 +10,12 @@ public static class ProductErrorHandler
         return new ObjectResult(exception.Message)
         {
             StatusCode = exception switch
-            {
-                ProductAlreadyExistsException => StatusCodes.Status409Conflict,
-                ProductUnknownException => StatusCodes.Status500InternalServerError,
+            {   ProductCategoryNotFoundException or ProductManufacturerNotFoundException 
+                    => StatusCodes.Status404NotFound,
+                ProductUnderCurrentCategoryAlreadyExistsException 
+                    => StatusCodes.Status409Conflict,
+                ProductUnknownException 
+                    => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Product error handler does not implemented")
             }
         };

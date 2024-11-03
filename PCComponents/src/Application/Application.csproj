@@ -20,9 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Exceptions\Commands\" />
-      <Folder Include="Faculties\Commands\" />
-      <Folder Include="Faculties\Exceptions\" />
       <Folder Include="Files\Commands\" />
       <Folder Include="Users\Commands\" />
       <Folder Include="Users\Exceptions\" />
