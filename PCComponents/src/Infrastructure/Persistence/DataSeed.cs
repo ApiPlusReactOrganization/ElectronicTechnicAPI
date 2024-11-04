@@ -4,7 +4,9 @@ using Domain.Authentications;
 using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Domain.Categories;
+using Domain.Manufacturers;
 using Domain.Products;
+using Domain.Products.PCComponents;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,7 @@ public static class DataSeed
     public static void Seed(this ModelBuilder modelBuilder)
     {
         _seedCategories(modelBuilder);
+        _seedManufactures(modelBuilder);
         _seedRoles(modelBuilder);
         _seedUsers(modelBuilder);
     }
@@ -30,6 +33,19 @@ public static class DataSeed
 
         modelBuilder.Entity<Category>()
             .HasData(categories);
+    }
+    
+    public static void _seedManufactures(ModelBuilder modelBuilder)
+    {
+        var manufacturers = new List<Manufacturer>();
+
+        foreach (var manufacturer in PCComponentsManufactures.ListOfManufacturers)
+        {
+            manufacturers.Add(Manufacturer.New(ManufacturerId.New(), manufacturer));
+        }
+
+        modelBuilder.Entity<Manufacturer>()
+            .HasData(manufacturers);
     }
 
     public static void _seedRoles(ModelBuilder modelBuilder)

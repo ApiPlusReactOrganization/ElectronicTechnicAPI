@@ -1,4 +1,4 @@
-﻿namespace Domain.Products;
+﻿namespace Domain.Products.PCComponents;
 
 public class PCComponentsNames
 {
@@ -8,6 +8,9 @@ public class PCComponentsNames
     public const string RAM = "RAM";
     public const string PSU = "Power Supply Unit";
     public const string Motherboard = "Motherboard";
+    public const string Cooler = "Cooler";
+    public const string HDD = "HDD";
+    public const string SSD = "SSD";
     
     public static readonly List<string> ListOfComponents = new()
     {
@@ -16,6 +19,9 @@ public class PCComponentsNames
         GPU,
         RAM,
         PSU,
-        Motherboard
+        Motherboard,
+        Cooler,
+        HDD,
+        SSD
     };
 }

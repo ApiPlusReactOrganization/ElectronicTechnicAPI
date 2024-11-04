@@ -1,4 +1,4 @@
-﻿namespace Domain.Products
+﻿namespace Domain.Products.PCComponents
 {
     public class ComponentCharacteristic
     {
@@ -10,7 +10,7 @@
         public RAM? Ram { get; set; }
         public Cooler? Cooler { get; set; }
         public HDD? Hdd { get; set; }
-        public SDD? Sdd { get; set; }
+        public SSD? Ssd { get; set; }
 
         public static ComponentCharacteristic NewCase(Case someCase)
             => new() { Case = someCase };
@@ -36,16 +36,17 @@
         public static ComponentCharacteristic NewHdd(HDD hdd)
             => new() { Hdd = hdd };
 
-        public static ComponentCharacteristic NewSDD(SDD sdd)
-            => new() { Sdd = sdd };
+        public static ComponentCharacteristic NewSSD(SSD ssd)
+            => new() { Ssd = ssd };
     }
 
     public record Case
     {
         public required int NumberOfFans { get; init; }
-        public required string CoolingSystem { get; init; }
-
+        public required string CoolingDescription { get; init; }
         public required string FormFactor { get; init; }
+        public required string CompartmentDescription { get; init; }
+        public required string PortsDescription { get; init; }
     }
 
     public record CPU
@@ -124,7 +125,7 @@
         public required int WriteSpeed { get; init; }
     }
 
-    public record SDD
+    public record SSD
     {
         public required int MemoryAmount { get; init; }
         public required string FormFactor { get; init; }

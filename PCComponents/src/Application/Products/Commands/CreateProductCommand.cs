@@ -5,6 +5,7 @@ using Domain;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;
+using Domain.Products.PCComponents;
 using MediatR;
 
 namespace Application.Products.Commands;
@@ -66,6 +67,9 @@ public class CreateProductCommandHandler(
                 PCComponentsNames.Motherboard => ComponentCharacteristic.NewMotherboard(componentCharacteristic.Motherboard),
                 PCComponentsNames.RAM => ComponentCharacteristic.NewRam(componentCharacteristic.Ram),
                 PCComponentsNames.PSU => ComponentCharacteristic.NewPsu(componentCharacteristic.Psu),
+                PCComponentsNames.Cooler => ComponentCharacteristic.NewCooler(componentCharacteristic.Cooler),
+                PCComponentsNames.HDD => ComponentCharacteristic.NewHdd(componentCharacteristic.Hdd),
+                PCComponentsNames.SSD => ComponentCharacteristic.NewSSD(componentCharacteristic.Ssd),
                 _ => throw new ArgumentException("Invalid component type")
             };
 

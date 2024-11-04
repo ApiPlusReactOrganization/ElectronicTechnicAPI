@@ -34,11 +34,11 @@ namespace Infrastructure.Persistence.Configurations
 
                 productBuilder.OwnsOne(x => x.Case, caseBuilder =>
                 {
-                    caseBuilder.Property(x => x.CoolingSystem).HasJsonPropertyName("cooling system");
+                    caseBuilder.Property(x => x.CoolingDescription).HasJsonPropertyName("cooling system");
                     caseBuilder.Property(x => x.NumberOfFans).HasJsonPropertyName("number of fans");
                     caseBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
-
-                    
+                    caseBuilder.Property(x => x.CompartmentDescription).HasJsonPropertyName("compartment description");
+                    caseBuilder.Property(x => x.PortsDescription).HasJsonPropertyName("ports description");
                 });
 
                 productBuilder.OwnsOne(x => x.Cpu, cpuBuilder =>
@@ -51,9 +51,6 @@ namespace Infrastructure.Persistence.Configurations
                     cpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock")
                         .HasColumnType("decimal(5, 2)");
                     cpuBuilder.Property(x => x.Socket).HasJsonPropertyName("socket");
-
-
-        
                 });
 
                 productBuilder.OwnsOne(x => x.Gpu, gpuBuilder =>
@@ -66,8 +63,6 @@ namespace Infrastructure.Persistence.Configurations
                     gpuBuilder.Property(x => x.BoostClock).HasJsonPropertyName("boost clock")
                         .HasColumnType("decimal(6, 2)");
                     gpuBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
-
-
                 });
 
                 productBuilder.OwnsOne(x => x.Motherboard, motherboardBuilder =>
@@ -123,7 +118,7 @@ namespace Infrastructure.Persistence.Configurations
                     hddBuilder.Property(x => x.WriteSpeed).HasJsonPropertyName("write speed");
                 });
                 
-                productBuilder.OwnsOne(x => x.Sdd, sddBuilder =>
+                productBuilder.OwnsOne(x => x.Ssd, sddBuilder =>
                 {
                     sddBuilder.Property(x => x.MemoryAmount).HasJsonPropertyName("memory amount");
                     sddBuilder.Property(x => x.FormFactor).HasJsonPropertyName("form factor");
