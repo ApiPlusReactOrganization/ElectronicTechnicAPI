@@ -1,6 +1,7 @@
 ﻿using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;
+using Domain.Products.PCComponents;
 
 namespace Api.Dtos;
 

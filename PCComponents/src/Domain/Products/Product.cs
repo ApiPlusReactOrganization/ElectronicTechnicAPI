@@ -1,5 +1,6 @@
 ﻿using Domain.Categories;
 using Domain.Manufacturers;
+using Domain.Products.PCComponents;
 
 namespace Domain.Products
 {
@@ -9,11 +10,10 @@ namespace Domain.Products
         public ComponentCharacteristic ComponentCharacteristic { get; private init; }
         public string Name { get; private set; }
         public decimal Price { get; private set; }
-        public string? Description { get; private set; }
+        public string Description { get; private set; }
         public int StockQuantity { get; private set; }
         public ManufacturerId ManufacturerId { get; set; } 
         public Manufacturer? Manufacturer { get; set; }
-        
         public CategoryId CategoryId { get; set; } 
         public Category? Category { get; set; }
         

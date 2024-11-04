@@ -7,8 +7,8 @@ namespace Infrastructure;
 
 public static class ConfigureInfrastructure
 {
-    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration, WebApplicationBuilder builder)
+    public static void AddInfrastructure(this IServiceCollection services, WebApplicationBuilder builder)
     {
-        services.AddPersistence(configuration, builder);
+        services.AddPersistence(builder);
     }
 }

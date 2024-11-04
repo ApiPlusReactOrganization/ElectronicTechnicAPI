@@ -6,6 +6,10 @@ public class CreateCategoryCommandValidator: AbstractValidator<CreateCategoryCom
 {
     public CreateCategoryCommandValidator()
     {
-        RuleFor(x => x.Name).NotEmpty().MaximumLength(255).MinimumLength(3);
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(255)
+            .MinimumLength(3)
+            .WithMessage("Category name must be between 3 and 255 characters.");
     }
 }
