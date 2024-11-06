@@ -14,9 +14,9 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
     : BaseIntegrationTest(factory), IAsyncLifetime
 {
     private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
-
+    
     [Fact]
-    public async Task ShouldCreateFaculty()
+    public async Task ShouldCreateManufacturer()
     {
         // Arrange
         
@@ -45,7 +45,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
     }
 
     [Fact]
-    public async Task ShouldUpdateFaculty()
+    public async Task ShouldUpdateManufacturer()
     {
         // Arrange
         var newFacultyName = "New Manufacturer Name";
@@ -70,7 +70,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
     }
 
     [Fact]
-    public async Task ShouldNotCreateFacultyBecauseNameDuplicated()
+    public async Task ShouldNotCreateManufacturerBecauseNameDuplicated()
     {
         // Arrange
         var request = new ManufacturerDto(
@@ -86,7 +86,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
     }
 
     [Fact]
-    public async Task ShouldNotUpdateFacultyBecauseFacultyNotFound()
+    public async Task ShouldNotUpdateManufacturerBecauseManufacturerNotFound()
     {
         // Arrange
         var request = new ManufacturerDto(
@@ -122,9 +122,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             .FirstOrDefaultAsync(x => x.Id == manufacturerId);
         manufacturerFromDataBase.Should().BeNull();
     }
-
-
-
+    
     public async Task InitializeAsync()
     {
         await Context.Manufacturers.AddAsync(_mainManufacturer);

@@ -14,7 +14,7 @@ public class Category
     public static Category New(CategoryId id, string name)
         => new(id, name);
 
-    public void UpdateDetails(string name)
+    public void UpdateName(string name)
     {
         Name = name;
     }

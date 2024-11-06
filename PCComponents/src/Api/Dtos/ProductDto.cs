@@ -15,7 +15,6 @@ public record ProductDto
     Guid? ManufacturerId,
     Guid? CategoryId,
     ComponentCharacteristic ComponentCharacteristic
-    
 )
 {
     public static ProductDto FromDomainModel(Product product)

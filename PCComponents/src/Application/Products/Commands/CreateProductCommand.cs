@@ -59,6 +59,7 @@ public class CreateProductCommandHandler(
     {
         try
         {
+            //maybe with foreach do the same so we could add new category dynamic
             ComponentCharacteristic characteristic = category.Name switch
             {
                 PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case),
