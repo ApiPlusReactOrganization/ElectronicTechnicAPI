@@ -24,4 +24,13 @@ public class PCComponentsNames
         HDD,
         SSD
     };
+    
+    public static void UpdateComponentList(string oldName, string newName)
+    {
+        var index = ListOfComponents.IndexOf(oldName);
+        if (index >= 0)
+        {
+            ListOfComponents[index] = newName;
+        }
+    }
 }

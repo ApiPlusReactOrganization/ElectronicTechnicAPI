@@ -21,8 +21,7 @@ public class ManufacturerRepository : IManufacturerRepository, IManufacturerQuer
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
-
-
+    
     public async Task<Option<Manufacturer>> GetById(ManufacturerId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Manufacturers
