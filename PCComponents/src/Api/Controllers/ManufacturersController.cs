@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("manufacturers")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]*/
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ManufacturersController(ISender sender, IManufacturerQueries manufacturerQueries) : ControllerBase
 {
