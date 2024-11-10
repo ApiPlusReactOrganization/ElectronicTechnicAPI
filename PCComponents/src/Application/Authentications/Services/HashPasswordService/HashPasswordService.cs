@@ -1,11 +1,11 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace Application.Authentications.Services;
+namespace Application.Authentications.Services.HashPasswordService;
 
-public class HashPasswordService
+public class HashPasswordService : IHashPasswordService
 {
-    public static string HashPassword(string password)
+    public string HashPassword(string password)
     {
         byte[] salt = new byte[128 / 8];
         using (var rngCsp = new RNGCryptoServiceProvider())
@@ -23,7 +23,7 @@ public class HashPasswordService
         return $"{Convert.ToBase64String(salt)}:{hashedPassword}";
     }
 
-    public static bool VerifyPassword(string password, string storedHash)
+    public bool VerifyPassword(string password, string storedHash)
     {
         var parts = storedHash.Split(':');
         if (parts.Length != 2)

@@ -16,41 +16,55 @@ public record CreateProductCommand : IRequest<Result<Product, ProductException>>
     public decimal Price { get; init; }
     public string? Description { get; init; }
     public int StockQuantity { get; init; }
-    
-    //todo, id переробити в просто guid, як в красюка в прикладі
-    public ManufacturerId ManufacturerId { get; init; }
-    public CategoryId CategoryId { get; init; }
+    public required Guid ManufacturerId { get; init; }
+    public required Guid CategoryId { get; init; }
     public ComponentCharacteristic ComponentCharacteristic { get; init; }
 }
 
 public class CreateProductCommandHandler(
-    IProductRepository ProductRepository,
-    ICategoryRepository CategoryRepository)
+    IProductRepository productRepository,
+    ICategoryRepository categoryRepository,
+    IManufacturerRepository manufacturerRepository)
     : IRequestHandler<CreateProductCommand, Result<Product, ProductException>>
 {
     public async Task<Result<Product, ProductException>> Handle(
         CreateProductCommand request,
         CancellationToken cancellationToken)
     {
-        var existingCategory = await CategoryRepository.GetById(request.CategoryId, cancellationToken);
-        return await existingCategory.Match<Task<Result<Product, ProductException>>>(
-            async c =>
-            {
-                var existingProduct = await ProductRepository.SearchByName(request.Name, cancellationToken);
-                return await existingProduct.Match(
-                p => Task.FromResult<Result<Product, ProductException>>
-                    (new ProductUnderCurrentCategoryAlreadyExistsException(request.CategoryId)),
-                async () => await CreateEntity(request.Name, request.Price, request.Description, request.StockQuantity,
-                    request.ManufacturerId, c, request.ComponentCharacteristic, cancellationToken));
-            },
-            () => Task.FromResult<Result<Product, ProductException>>(new ProductCategoryNotFoundException(request.CategoryId)));
+        var manufacturerId = new ManufacturerId(request.ManufacturerId);
+        var categoryId = new CategoryId(request.CategoryId);
 
+        var existingCategory = await categoryRepository.GetById(categoryId, cancellationToken);
+        var existingManufacturer = await manufacturerRepository.GetById(manufacturerId, cancellationToken);
+
+
+        return await existingManufacturer.Match<Task<Result<Product, ProductException>>>(
+            async m =>
+            {
+                return await existingCategory.Match(
+                    async c =>
+                    {
+                        var existingProduct =
+                            await productRepository.SearchByName(request.Name, c.Id, cancellationToken);
+                        return await existingProduct.Match(
+                            p => Task.FromResult<Result<Product, ProductException>>
+                                (new ProductUnderCurrentCategoryAlreadyExistsException(categoryId)),
+                            async () => await CreateEntity(request.Name, request.Price, request.Description,
+                                request.StockQuantity,
+                                manufacturerId, c, request.ComponentCharacteristic, cancellationToken));
+                    },
+                    () => Task.FromResult<Result<Product, ProductException>>(
+                        new ProductCategoryNotFoundException(categoryId)));
+            },
+            () => Task.FromResult<Result<Product, ProductException>>(
+                new ProductManufacturerNotFoundException(manufacturerId))
+        );
     }
 
     private async Task<Result<Product, ProductException>> CreateEntity(
         string name,
         decimal price,
-        string description,
+        string? description,
         int stockQuantity,
         ManufacturerId manufacturerId,
         Category category,
@@ -85,12 +99,11 @@ public class CreateProductCommandHandler(
                 characteristic
             );
 
-            return await ProductRepository.Add(entity, cancellationToken);
+            return await productRepository.Add(entity, cancellationToken);
         }
         catch (Exception exception)
         {
             return new ProductUnknownException(ProductId.Empty, exception);
         }
-
     }
 }

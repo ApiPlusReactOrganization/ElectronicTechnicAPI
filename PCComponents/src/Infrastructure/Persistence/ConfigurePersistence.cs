@@ -1,4 +1,6 @@
 using System.Text;
+using Application.Authentications.Services;
+using Application.Authentications.Services.HashPasswordService;
 using Application.Authentications.Services.TokenService;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
@@ -56,6 +58,7 @@ public static class ConfigurePersistence
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
         
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IHashPasswordService, HashPasswordService>();
     }
 
     private static void AddJwtTokenAuth(this IServiceCollection services, WebApplicationBuilder builder)

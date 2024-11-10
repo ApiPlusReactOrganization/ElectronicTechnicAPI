@@ -1,5 +1,6 @@
 ﻿using Application.Authentications.Exceptions;
 using Application.Authentications.Services;
+using Application.Authentications.Services.HashPasswordService;
 using Application.Authentications.Services.TokenService;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
@@ -16,7 +17,10 @@ public class SignUpCommand : IRequest<Result<ServiceResponse, AuthenticationExce
     public required string? Name { get; init; }
 }
 
-public class CreateUserCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService)
+public class CreateUserCommandHandler(
+    IUserRepository userRepository,
+    IJwtTokenService jwtTokenService,
+    IHashPasswordService hashPasswordService)
     : IRequestHandler<SignUpCommand, Result<ServiceResponse, AuthenticationException>>
 {
     public async Task<Result<ServiceResponse, AuthenticationException>> Handle(
@@ -26,8 +30,10 @@ public class CreateUserCommandHandler(IUserRepository userRepository, IJwtTokenS
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
 
         return await existingUser.Match(
-            u => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(new UserByThisEmailAlreadyExistsException(u.Id)),
-            async () => await SignUp(request.Email, request.Password, request.Name, jwtTokenService, cancellationToken));
+            u => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(
+                new UserByThisEmailAlreadyExistsException(u.Id)),
+            async () => await SignUp(request.Email, request.Password, request.Name, jwtTokenService,
+                hashPasswordService, cancellationToken));
     }
 
     private async Task<Result<ServiceResponse, AuthenticationException>> SignUp(
@@ -35,23 +41,22 @@ public class CreateUserCommandHandler(IUserRepository userRepository, IJwtTokenS
         string password,
         string? name,
         IJwtTokenService jwtTokenService,
+        IHashPasswordService hashPasswordService,
         CancellationToken cancellationToken)
     {
         try
         {
-            var entity = User.New(UserId.New(), email, name, HashPasswordService.HashPassword(password));
+            var entity = User.New(UserId.New(), email, name, hashPasswordService.HashPassword(password));
             await userRepository.Create(entity, cancellationToken);
-            
-            string token = jwtTokenService.GenerateToken(await userRepository.AddRole(entity.Id, AuthSettings.UserRole, cancellationToken));
-            return ServiceResponse.GetResponse("You're sign up!", token);
 
+            string token =
+                jwtTokenService.GenerateToken(await userRepository.AddRole(entity.Id, AuthSettings.UserRole,
+                    cancellationToken));
+            return ServiceResponse.GetResponse("You're sign up!", token);
         }
         catch (Exception exception)
         {
             return new AuthenticationUnknownException(UserId.Empty, exception);
         }
     }
-
-
-    
 }

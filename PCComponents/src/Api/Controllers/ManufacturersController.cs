@@ -17,6 +17,7 @@ namespace Api.Controllers;
 [ApiController]
 public class ManufacturersController(ISender sender, IManufacturerQueries manufacturerQueries) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ManufacturerDto>>> GetAll(CancellationToken cancellationToken)
     {
