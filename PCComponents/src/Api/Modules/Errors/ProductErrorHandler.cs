@@ -10,7 +10,7 @@ public static class ProductErrorHandler
         return new ObjectResult(exception.Message)
         {
             StatusCode = exception switch
-            {   ProductCategoryNotFoundException or ProductManufacturerNotFoundException 
+            {   ProductCategoryNotFoundException or ProductManufacturerNotFoundException or ProductNotFoundException
                     => StatusCodes.Status404NotFound,
                 ProductUnderCurrentCategoryAlreadyExistsException 
                     => StatusCodes.Status409Conflict,
