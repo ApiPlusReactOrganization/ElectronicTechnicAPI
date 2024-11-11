@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Domain.Categories;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -14,13 +15,14 @@ public class ProductRepository : IProductRepository, IProductQueries
     {
         _context = context;
     }
-    
+
     public async Task<IReadOnlyList<Product>> GetAll(CancellationToken cancellationToken)
     {
         return await _context.Products
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+
     public async Task<Option<Product>> GetById(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Products
@@ -28,11 +30,13 @@ public class ProductRepository : IProductRepository, IProductQueries
 
         return entity == null ? Option.None<Product>() : Option.Some(entity);
     }
-    public async Task<Option<Product>> SearchByName(string name, CancellationToken cancellationToken)
+
+    public async Task<Option<Product>> SearchByName(string productName, CategoryId categoryId,
+        CancellationToken cancellationToken)
     {
         var entity = await _context.Products
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Name == name, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Name == productName && x.CategoryId == categoryId, cancellationToken);
 
         return entity == null ? Option.None<Product>() : Option.Some(entity);
     }

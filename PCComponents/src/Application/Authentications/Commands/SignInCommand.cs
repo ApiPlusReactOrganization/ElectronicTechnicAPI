@@ -1,5 +1,6 @@
 ﻿using Application.Authentications.Exceptions;
 using Application.Authentications.Services;
+using Application.Authentications.Services.HashPasswordService;
 using Application.Authentications.Services.TokenService;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
@@ -14,7 +15,7 @@ public class SignInCommand: IRequest<Result<ServiceResponse, AuthenticationExcep
     public string Password { get; init; }
 }
 
-public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService) 
+public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService, IHashPasswordService hashPasswordService) 
     : IRequestHandler<SignInCommand, Result<ServiceResponse, AuthenticationException>>
 {
     public async Task<Result<ServiceResponse, AuthenticationException>> Handle(
@@ -24,18 +25,19 @@ public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenServi
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
         
         return await existingUser.Match(
-            u => Task.FromResult(SignIn(u, request.Password, jwtTokenService, cancellationToken)),
+            u => Task.FromResult(SignIn(u, request.Password, jwtTokenService, hashPasswordService, cancellationToken)),
             () => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(new EmailOrPasswordAreIncorrect()));
     }
     private Result<ServiceResponse, AuthenticationException> SignIn(
          User user,
          string password,
          IJwtTokenService jwtTokenService,
+         IHashPasswordService hashPasswordService,
          CancellationToken cancellationToken)
      {
          string storedHash = user.PasswordHash;
 
-         if (!HashPasswordService.VerifyPassword(password, storedHash))
+         if (!hashPasswordService.VerifyPassword(password, storedHash))
          {
              return new EmailOrPasswordAreIncorrect();
          }

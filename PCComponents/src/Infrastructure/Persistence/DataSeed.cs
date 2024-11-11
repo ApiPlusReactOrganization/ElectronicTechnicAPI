@@ -1,4 +1,5 @@
 ﻿using Application.Authentications.Services;
+using Application.Authentications.Services.HashPasswordService;
 using Domain;
 using Domain.Authentications;
 using Domain.Authentications.Roles;
@@ -14,12 +15,12 @@ namespace Infrastructure.Persistence;
 
 public static class DataSeed
 {
-    public static void Seed(this ModelBuilder modelBuilder)
+    public static void Seed(ModelBuilder modelBuilder, IHashPasswordService hashPasswordService)
     {
         _seedCategories(modelBuilder);
         _seedManufactures(modelBuilder);
         _seedRoles(modelBuilder);
-        _seedUsers(modelBuilder);
+        _seedUsers(modelBuilder, hashPasswordService);
     }
 
     public static void _seedCategories(ModelBuilder modelBuilder)
@@ -61,26 +62,21 @@ public static class DataSeed
             .HasData(roles);
     }
 
-    public static void _seedUsers(ModelBuilder modelBuilder)
+    public static void _seedUsers(ModelBuilder modelBuilder, IHashPasswordService hashPasswordService)
     {
         var users = new List<User>();
     
-        // Define roles
         var adminRole = Role.New(AuthSettings.AdminRole);
         var userRole = Role.New(AuthSettings.UserRole);
     
-        // Create users
-        var admin = User.New(UserId.New(), "admin@example.com", "admin", HashPasswordService.HashPassword("123456"));
-        var user = User.New(UserId.New(), "user@example.com", "user", HashPasswordService.HashPassword("123456"));
+        var admin = User.New(UserId.New(), "admin@example.com", "admin", hashPasswordService.HashPassword("123456"));
+        var user = User.New(UserId.New(), "user@example.com", "user", hashPasswordService.HashPassword("123456"));
 
-        // Add users to the list
         users.Add(admin);
         users.Add(user);
 
-        // Seed users
         modelBuilder.Entity<User>().HasData(users);
 
-        // Seed user roles
         modelBuilder.Entity<User>()
             .HasMany(u => u.Roles)
             .WithMany(r => r.Users)
@@ -89,5 +85,4 @@ public static class DataSeed
                 new { UsersId = user.Id, RolesId = userRole.Id }
             ));
     }
-
 }

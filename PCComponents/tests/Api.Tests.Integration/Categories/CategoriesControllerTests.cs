@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Api.Dtos;
 using Domain.Categories;
@@ -10,9 +11,19 @@ using Xunit;
 
 namespace Api.Tests.Integration.Categories
 {
-    public class CategoriesControllerTests(IntegrationTestWebFactory factory)
-        : BaseIntegrationTest(factory), IAsyncLifetime
+    public class CategoriesControllerTests
+        : BaseIntegrationTest, IAsyncLifetime
     {
+        private IntegrationTestWebFactory factory {get; set;}
+
+        public CategoriesControllerTests(IntegrationTestWebFactory factory) : base(factory)
+        {
+            this.factory = factory;
+        
+            var token = GenerateJwtToken();
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+        
         private readonly Category _mainCategory = CategoriesData.MainCategory;
 
         [Fact]

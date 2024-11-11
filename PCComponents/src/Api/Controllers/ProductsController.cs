@@ -3,8 +3,6 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Products.Commands;
 using Domain.Authentications;
-using Domain.Categories;
-using Domain.Manufacturers;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -18,6 +16,7 @@ namespace Api.Controllers;
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries ProductQueries) : ControllerBase
 {
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(CancellationToken cancellationToken)
     {
@@ -31,15 +30,14 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
         [FromBody] ProductDto request,
         CancellationToken cancellationToken)
     {
-        //todo, id переробити в просто guid, як в красюка в прикладі
         var input = new CreateProductCommand
         {
             Name = request.Name,
             Price = request.Price,
             Description = request.Description,
             StockQuantity = request.StockQuantity,
-            ManufacturerId = new ManufacturerId(request.ManufacturerId.Value),
-            CategoryId = new CategoryId(request.CategoryId.Value),
+            ManufacturerId = request.ManufacturerId!.Value,
+            CategoryId = request.CategoryId!.Value,
             ComponentCharacteristic = request.ComponentCharacteristic,
         };
 

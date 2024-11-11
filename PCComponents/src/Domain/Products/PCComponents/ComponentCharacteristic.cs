@@ -56,7 +56,7 @@
         public required int Threads { get; init; }
         public required decimal BaseClock { get; init; } // GHz
         public required decimal BoostClock { get; init; } // GHz
-        public required string Socket { get; set; }
+        public required string Socket { get; init; }
     }
 
     public record GPU

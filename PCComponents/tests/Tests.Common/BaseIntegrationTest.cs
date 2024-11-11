@@ -1,6 +1,9 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text;
 using System.Text.Encodings.Web;
+using Domain.Authentications;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,6 +11,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Xunit;
 
 namespace Tests.Common;
@@ -46,6 +50,26 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebFact
         Context.ChangeTracker.Clear();
 
         return result;
+    }
+    
+    protected string GenerateJwtToken()
+    {
+        var securityKey =
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes("sItTJw6q2Pc7uFScU3JLrUF4S3S6krpgGhZeT9ZyWd2HA5vDNcyPLvo7BSGTeFYQ"));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: "oa.edu.ua",
+            audience: "oa.edu.ua",
+            claims: new List<Claim>
+            {
+                new Claim("id", Guid.NewGuid().ToString()),
+                new Claim("role", AuthSettings.AdminRole),
+            },
+            expires: DateTime.Now.AddMinutes(30),
+            signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }
 
