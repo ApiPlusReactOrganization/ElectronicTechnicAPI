@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Api.Dtos;
 using Domain.Manufacturers;
@@ -13,38 +14,31 @@ namespace Api.Tests.Integration.Manufacturers;
 public class ManufacturersControllerTests
     : BaseIntegrationTest, IAsyncLifetime
 {
-    private IntegrationTestWebFactory factory { get; set; }
-    private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
+    private IntegrationTestWebFactory factory {get; set;}
 
-    private readonly string token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI4ODQzZjI3LWVmNmYtNGYyZC1hOThkLWZmMmQ2NjI2ZjNkZiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTczMTA3NTc2MywiaXNzIjoib2EuZWR1LnVhIiwiYXVkIjoib2EuZWR1LnVhIn0.nWzTP3v6b6BKrRe_wjGid4XrKJTiQdUbBhLfpXA_GEM";
     public ManufacturersControllerTests(IntegrationTestWebFactory factory) : base(factory)
     {
         this.factory = factory;
-        Client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue(
-                "Bearer", token);
+        
+        var token = GenerateJwtToken();
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
+
+    private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
 
     [Fact]
     public async Task ShouldCreateManufacturer()
     {
         // Arrange
-        Client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue(
-                "Bearer", token);
-
         var facultyName = "From Test Manufacturer";
         var request = new ManufacturerDto(
             Id: null,
             Name: facultyName);
 
         // Act
-
         var response = await Client.PostAsJsonAsync("manufacturers", request);
 
         // Assert
-
         response.IsSuccessStatusCode.Should().BeTrue();
 
         var manufacturerFromResponse = await response.ToResponseModel<ManufacturerDto>();
@@ -53,9 +47,9 @@ public class ManufacturersControllerTests
         var manufacturerFromDataBase = await Context.Manufacturers.FirstOrDefaultAsync(x => x.Id == manufacturerId);
 
         manufacturerFromDataBase.Should().NotBeNull();
-
         manufacturerFromDataBase!.Name.Should().Be(facultyName);
     }
+
 
     [Fact]
     public async Task ShouldUpdateManufacturer()

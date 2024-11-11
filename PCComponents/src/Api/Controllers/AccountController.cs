@@ -13,7 +13,7 @@ namespace Api.Controllers;
 public class AccountController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
     [HttpPost("signup")]
-    public async Task<ActionResult<SignUpDto>> SignUpAsync(
+    public async Task<ActionResult<ServiceResponse>> SignUpAsync(
         [FromBody] SignUpDto request,
         CancellationToken cancellationToken)
     {
@@ -26,8 +26,8 @@ public class AccountController(ISender sender, IUserQueries userQueries) : Contr
         
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<SignUpDto>>(
-            f => SignUpDto.FromDomainModel(f),
+        return result.Match<ActionResult<ServiceResponse>>(
+            f => f,
             e => e.ToObjectResult());
     }
     
