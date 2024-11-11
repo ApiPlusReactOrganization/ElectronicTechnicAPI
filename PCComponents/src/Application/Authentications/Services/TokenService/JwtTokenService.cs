@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Domain.Authentications;
 using Domain.Authentications.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,14 +24,27 @@ namespace Application.Authentications.Services.TokenService
             var keyString = _configuration["AuthSettings:key"];
             var symmetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString!));
 
-            var claims = new Claim[]
+            var claims = new List<Claim>
             {
                 new Claim("id", user.Id.Value.ToString()),
                 new Claim("email", user.Email!),
-                new Claim("name", user.Name ?? "N/A"),
-                new Claim("role", user.Roles.Count()! > 0 ? string.Join(',', user.Roles.Select(x=>x.Name)) : "N/A")
+                new Claim("name", user.Name ?? "N/A")
             };
 
+            if (user.Roles.Count() > 0)
+            {
+                var roleClaims = user.Roles.Select(ur => new Claim(
+                    "role",
+                    ur.Name
+                )).ToArray();
+
+                claims.AddRange(roleClaims);
+            }
+            else
+            {
+                claims.Add(new Claim("role", AuthSettings.UserRole));
+            }
+            
             var token = new JwtSecurityToken(
                 issuer: issuer,
                 audience: audience,

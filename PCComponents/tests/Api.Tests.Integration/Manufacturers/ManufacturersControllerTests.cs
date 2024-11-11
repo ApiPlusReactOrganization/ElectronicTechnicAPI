@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Api.Dtos;
 using Domain.Manufacturers;
@@ -10,39 +11,45 @@ using Xunit;
 
 namespace Api.Tests.Integration.Manufacturers;
 
-public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
-    : BaseIntegrationTest(factory), IAsyncLifetime
+public class ManufacturersControllerTests
+    : BaseIntegrationTest, IAsyncLifetime
 {
+    private IntegrationTestWebFactory factory {get; set;}
+
+    public ManufacturersControllerTests(IntegrationTestWebFactory factory) : base(factory)
+    {
+        this.factory = factory;
+        
+        var token = GenerateJwtToken();
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    }
+
     private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
-    
+
     [Fact]
     public async Task ShouldCreateManufacturer()
     {
         // Arrange
-        
         var facultyName = "From Test Manufacturer";
         var request = new ManufacturerDto(
             Id: null,
             Name: facultyName);
 
         // Act
-        
         var response = await Client.PostAsJsonAsync("manufacturers", request);
 
         // Assert
-        
         response.IsSuccessStatusCode.Should().BeTrue();
 
         var manufacturerFromResponse = await response.ToResponseModel<ManufacturerDto>();
         var manufacturerId = new ManufacturerId(manufacturerFromResponse.Id!.Value);
 
-        var manufacturerFromDataBase = await Context.Manufacturers.
-            FirstOrDefaultAsync(x => x.Id == manufacturerId);
-        
-        manufacturerFromDataBase.Should().NotBeNull();
+        var manufacturerFromDataBase = await Context.Manufacturers.FirstOrDefaultAsync(x => x.Id == manufacturerId);
 
+        manufacturerFromDataBase.Should().NotBeNull();
         manufacturerFromDataBase!.Name.Should().Be(facultyName);
     }
+
 
     [Fact]
     public async Task ShouldUpdateManufacturer()
@@ -100,7 +107,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     [Fact]
     public async Task ShouldDeleteManufacturer()
     {
@@ -111,7 +118,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             .FirstOrDefaultAsync(x => x.Id == manufacturerId);
 
         existingManufacturer.Should().NotBeNull();
-        
+
         // Act
         var response = await Client.DeleteAsync($"manufacturers/{manufacturerId.Value}");
 
@@ -122,7 +129,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             .FirstOrDefaultAsync(x => x.Id == manufacturerId);
         manufacturerFromDataBase.Should().BeNull();
     }
-    
+
     public async Task InitializeAsync()
     {
         await Context.Manufacturers.AddAsync(_mainManufacturer);
