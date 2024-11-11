@@ -12,7 +12,7 @@ namespace Api.Controllers;
 
 [Route("[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
+[Authorize(Roles = $"{AuthSettings.AdminRole}, {AuthSettings.UserRole}")]
 [ApiController]
 public class UserController(ISender sender, IUserQueries userQueries) : ControllerBase
 {

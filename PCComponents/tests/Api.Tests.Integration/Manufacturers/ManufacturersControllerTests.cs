@@ -11,19 +11,9 @@ using Xunit;
 
 namespace Api.Tests.Integration.Manufacturers;
 
-public class ManufacturersControllerTests
-    : BaseIntegrationTest, IAsyncLifetime
+public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
+    : BaseIntegrationTest(factory), IAsyncLifetime
 {
-    private IntegrationTestWebFactory factory {get; set;}
-
-    public ManufacturersControllerTests(IntegrationTestWebFactory factory) : base(factory)
-    {
-        this.factory = factory;
-        
-        var token = GenerateJwtToken();
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    }
-
     private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
 
     [Fact]
