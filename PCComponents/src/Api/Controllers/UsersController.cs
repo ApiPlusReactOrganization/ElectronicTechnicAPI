@@ -14,7 +14,7 @@ namespace Api.Controllers;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
-public class UserController(ISender sender, IUserQueries userQueries) : ControllerBase
+public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll(CancellationToken cancellationToken)
