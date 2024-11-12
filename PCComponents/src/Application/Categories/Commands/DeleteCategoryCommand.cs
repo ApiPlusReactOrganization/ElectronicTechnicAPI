@@ -12,7 +12,8 @@ public record DeleteCategoryCommand : IRequest<Result<Category, CategoryExceptio
 }
 
 public class DeleteCategoryCommandHandler(
-    ICategoryRepository categoryRepository)
+    ICategoryRepository categoryRepository,
+    IProductRepository productRepository)
     : IRequestHandler<DeleteCategoryCommand, Result<Category, CategoryException>>
 {
     public async Task<Result<Category, CategoryException>> Handle(
@@ -34,6 +35,13 @@ public class DeleteCategoryCommandHandler(
     {
         try
         {
+            var hasRelatedProducts = await productRepository.HasProductsInCategoryAsync(category.Id, cancellationToken);
+
+            if (hasRelatedProducts)
+            {
+                return new CategoryHasRelatedProductsException(category.Id);
+            }
+
             return await categoryRepository.Delete(category, cancellationToken);
         }
         catch (Exception exception)
@@ -41,4 +49,5 @@ public class DeleteCategoryCommandHandler(
             return new CategoryUnknownException(category.Id, exception);
         }
     }
+
 }

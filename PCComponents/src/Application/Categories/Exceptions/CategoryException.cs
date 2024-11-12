@@ -7,11 +7,15 @@ public abstract class CategoryException(CategoryId id, string message, Exception
 {
     public CategoryId CategoryId { get; } = id;
 }
-public class CategoryNotFoundException(CategoryId id) 
+
+public class CategoryNotFoundException(CategoryId id)
     : CategoryException(id, $"Category under id: {id} not found");
 
-public class CategoryAlreadyExistsException(CategoryId id) 
+public class CategoryAlreadyExistsException(CategoryId id)
     : CategoryException(id, $"Category already exists: {id}");
 
 public class CategoryUnknownException(CategoryId id, Exception innerException)
     : CategoryException(id, $"Unknown exception for the category under id: {id}", innerException);
+
+public class CategoryHasRelatedProductsException(CategoryId id)
+    : CategoryException(id, $"Category with ID {id} cannot be deleted because it has related products.");

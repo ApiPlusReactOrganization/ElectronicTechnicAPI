@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("categories")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
+/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]*/
 [ApiController]
 public class CategoriesController(ISender sender, ICategoryQueries categoryQueries) : ControllerBase
 {
@@ -56,13 +56,15 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
     }
     
     [HttpPut]
+    [AllowAnonymous]
     public async Task<ActionResult<CategoryDto>> Update(
         [FromBody] CategoryDto request,
+        [FromRoute] Guid categoryId,
         CancellationToken cancellationToken)
     {
         var input = new UpdateCategoryCommand()
         {
-            CategoryId = request.Id!.Value,
+            CategoryId = categoryId,
             Name = request.Name
         };
 

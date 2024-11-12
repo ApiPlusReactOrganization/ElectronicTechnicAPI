@@ -1,4 +1,5 @@
 ﻿using Application.Products.Exceptions;
+using Domain.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Modules.Errors;
@@ -10,11 +11,17 @@ public static class ProductErrorHandler
         return new ObjectResult(exception.Message)
         {
             StatusCode = exception switch
-            {   ProductCategoryNotFoundException or ProductManufacturerNotFoundException or ProductNotFoundException
+            {
+                ProductCategoryNotFoundException
+                    or ProductManufacturerNotFoundException
+                    or ProductNotFoundException
+                    or ProductInvalidCategoryException
                     => StatusCodes.Status404NotFound,
-                ProductUnderCurrentCategoryAlreadyExistsException 
+
+                ProductUnderCurrentCategoryAlreadyExistsException
                     => StatusCodes.Status409Conflict,
-                ProductUnknownException 
+
+                ProductUnknownException
                     => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Product error handler does not implemented")
             }

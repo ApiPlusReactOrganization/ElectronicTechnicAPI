@@ -1,4 +1,5 @@
-﻿using Application.Products.ComponentCharacteristics;
+﻿using Application.Common.Interfaces.Repositories;
+using Application.Products.ComponentCharacteristics;
 using Domain.Products;
 using FluentValidation;
 using FluentValidation.Validators;
@@ -7,7 +8,7 @@ namespace Application.Products.Commands;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    public CreateProductCommandValidator()
+    public CreateProductCommandValidator(IProductRepository productRepository)
     {
         RuleFor(x => x.Name)
             .MaximumLength(255)
@@ -41,25 +42,25 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .LessThanOrEqualTo(1000)
             .WithMessage("Stock quantity must be between 0 and 1000.");
         
-        When(x => x.ComponentCharacteristic?.Case != null, () =>
+        When(x => x.ComponentCharacteristic.Case != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Case)
                 .SetValidator(new CreateCaseValidator());
         });
         
-        When(x => x.ComponentCharacteristic?.Cpu != null, () =>
+        When(x => x.ComponentCharacteristic.Cpu != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Cpu)
                 .SetValidator(new CreateCpuValidator());
         });
         
-        When(x => x.ComponentCharacteristic?.Gpu != null, () =>
+        When(x => x.ComponentCharacteristic.Gpu != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Gpu)
                 .SetValidator(new CreateGpuValidator());
         });
 
-        When(x => x.ComponentCharacteristic?.Motherboard != null, () =>
+        When(x => x.ComponentCharacteristic.Motherboard != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Motherboard)
                 .SetValidator(new CreateMotherboardValidator());
@@ -94,5 +95,8 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             RuleFor(x => x.ComponentCharacteristic.Ssd)
                 .SetValidator(new CreateSsdValidator());
         });
+        
+        
+
     }
 }

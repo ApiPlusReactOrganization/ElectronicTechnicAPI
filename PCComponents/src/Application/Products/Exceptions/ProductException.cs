@@ -24,3 +24,8 @@ public class ProductManufacturerNotFoundException(ManufacturerId id)
 
 public class ProductUnknownException(ProductId id, Exception innerException)
     : ProductException(id, $"Unknown exception for the product under id: {id}", innerException);
+    
+public class ProductInvalidCategoryException(CategoryId id, string categoryName)
+    : ProductException(
+        ProductId.Empty, 
+        $"Selected characteristic does not match the category: {categoryName} ID: {id}");
