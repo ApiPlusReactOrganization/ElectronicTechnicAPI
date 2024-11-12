@@ -1,8 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
-using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -67,9 +65,9 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         return entity;
     }
 
-    public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken, bool includes = false)
+    public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken, bool asNoTracking = false)
     {
-        if (includes)
+        if (asNoTracking)
         {
             return await _context.Users
                 .Include(u => u.Roles)
@@ -78,6 +76,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
 
         return await _context.Users
             .AsNoTracking()
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(predicate, cancellationToken);
     }
 }

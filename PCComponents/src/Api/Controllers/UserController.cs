@@ -12,7 +12,7 @@ namespace Api.Controllers;
 
 [Route("[controller]")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = $"{AuthSettings.AdminRole}, {AuthSettings.UserRole}")]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class UserController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
@@ -23,13 +23,14 @@ public class UserController(ISender sender, IUserQueries userQueries) : Controll
 
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
-    [HttpDelete("{UserId:guid}")]
-    public async Task<ActionResult<UserDto>> 
-        Delete([FromRoute] Guid UserId, CancellationToken cancellationToken)
+
+    [HttpDelete("{userId:guid}")]
+    public async Task<ActionResult<UserDto>>
+        Delete([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
         var input = new DeleteUserCommand()
         {
-            UserId = UserId
+            UserId = userId
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -38,4 +39,22 @@ public class UserController(ISender sender, IUserQueries userQueries) : Controll
             c => UserDto.FromDomainModel(c),
             e => e.ToObjectResult());
     }
+
+    [HttpPost("UpdateRoles/{userId}")]
+    public async Task<ActionResult<UserDto>>
+        UpdateRoles([FromRoute] Guid userId, [FromBody] List<RoleDto> roles, CancellationToken cancellationToken)
+    {
+        var input = new ChangeRolesForUserCommand()
+        {
+            UserId = userId,
+            Roles = roles.Select(x => x.name.ToString()).ToList()
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<UserDto>>(
+            c => UserDto.FromDomainModel(c),
+            e => e.ToObjectResult());
+    }
+
 }
