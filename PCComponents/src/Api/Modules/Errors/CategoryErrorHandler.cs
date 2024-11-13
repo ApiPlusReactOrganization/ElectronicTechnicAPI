@@ -11,8 +11,9 @@ public static class CategoryErrorHandler
         {
             StatusCode = exception switch
             {
-                CategoryNotFoundException _ => StatusCodes.Status404NotFound,
-                CategoryAlreadyExistsException => StatusCodes.Status409Conflict,
+                CategoryNotFoundException  => StatusCodes.Status404NotFound,
+                CategoryAlreadyExistsException or CategoryHasRelatedProductsException 
+                    => StatusCodes.Status409Conflict,
                 CategoryUnknownException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Category error handler does not implemented")
             }

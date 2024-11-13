@@ -1,26 +1,21 @@
-﻿using Domain.Categories;
-using Domain.Manufacturers;
 using Domain.Products;
 using Domain.Products.PCComponents;
 
-namespace Api.Dtos;
+namespace Api.Dtos.Products;
 
-public record ProductDto
-(
-    Guid? Id,
+public record CreateProductDto(
     string Name,
-    decimal Price ,
+    decimal Price,
     string? Description,
     int StockQuantity,
-    Guid? ManufacturerId,
-    Guid? CategoryId,
+    Guid ManufacturerId,
+    Guid CategoryId,
     ComponentCharacteristic ComponentCharacteristic
 )
 {
-    public static ProductDto FromDomainModel(Product product)
+    public static CreateProductDto FromDomainModel(Product product)
     {
-        return new ProductDto(
-            product.Id.Value,
+        return new CreateProductDto(
             product.Name,
             product.Price,
             product.Description,

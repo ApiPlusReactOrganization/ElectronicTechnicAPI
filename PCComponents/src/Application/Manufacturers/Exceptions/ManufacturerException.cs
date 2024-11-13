@@ -17,3 +17,6 @@ public class ManufacturerAlreadyExistsException(ManufacturerId id)
 
 public class ManufacturerUnknownException(ManufacturerId id, Exception innerException)
     : ManufacturerException(id, $"Unknown exception for the Manufacturer under id: {id}", innerException);
+    
+public class ManufacturerHasRelatedProductsException(ManufacturerId id)
+    : ManufacturerException(id, $"Manufacturer with ID {id} cannot be deleted because it has related products.");

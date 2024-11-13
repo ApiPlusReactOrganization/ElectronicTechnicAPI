@@ -46,9 +46,11 @@ public class CreateProductCommandHandler(
                     {
                         var existingProduct =
                             await productRepository.SearchByName(request.Name, c.Id, cancellationToken);
+                        
                         return await existingProduct.Match(
                             p => Task.FromResult<Result<Product, ProductException>>
                                 (new ProductUnderCurrentCategoryAlreadyExistsException(categoryId)),
+                            
                             async () => await CreateEntity(request.Name, request.Price, request.Description,
                                 request.StockQuantity,
                                 manufacturerId, c, request.ComponentCharacteristic, cancellationToken));
@@ -64,7 +66,7 @@ public class CreateProductCommandHandler(
     private async Task<Result<Product, ProductException>> CreateEntity(
         string name,
         decimal price,
-        string? description,
+        string description,
         int stockQuantity,
         ManufacturerId manufacturerId,
         Category category,
@@ -73,18 +75,37 @@ public class CreateProductCommandHandler(
     {
         try
         {
-            //maybe with foreach do the same so we could add new category dynamic
+            var isValidCategory = category.Name switch
+            {
+                PCComponentsNames.Case => componentCharacteristic.Case != null,
+                PCComponentsNames.CPU => componentCharacteristic.Cpu != null,
+                PCComponentsNames.GPU => componentCharacteristic.Gpu != null,
+                PCComponentsNames.Motherboard => componentCharacteristic.Motherboard != null,
+                PCComponentsNames.RAM => componentCharacteristic.Ram != null,
+                PCComponentsNames.PSU => componentCharacteristic.Psu != null,
+                PCComponentsNames.Cooler => componentCharacteristic.Cooler != null,
+                PCComponentsNames.HDD => componentCharacteristic.Hdd != null,
+                PCComponentsNames.SSD => componentCharacteristic.Ssd != null,
+                _ => false
+            };
+
+            if (!isValidCategory)
+            {
+                return new ProductInvalidCategoryException(category.Id, category.Name);
+            }
+
             ComponentCharacteristic characteristic = category.Name switch
             {
-                PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case),
-                PCComponentsNames.CPU => ComponentCharacteristic.NewCpu(componentCharacteristic.Cpu),
-                PCComponentsNames.GPU => ComponentCharacteristic.NewGpu(componentCharacteristic.Gpu),
-                PCComponentsNames.Motherboard => ComponentCharacteristic.NewMotherboard(componentCharacteristic.Motherboard),
-                PCComponentsNames.RAM => ComponentCharacteristic.NewRam(componentCharacteristic.Ram),
-                PCComponentsNames.PSU => ComponentCharacteristic.NewPsu(componentCharacteristic.Psu),
-                PCComponentsNames.Cooler => ComponentCharacteristic.NewCooler(componentCharacteristic.Cooler),
-                PCComponentsNames.HDD => ComponentCharacteristic.NewHdd(componentCharacteristic.Hdd),
-                PCComponentsNames.SSD => ComponentCharacteristic.NewSSD(componentCharacteristic.Ssd),
+                PCComponentsNames.Case => ComponentCharacteristic.NewCase(componentCharacteristic.Case!),
+                PCComponentsNames.CPU => ComponentCharacteristic.NewCpu(componentCharacteristic.Cpu!),
+                PCComponentsNames.GPU => ComponentCharacteristic.NewGpu(componentCharacteristic.Gpu!),
+                PCComponentsNames.Motherboard => ComponentCharacteristic.NewMotherboard(componentCharacteristic
+                    .Motherboard!),
+                PCComponentsNames.RAM => ComponentCharacteristic.NewRam(componentCharacteristic.Ram!),
+                PCComponentsNames.PSU => ComponentCharacteristic.NewPsu(componentCharacteristic.Psu!),
+                PCComponentsNames.Cooler => ComponentCharacteristic.NewCooler(componentCharacteristic.Cooler!),
+                PCComponentsNames.HDD => ComponentCharacteristic.NewHdd(componentCharacteristic.Hdd!),
+                PCComponentsNames.SSD => ComponentCharacteristic.NewSSD(componentCharacteristic.Ssd!),
                 _ => throw new ArgumentException("Invalid component type")
             };
 

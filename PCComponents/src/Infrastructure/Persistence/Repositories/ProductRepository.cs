@@ -1,7 +1,9 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Domain.Categories;
+using Domain.Manufacturers;
 using Domain.Products;
+using Domain.Products.PCComponents;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
@@ -19,6 +21,8 @@ public class ProductRepository : IProductRepository, IProductQueries
     public async Task<IReadOnlyList<Product>> GetAll(CancellationToken cancellationToken)
     {
         return await _context.Products
+            .Include(p => p.Manufacturer)
+            .Include(p => p.Category)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
@@ -26,6 +30,8 @@ public class ProductRepository : IProductRepository, IProductQueries
     public async Task<Option<Product>> GetById(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Products
+            .Include(p => p.Manufacturer)
+            .Include(p => p.Category)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Product>() : Option.Some(entity);
@@ -60,5 +66,41 @@ public class ProductRepository : IProductRepository, IProductQueries
         _context.Products.Remove(product);
         await _context.SaveChangesAsync(cancellationToken);
         return product;
+    }
+
+    public async Task<bool> HasProductsInCategoryAsync(CategoryId categoryId, CancellationToken cancellationToken)
+    {
+        return await _context.Products
+            .AnyAsync(p => p.CategoryId == categoryId, cancellationToken);
+    }
+
+    public async Task<bool> HasProductsInManufacturerAsync(ManufacturerId manufacturerId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Products
+            .AnyAsync(p => p.ManufacturerId == manufacturerId, cancellationToken);
+    }
+
+    public async Task<bool> ExistsWithSameNameAndFieldsAsync(
+        string name,
+        CategoryId categoryId,
+        ManufacturerId manufacturerId,
+        ComponentCharacteristic characteristic,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Products
+            .AnyAsync(p => p.Name == name
+                           && p.CategoryId == categoryId
+                           && p.ManufacturerId == manufacturerId
+                           && p.ComponentCharacteristic.Case == characteristic.Case
+                           && p.ComponentCharacteristic.Cpu == characteristic.Cpu
+                           && p.ComponentCharacteristic.Gpu == characteristic.Gpu
+                           && p.ComponentCharacteristic.Motherboard == characteristic.Motherboard
+                           && p.ComponentCharacteristic.Psu == characteristic.Psu
+                           && p.ComponentCharacteristic.Ram == characteristic.Ram
+                           && p.ComponentCharacteristic.Cooler == characteristic.Cooler
+                           && p.ComponentCharacteristic.Hdd == characteristic.Hdd
+                           && p.ComponentCharacteristic.Ssd == characteristic.Ssd,
+                cancellationToken);
     }
 }
