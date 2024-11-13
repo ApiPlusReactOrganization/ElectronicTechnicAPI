@@ -10,7 +10,7 @@ namespace Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class AccountController(ISender sender, IUserQueries userQueries) : ControllerBase
+public class AccountController(ISender sender) : ControllerBase
 {
     [HttpPost("signup")]
     public async Task<ActionResult<ServiceResponse>> SignUpAsync(

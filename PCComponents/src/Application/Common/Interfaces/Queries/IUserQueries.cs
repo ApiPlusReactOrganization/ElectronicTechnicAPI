@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Domain.Authentications.Users;
+﻿using Domain.Authentications.Users;
 using Optional;
 
 namespace Application.Common.Interfaces.Queries;

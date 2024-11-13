@@ -57,6 +57,9 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
         
+        services.AddScoped<RoleRepository>();
+        services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
+        
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IHashPasswordService, HashPasswordService>();
     }
