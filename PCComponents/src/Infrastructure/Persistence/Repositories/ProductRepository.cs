@@ -67,20 +67,7 @@ public class ProductRepository : IProductRepository, IProductQueries
         await _context.SaveChangesAsync(cancellationToken);
         return product;
     }
-
-    public async Task<bool> HasProductsInCategoryAsync(CategoryId categoryId, CancellationToken cancellationToken)
-    {
-        return await _context.Products
-            .AnyAsync(p => p.CategoryId == categoryId, cancellationToken);
-    }
-
-    public async Task<bool> HasProductsInManufacturerAsync(ManufacturerId manufacturerId,
-        CancellationToken cancellationToken)
-    {
-        return await _context.Products
-            .AnyAsync(p => p.ManufacturerId == manufacturerId, cancellationToken);
-    }
-
+    
     public async Task<bool> ExistsWithSameNameAndFieldsAsync(
         string name,
         CategoryId categoryId,

@@ -32,16 +32,13 @@ public class CreateUserCommandHandler(
         return await existingUser.Match(
             u => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(
                 new UserByThisEmailAlreadyExistsException(u.Id)),
-            async () => await SignUp(request.Email, request.Password, request.Name, jwtTokenService,
-                hashPasswordService, cancellationToken));
+            async () => await SignUp(request.Email, request.Password, request.Name, cancellationToken));
     }
 
     private async Task<Result<ServiceResponse, AuthenticationException>> SignUp(
         string email,
         string password,
         string? name,
-        IJwtTokenService jwtTokenService,
-        IHashPasswordService hashPasswordService,
         CancellationToken cancellationToken)
     {
         try

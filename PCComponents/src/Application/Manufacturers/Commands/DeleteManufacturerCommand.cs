@@ -3,6 +3,8 @@ using Application.Common.Interfaces.Repositories;
 using Application.Manufacturers.Exceptions;
 using Domain.Manufacturers;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Application.Manufacturers.Commands;
 
@@ -12,8 +14,7 @@ public record DeleteManufacturerCommand : IRequest<Result<Manufacturer, Manufact
 }
 
 public class DeleteManufacturerCommandHandler(
-    IManufacturerRepository manufacturerRepository,
-    IProductRepository productRepository)
+    IManufacturerRepository manufacturerRepository)
     : IRequestHandler<DeleteManufacturerCommand, Result<Manufacturer, ManufacturerException>>
 {
     public async Task<Result<Manufacturer, ManufacturerException>> Handle(
@@ -35,15 +36,11 @@ public class DeleteManufacturerCommandHandler(
     {
         try
         {
-            var hasRelatedProducts = await productRepository
-                .HasProductsInManufacturerAsync(manufacturer.Id, cancellationToken);
-
-            if (hasRelatedProducts)
-            {
-                return new ManufacturerHasRelatedProductsException(manufacturer.Id);
-            }
-            
             return await manufacturerRepository.Delete(manufacturer, cancellationToken);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23503")
+        {
+            return new ManufacturerHasRelatedProductsException(manufacturer.Id);
         }
         catch (Exception exception)
         {

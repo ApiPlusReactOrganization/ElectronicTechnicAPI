@@ -3,6 +3,8 @@ using Application.Common;
 using Application.Common.Interfaces.Repositories;
 using Domain.Categories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Application.Categories.Commands;
 
@@ -12,8 +14,7 @@ public record DeleteCategoryCommand : IRequest<Result<Category, CategoryExceptio
 }
 
 public class DeleteCategoryCommandHandler(
-    ICategoryRepository categoryRepository,
-    IProductRepository productRepository)
+    ICategoryRepository categoryRepository)
     : IRequestHandler<DeleteCategoryCommand, Result<Category, CategoryException>>
 {
     public async Task<Result<Category, CategoryException>> Handle(
@@ -35,19 +36,15 @@ public class DeleteCategoryCommandHandler(
     {
         try
         {
-            var hasRelatedProducts = await productRepository.HasProductsInCategoryAsync(category.Id, cancellationToken);
-
-            if (hasRelatedProducts)
-            {
-                return new CategoryHasRelatedProductsException(category.Id);
-            }
-
             return await categoryRepository.Delete(category, cancellationToken);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23503")
+        {
+            return new CategoryHasRelatedProductsException(category.Id);
         }
         catch (Exception exception)
         {
             return new CategoryUnknownException(category.Id, exception);
         }
     }
-
 }
