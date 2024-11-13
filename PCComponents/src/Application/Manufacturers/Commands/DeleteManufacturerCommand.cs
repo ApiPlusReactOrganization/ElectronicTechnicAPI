@@ -12,7 +12,8 @@ public record DeleteManufacturerCommand : IRequest<Result<Manufacturer, Manufact
 }
 
 public class DeleteManufacturerCommandHandler(
-    IManufacturerRepository manufacturerRepository)
+    IManufacturerRepository manufacturerRepository,
+    IProductRepository productRepository)
     : IRequestHandler<DeleteManufacturerCommand, Result<Manufacturer, ManufacturerException>>
 {
     public async Task<Result<Manufacturer, ManufacturerException>> Handle(
@@ -34,6 +35,14 @@ public class DeleteManufacturerCommandHandler(
     {
         try
         {
+            var hasRelatedProducts = await productRepository
+                .HasProductsInManufacturerAsync(manufacturer.Id, cancellationToken);
+
+            if (hasRelatedProducts)
+            {
+                return new ManufacturerHasRelatedProductsException(manufacturer.Id);
+            }
+            
             return await manufacturerRepository.Delete(manufacturer, cancellationToken);
         }
         catch (Exception exception)

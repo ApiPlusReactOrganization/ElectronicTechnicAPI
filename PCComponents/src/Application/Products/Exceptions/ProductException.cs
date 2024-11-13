@@ -12,10 +12,20 @@ public abstract class ProductException(ProductId id, string message, Exception? 
 }
 public class ProductUnderCurrentCategoryAlreadyExistsException(CategoryId categoryId) 
     : ProductException( ProductId.Empty,  $"Product under category with id: {categoryId} already exists: ");
+
+public class ProductNotFoundException(ProductId id) 
+    : ProductException(id, $"Product under id: {id} not found");
+
 public class ProductCategoryNotFoundException(CategoryId id) 
     : ProductException(ProductId.Empty, $"Product Category under id: {id} not found");
+
 public class ProductManufacturerNotFoundException(ManufacturerId id) 
     : ProductException(ProductId.Empty, $"Product Manufacturer under id: {id} not found");
 
 public class ProductUnknownException(ProductId id, Exception innerException)
     : ProductException(id, $"Unknown exception for the product under id: {id}", innerException);
+    
+public class ProductInvalidCategoryException(CategoryId id, string categoryName)
+    : ProductException(
+        ProductId.Empty, 
+        $"Selected characteristic does not match the category: {categoryName} ID: {id}");
