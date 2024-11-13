@@ -12,13 +12,14 @@ namespace Domain.Products
         public decimal Price { get; private set; }
         public string Description { get; private set; }
         public int StockQuantity { get; private set; }
-        public ManufacturerId ManufacturerId { get; set; } 
+        public ManufacturerId ManufacturerId { get; set; }
         public Manufacturer? Manufacturer { get; set; }
-        public CategoryId CategoryId { get; set; } 
+        public CategoryId CategoryId { get; set; }
         public Category? Category { get; set; }
-        
 
-        private Product(ProductId id, string name, decimal price, string description, int stockQuantity, ManufacturerId manufacturerId, CategoryId categoryId)
+
+        private Product(ProductId id, string name, decimal price, string description, int stockQuantity,
+            ManufacturerId manufacturerId, CategoryId categoryId)
         {
             Id = id;
             Name = name;
@@ -27,12 +28,13 @@ namespace Domain.Products
             StockQuantity = stockQuantity;
             ManufacturerId = manufacturerId;
             CategoryId = categoryId;
-        } 
-        
-        public static Product New(ProductId id, string name, decimal price, string description, int stockQuantity, 
-            ManufacturerId manufacturerId, CategoryId categoryId , ComponentCharacteristic componentCharacteristic)
-            => new(id, name, price, description, stockQuantity, manufacturerId, categoryId) {ComponentCharacteristic = componentCharacteristic};
-        
+        }
+
+        public static Product New(ProductId id, string name, decimal price, string description, int stockQuantity,
+            ManufacturerId manufacturerId, CategoryId categoryId, ComponentCharacteristic componentCharacteristic)
+            => new(id, name, price, description, stockQuantity, manufacturerId, categoryId)
+                { ComponentCharacteristic = componentCharacteristic };
+
         public void UpdateDetails(string name, decimal price, string description, int stockQuantity)
         {
             Name = name;
@@ -40,6 +42,5 @@ namespace Domain.Products
             Description = description;
             StockQuantity = stockQuantity;
         }
-        
     }
 }

@@ -4,6 +4,8 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Products.Commands;
 using Domain.Authentications;
+using Domain.Categories;
+using Domain.Manufacturers;
 using Domain.Products;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +27,44 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
         var entities = await ProductQueries.GetAll(cancellationToken);
 
         return entities.Select(ProductDto.FromDomainModel).ToList();
+    }
+
+    [HttpGet("under-category-and-manufacturer/{categoryId:guid}/{manufacturerId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategoryAndManufacturer(
+        [FromRoute] Guid categoryId,
+        [FromRoute] Guid manufacturerId,
+        CancellationToken cancellationToken)
+    {
+        var products = await ProductQueries.GetProductsByCategoryAndManufacturer(
+            new CategoryId(categoryId),
+            new ManufacturerId(manufacturerId),
+            cancellationToken);
+
+        return products.Select(ProductDto.FromDomainModel).ToList();
+    }
+    
+    [HttpGet("under-category/{categoryId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategory(
+        [FromRoute] Guid categoryId,
+        CancellationToken cancellationToken)
+    {
+        var products = await ProductQueries.GetProductsByCategory(
+            new CategoryId(categoryId),
+            cancellationToken);
+
+        return products.Select(ProductDto.FromDomainModel).ToList();
+    }
+    
+    [HttpGet("under-manufacturer/{manufacturerId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturer(
+        [FromRoute] Guid manufacturerId,
+        CancellationToken cancellationToken)
+    {
+        var products = await ProductQueries.GetProductsByManufacturer(
+            new ManufacturerId(manufacturerId),
+            cancellationToken);
+
+        return products.Select(ProductDto.FromDomainModel).ToList();
     }
 
     [HttpGet("{productId:guid}")]
@@ -60,7 +100,7 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
             f => CreateProductDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
-    
+
     [HttpDelete("{productId:guid}")]
     public async Task<ActionResult<ProductDto>>
         Delete([FromRoute] Guid productId, CancellationToken cancellationToken)

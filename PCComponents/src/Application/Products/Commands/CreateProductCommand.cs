@@ -14,7 +14,7 @@ public record CreateProductCommand : IRequest<Result<Product, ProductException>>
 {
     public required string Name { get; init; }
     public decimal Price { get; init; }
-    public string? Description { get; init; }
+    public string Description { get; init; }
     public int StockQuantity { get; init; }
     public required Guid ManufacturerId { get; init; }
     public required Guid CategoryId { get; init; }
@@ -44,16 +44,27 @@ public class CreateProductCommandHandler(
                 return await existingCategory.Match(
                     async c =>
                     {
-                        var existingProduct =
-                            await productRepository.SearchByName(request.Name, c.Id, cancellationToken);
-                        
+                        var existingProduct = await productRepository.SearchByNameAndDifferentFields(
+                            request.Name,
+                            request.Price,
+                            request.Description,
+                            request.StockQuantity,
+                            c.Id,
+                            m.Id,
+                            cancellationToken);
+
                         return await existingProduct.Match(
                             p => Task.FromResult<Result<Product, ProductException>>
-                                (new ProductUnderCurrentCategoryAlreadyExistsException(categoryId)),
-                            
-                            async () => await CreateEntity(request.Name, request.Price, request.Description,
+                                (new ProductNameExistsWithSameFieldsException(p.Id, categoryId, manufacturerId)),
+                            async () => await CreateEntity(
+                                request.Name,
+                                request.Price,
+                                request.Description,
                                 request.StockQuantity,
-                                manufacturerId, c, request.ComponentCharacteristic, cancellationToken));
+                                manufacturerId,
+                                c,
+                                request.ComponentCharacteristic,
+                                cancellationToken));
                     },
                     () => Task.FromResult<Result<Product, ProductException>>(
                         new ProductCategoryNotFoundException(categoryId)));

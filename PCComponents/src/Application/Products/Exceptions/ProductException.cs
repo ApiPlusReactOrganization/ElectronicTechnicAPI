@@ -10,8 +10,13 @@ public abstract class ProductException(ProductId id, string message, Exception? 
     public ProductId ProductId { get; } = id;
 }
 
-public class ProductUnderCurrentCategoryAlreadyExistsException(CategoryId categoryId)
-    : ProductException(ProductId.Empty, $"Product under category with id: {categoryId} already exists: ");
+public class ProductNameExistsWithSameFieldsException(
+    ProductId id,
+    CategoryId categoryId,
+    ManufacturerId manufacturerId)
+    : ProductException(id,
+        $"Product with the same name and other fields under " +
+        $"category ID : {categoryId} and manufacturer ID : {manufacturerId} has already exists under ID : {id}");
 
 public class ProductNotFoundException(ProductId id)
     : ProductException(id, $"Product under id: {id} not found");

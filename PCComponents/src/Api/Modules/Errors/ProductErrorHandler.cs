@@ -18,7 +18,7 @@ public static class ProductErrorHandler
                     or ProductInvalidCategoryException
                     => StatusCodes.Status404NotFound,
 
-                ProductUnderCurrentCategoryAlreadyExistsException
+                ProductNameExistsWithSameFieldsException
                     => StatusCodes.Status409Conflict,
 
                 ProductUnknownException
