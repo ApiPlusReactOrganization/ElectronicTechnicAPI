@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Application.Manufacturers.Commands;
 
-public class UpdateFacultyCommandValidator : AbstractValidator<UpdateManufacturerCommand>
+public class UpdateManufacturerCommandValidator : AbstractValidator<UpdateManufacturerCommand>
 {
-    public UpdateFacultyCommandValidator()
+    public UpdateManufacturerCommandValidator()
     {
         RuleFor(x => x.ManufacturerId).NotEmpty();
         RuleFor(x => x.Name).NotEmpty().MaximumLength(255).MinimumLength(3);
