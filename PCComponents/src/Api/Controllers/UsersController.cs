@@ -40,7 +40,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
-    [HttpPost("UpdateRoles/{userId}")]
+    [HttpPut("UpdateRoles/{userId}")]
     public async Task<ActionResult<UserDto>>
         UpdateRoles([FromRoute] Guid userId, [FromBody] List<RoleDto> roles, CancellationToken cancellationToken)
     {
