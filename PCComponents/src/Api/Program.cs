@@ -1,6 +1,7 @@
 using Api.Modules;
 using Application;
 using Infrastructure;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,12 @@ app.UseCors(options => options
 
 await app.InitialiseDb();
 app.MapControllers();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "data/images")),
+    RequestPath = "/images"
+});
 
 app.Run();
 

@@ -23,7 +23,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Images\UserImages\" />
+      <Folder Include="data\images\" />
+      <Folder Include="data\images\UserImages\" />
     </ItemGroup>
 
 </Project>
