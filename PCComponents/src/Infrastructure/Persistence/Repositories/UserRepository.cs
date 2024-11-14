@@ -35,6 +35,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         return await _context.Users
             .AsNoTracking()
             .Include(x => x.Roles)
+            .Include(u => u.UserImage)
             .ToListAsync(cancellationToken);
     }
 
@@ -65,18 +66,21 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         return entity;
     }
 
-    public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken, bool asNoTracking = false)
+    public async Task<User?> GetUserAsync(Expression<Func<User, bool>> predicate, CancellationToken cancellationToken,
+        bool asNoTracking = false)
     {
         if (asNoTracking)
         {
             return await _context.Users
                 .Include(u => u.Roles)
+                .Include(u => u.UserImage)
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
         return await _context.Users
             .AsNoTracking()
             .Include(u => u.Roles)
+            .Include(u => u.UserImage)
             .FirstOrDefaultAsync(predicate, cancellationToken);
     }
 }

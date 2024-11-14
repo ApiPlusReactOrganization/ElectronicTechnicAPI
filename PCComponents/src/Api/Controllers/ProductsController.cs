@@ -16,13 +16,13 @@ namespace Api.Controllers;
 /*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [Authorize(Roles = AuthSettings.AdminRole)]*/
 [ApiController]
-public class ProductsController(ISender sender, IProductQueries ProductQueries) : ControllerBase
+public class ProductsController(ISender sender, IProductQueries productQueries) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(CancellationToken cancellationToken)
     {
-        var entities = await ProductQueries.GetAll(cancellationToken);
+        var entities = await productQueries.GetAll(cancellationToken);
 
         return entities.Select(ProductDto.FromDomainModel).ToList();
     }
@@ -30,7 +30,7 @@ public class ProductsController(ISender sender, IProductQueries ProductQueries) 
     [HttpGet("{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Get([FromRoute] Guid productId, CancellationToken cancellationToken)
     {
-        var entity = await ProductQueries.GetById(
+        var entity = await productQueries.GetById(
             new ProductId(productId), cancellationToken);
 
         return entity.Match<ActionResult<ProductDto>>(

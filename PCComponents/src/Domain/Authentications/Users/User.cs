@@ -8,18 +8,21 @@ public class User
     public string Email { get; set; }
     public string? Name { get; set; }
     public string PasswordHash { get; set; }
-    public string? Image { get; set; }
+    public UserImage? UserImage { get; private set; }
+
     public List<Role> Roles { get; set; } = new();
 
-    private User(UserId id, string email, string? name, string passwordHash, string? image)
+    private User(UserId id, string email, string? name, string passwordHash)
     {
         Id = id;
         Email = email;
         Name = name;
         PasswordHash = passwordHash;
-        Image = image;
     }
 
-    public static User New(UserId id, string email, string? name, string passwordHash, string? image = null)
-        => new(id, email, name, passwordHash, image);
+    public static User New(UserId id, string email, string? name, string passwordHash)
+        => new(id, email, name, passwordHash);
+    
+    public void UpdateUserImage(UserImage userImage)
+    => UserImage = userImage;
 }
