@@ -39,6 +39,11 @@ public class ChangeRolesForUserCommandHandler(
                 },
                 () => Task.FromResult<Result<Role, UserException>>(new RoleNotFoundException(role))
             );
+
+            if (roleResult.IsError)
+            {
+                return new RoleNotFoundException(role);
+            }
         }
 
 
