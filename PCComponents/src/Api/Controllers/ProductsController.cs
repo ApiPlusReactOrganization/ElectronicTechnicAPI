@@ -1,5 +1,4 @@
-﻿using Api.Dtos;
-using Api.Dtos.Products;
+﻿using Api.Dtos.Products;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Products.Commands;
@@ -35,7 +34,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         [FromRoute] Guid manufacturerId,
         CancellationToken cancellationToken)
     {
-        var products = await ProductQueries.GetProductsByCategoryAndManufacturer(
+        var products = await productQueries.GetProductsByCategoryAndManufacturer(
             new CategoryId(categoryId),
             new ManufacturerId(manufacturerId),
             cancellationToken);
@@ -48,7 +47,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         [FromRoute] Guid categoryId,
         CancellationToken cancellationToken)
     {
-        var products = await ProductQueries.GetProductsByCategory(
+        var products = await productQueries.GetProductsByCategory(
             new CategoryId(categoryId),
             cancellationToken);
 
@@ -60,7 +59,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         [FromRoute] Guid manufacturerId,
         CancellationToken cancellationToken)
     {
-        var products = await ProductQueries.GetProductsByManufacturer(
+        var products = await productQueries.GetProductsByManufacturer(
             new ManufacturerId(manufacturerId),
             cancellationToken);
 
