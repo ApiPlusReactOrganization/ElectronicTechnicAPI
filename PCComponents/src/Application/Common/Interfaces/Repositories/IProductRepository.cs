@@ -13,10 +13,13 @@ public interface IProductRepository
     Task<Product> Add(Product product, CancellationToken cancellationToken);
     Task<Product> Update(Product product, CancellationToken cancellationToken);
     Task<Product> Delete(Product product, CancellationToken cancellationToken);
-    Task<bool> ExistsWithSameNameAndFieldsAsync(
+
+    Task<Option<Product>> SearchByNameAndDifferentFields(
         string name,
+        decimal price,
+        string description,
+        int stockQuantity,
         CategoryId categoryId,
         ManufacturerId manufacturerId,
-        ComponentCharacteristic characteristic,
         CancellationToken cancellationToken);
 }
