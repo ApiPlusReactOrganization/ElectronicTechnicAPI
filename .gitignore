@@ -1,5 +1,7 @@
 PCComponents/.vs/
 
+PCComponents/src/Api/data/images/userImages/
+
 obj/
 bin/
 Migrations/

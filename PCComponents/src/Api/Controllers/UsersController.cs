@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("[controller]")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
@@ -40,7 +40,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
-    [HttpPost("UpdateRoles/{userId}")]
+    [HttpPut("UpdateRoles/{userId}")]
     public async Task<ActionResult<UserDto>>
         UpdateRoles([FromRoute] Guid userId, [FromBody] List<RoleDto> roles, CancellationToken cancellationToken)
     {
@@ -57,4 +57,20 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
+    [HttpPut("Image/{userId}")]
+    public async Task<ActionResult<UserDto>> Upload([FromRoute] Guid userId, IFormFile imageFile,
+        CancellationToken cancellationToken)
+    {
+        var input = new UploadUserImageCommand
+        {
+            UserId = userId,
+            FileStream = imageFile.OpenReadStream()
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<UserDto>>(
+            c => UserDto.FromDomainModel(c),
+            e => e.ToObjectResult());
+    }
 }
