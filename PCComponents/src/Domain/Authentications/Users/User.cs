@@ -22,6 +22,12 @@ public class User
 
     public static User New(UserId id, string email, string? name, string passwordHash)
         => new(id, email, name, passwordHash);
+
+    public void UpdateUser(string email, string? name)
+    {
+        Email = email;
+        Name = name;
+    }
     
     public void UpdateUserImage(UserImage userImage)
     => UserImage = userImage;
