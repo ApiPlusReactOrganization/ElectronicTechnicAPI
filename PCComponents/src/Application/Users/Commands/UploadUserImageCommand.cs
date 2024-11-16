@@ -17,7 +17,9 @@ public class UploadUserImageCommand : IRequest<Result<ServiceResponseForJwtToken
     public Stream FileStream { get; init; }
 }
 
-public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment, 
+public class UploadUserImageCommandHandler(
+    IUserRepository userRepository,
+    IWebHostEnvironment webHostEnvironment,
     IJwtTokenService jwtTokenService)
     : IRequestHandler<UploadUserImageCommand, Result<ServiceResponseForJwtToken, UserException>>
 {
@@ -29,7 +31,8 @@ public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebH
 
         return await existingUser.Match<Task<Result<ServiceResponseForJwtToken, UserException>>>(
             async user => await UploadOrReplaceImage(user, request.FileStream, cancellationToken),
-            () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(new UserNotFoundException(userId)));
+            () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(
+                new UserNotFoundException(userId)));
     }
 
     private async Task<Result<ServiceResponseForJwtToken, UserException>> UploadOrReplaceImage(
@@ -46,8 +49,9 @@ public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebH
             {
                 var imageEntity = UserImage.New(UserImageId.New(), user.Id, imageName);
                 user.UpdateUserImage(imageEntity);
-                var userWithNewImage =  await userRepository.Update(user, cancellationToken);
-                return ServiceResponseForJwtToken.GetResponse("Image uploaded successfully", jwtTokenService.GenerateToken(userWithNewImage));
+                var userWithNewImage = await userRepository.Update(user, cancellationToken);
+                return ServiceResponseForJwtToken.GetResponse("Image uploaded successfully",
+                    jwtTokenService.GenerateToken(userWithNewImage));
             },
             () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(new ImageSaveException(user.Id)));
     }

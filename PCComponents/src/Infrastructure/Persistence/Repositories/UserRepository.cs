@@ -53,6 +53,13 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
 
+    public async Task<Option<User>> SearchByEmailForUpdate(UserId userId, string email, CancellationToken cancellationToken)
+    {
+        var entity = await GetUserAsync(x => x.Email == email && x.Id != userId, cancellationToken, true);
+
+        return entity == null ? Option.None<User>() : Option.Some(entity);
+    }
+
     public async Task<User> AddRole(UserId userId, string idRole, CancellationToken cancellationToken)
     {
         var entity = await GetUserAsync(x => x.Id == userId, cancellationToken, true);
