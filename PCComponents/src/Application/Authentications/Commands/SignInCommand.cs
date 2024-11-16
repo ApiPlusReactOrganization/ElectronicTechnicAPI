@@ -9,16 +9,16 @@ using MediatR;
 
 namespace Application.Authentications.Commands;
 
-public class SignInCommand: IRequest<Result<ServiceResponse, AuthenticationException>>
+public class SignInCommand: IRequest<Result<ServiceResponseForJwtToken, AuthenticationException>>
 {
     public string Email { get; init; }
     public string Password { get; init; }
 }
 
 public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService, IHashPasswordService hashPasswordService) 
-    : IRequestHandler<SignInCommand, Result<ServiceResponse, AuthenticationException>>
+    : IRequestHandler<SignInCommand, Result<ServiceResponseForJwtToken, AuthenticationException>>
 {
-    public async Task<Result<ServiceResponse, AuthenticationException>> Handle(
+    public async Task<Result<ServiceResponseForJwtToken, AuthenticationException>> Handle(
         SignInCommand request,
         CancellationToken cancellationToken)
     {
@@ -26,9 +26,9 @@ public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenServi
         
         return await existingUser.Match(
             u => Task.FromResult(SignIn(u, request.Password, cancellationToken)),
-            () => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(new EmailOrPasswordAreIncorrect()));
+            () => Task.FromResult<Result<ServiceResponseForJwtToken, AuthenticationException>>(new EmailOrPasswordAreIncorrect()));
     }
-    private Result<ServiceResponse, AuthenticationException> SignIn(
+    private Result<ServiceResponseForJwtToken, AuthenticationException> SignIn(
          User user,
          string password,
          CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenServi
          try
          {
              string token = jwtTokenService.GenerateToken(user);
-             return ServiceResponse.GetResponse("You're logged in", token);
+             return ServiceResponseForJwtToken.GetResponse("You're logged in", token);
          }
          catch (Exception exception)
          {

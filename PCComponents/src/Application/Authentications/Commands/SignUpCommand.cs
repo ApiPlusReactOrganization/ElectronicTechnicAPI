@@ -10,7 +10,7 @@ using Domain.Authentications;
 
 namespace Application.Authentications.Commands;
 
-public class SignUpCommand : IRequest<Result<ServiceResponse, AuthenticationException>>
+public class SignUpCommand : IRequest<Result<ServiceResponseForJwtToken, AuthenticationException>>
 {
     public required string Email { get; init; }
     public required string Password { get; init; }
@@ -21,21 +21,21 @@ public class CreateUserCommandHandler(
     IUserRepository userRepository,
     IJwtTokenService jwtTokenService,
     IHashPasswordService hashPasswordService)
-    : IRequestHandler<SignUpCommand, Result<ServiceResponse, AuthenticationException>>
+    : IRequestHandler<SignUpCommand, Result<ServiceResponseForJwtToken, AuthenticationException>>
 {
-    public async Task<Result<ServiceResponse, AuthenticationException>> Handle(
+    public async Task<Result<ServiceResponseForJwtToken, AuthenticationException>> Handle(
         SignUpCommand request,
         CancellationToken cancellationToken)
     {
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
 
         return await existingUser.Match(
-            u => Task.FromResult<Result<ServiceResponse, AuthenticationException>>(
+            u => Task.FromResult<Result<ServiceResponseForJwtToken, AuthenticationException>>(
                 new UserByThisEmailAlreadyExistsException(u.Id)),
             async () => await SignUp(request.Email, request.Password, request.Name, cancellationToken));
     }
 
-    private async Task<Result<ServiceResponse, AuthenticationException>> SignUp(
+    private async Task<Result<ServiceResponseForJwtToken, AuthenticationException>> SignUp(
         string email,
         string password,
         string? name,
@@ -49,7 +49,7 @@ public class CreateUserCommandHandler(
             string token =
                 jwtTokenService.GenerateToken(await userRepository.AddRole(entity.Id, AuthSettings.UserRole,
                     cancellationToken));
-            return ServiceResponse.GetResponse("You're sign up!", token);
+            return ServiceResponseForJwtToken.GetResponse("You're sign up!", token);
         }
         catch (Exception exception)
         {

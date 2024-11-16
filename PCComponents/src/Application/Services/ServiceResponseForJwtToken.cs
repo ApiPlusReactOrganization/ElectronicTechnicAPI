@@ -1,13 +1,13 @@
 namespace Application.Authentications;
 
-public class ServiceResponse
+public class ServiceResponseForJwtToken
 {
     public string Message { get; set; }
     public object? Payload { get; set; }
 
-    public static ServiceResponse GetResponse(string message, object? payload)
+    public static ServiceResponseForJwtToken GetResponse(string message, object? payload)
     {
-        return new ServiceResponse
+        return new ServiceResponseForJwtToken
         {
             Message = message,
             Payload = payload,
