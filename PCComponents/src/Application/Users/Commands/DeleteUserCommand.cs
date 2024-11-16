@@ -3,6 +3,7 @@ using Application.Common.Interfaces.Repositories;
 using Application.Users.Exceptions;
 using Domain.Authentications.Users;
 using MediatR;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Application.Users.Commands;
 
@@ -12,33 +13,53 @@ public class DeleteUserCommand : IRequest<Result<User, UserException>>
 }
 
 public class DeleteUserCommandHandler(
-    IUserRepository UserRepository)
+    IUserRepository userRepository, IWebHostEnvironment webHostEnvironment)
     : IRequestHandler<DeleteUserCommand, Result<User, UserException>>
 {
     public async Task<Result<User, UserException>> Handle(
         DeleteUserCommand request,
         CancellationToken cancellationToken)
     {
-        var UserId = new UserId(request.UserId);
-        var existingUser = await UserRepository.GetById(UserId, cancellationToken);
+        var userId = new UserId(request.UserId);
+        if (userId == null) throw new ArgumentNullException(nameof(userId));
+        var existingUser = await userRepository.GetById(userId, cancellationToken);
 
         return await existingUser.Match<Task<Result<User, UserException>>>(
-            async User => await DeleteEntity(User, cancellationToken),
+            async user =>
+            {
+                if (user == null) throw new ArgumentNullException(nameof(user));
+                return await DeleteEntity(user, cancellationToken);
+            },
             () => Task.FromResult<Result<User, UserException>>
-                (new UserNotFoundException(UserId)));
+                (new UserNotFoundException(userId)));
     }
 
     private async Task<Result<User, UserException>> DeleteEntity(
-        User User,
+        User user,
         CancellationToken cancellationToken)
     {
+        DeleteImageByUser(user);
+        
         try
         {
-            return await UserRepository.Delete(User, cancellationToken);
+            return await userRepository.Delete(user, cancellationToken);
         }
         catch (Exception exception)
         {
-            return new UserUnknownException(User.Id, exception);
+            return new UserUnknownException(user.Id, exception);
+        }
+    }
+
+    private void DeleteImageByUser(User user)
+    {
+        var userImage = user.UserImage?.FilePath;
+        if (!string.IsNullOrEmpty(userImage))
+        {
+            var fullPath = Path.Combine(webHostEnvironment.ContentRootPath, ImagePaths.UserImagePath, userImage);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
         }
     }
 }
