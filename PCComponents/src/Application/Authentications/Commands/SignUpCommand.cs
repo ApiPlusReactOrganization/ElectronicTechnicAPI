@@ -7,6 +7,7 @@ using Application.Common.Interfaces.Repositories;
 using Domain.Authentications.Users;
 using MediatR;
 using Domain.Authentications;
+using FluentValidation;
 
 namespace Application.Authentications.Commands;
 
