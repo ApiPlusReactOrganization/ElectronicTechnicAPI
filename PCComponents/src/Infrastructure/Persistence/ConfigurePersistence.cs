@@ -1,9 +1,8 @@
 using System.Text;
-using Application.Authentications.Services;
-using Application.Authentications.Services.HashPasswordService;
-using Application.Authentications.Services.TokenService;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Application.Services.HashPasswordService;
+using Application.Services.TokenService;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;

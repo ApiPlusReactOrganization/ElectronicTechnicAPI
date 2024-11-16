@@ -1,5 +1,5 @@
 using System.Reflection;
-using Application.Authentications.Services.HashPasswordService;
+using Application.Services.HashPasswordService;
 using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Domain.Categories;

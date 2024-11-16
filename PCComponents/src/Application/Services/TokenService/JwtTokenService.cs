@@ -6,7 +6,7 @@ using Domain.Authentications.Users;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Authentications.Services.TokenService
+namespace Application.Services.TokenService
 {
     public class JwtTokenService : IJwtTokenService
     {
@@ -28,7 +28,8 @@ namespace Application.Authentications.Services.TokenService
             {
                 new Claim("id", user.Id.Value.ToString()),
                 new Claim("email", user.Email!),
-                new Claim("name", user.Name ?? "N/A")
+                new Claim("name", user.Name ?? "N/A"),
+                new Claim("image", user.UserImage?.FilePath ?? "N/A"),
             };
 
             if (user.Roles.Count() > 0)

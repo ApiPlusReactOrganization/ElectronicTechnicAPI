@@ -1,6 +1,6 @@
 ﻿using Domain.Authentications.Users;
 
-namespace Application.Authentications.Services.TokenService
+namespace Application.Services.TokenService
 {
     public interface IJwtTokenService
     {
