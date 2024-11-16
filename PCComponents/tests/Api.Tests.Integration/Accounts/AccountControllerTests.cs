@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using Api.Dtos.Authentications;
 using Application.Authentications;
+using Application.Services;
 using FluentAssertions;
 using Tests.Common;
 using Tests.Data;
@@ -22,7 +23,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
-        var content = await response.Content.ReadFromJsonAsync<ServiceResponse>();
+        var content = await response.Content.ReadFromJsonAsync<ServiceResponseForJwtToken>();
         content.Should().NotBeNull();
         content!.Payload.Should().NotBeNull();
     }
@@ -38,7 +39,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -67,7 +68,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
-        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
 
@@ -85,7 +86,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
-        var content = await response.Content.ReadFromJsonAsync<ServiceResponse>();
+        var content = await response.Content.ReadFromJsonAsync<ServiceResponseForJwtToken>();
         content.Should().NotBeNull();
         content!.Payload.Should().NotBeNull();
     }

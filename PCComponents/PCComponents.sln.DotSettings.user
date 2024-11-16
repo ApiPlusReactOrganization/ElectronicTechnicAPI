@@ -31,7 +31,13 @@
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9ded90e1_002D61f1_002D4937_002Db739_002D82111d907c81/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ShouldNotSignUpWithInvalidEmail" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Categories/f:CategoriesControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Products/f:ProductsControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Roles/f:RolesControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Users/f:UsersControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ed501884_002Df322_002D4419_002D99c4_002Db96413b3261f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldNotSignUpWithoutPassword" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;

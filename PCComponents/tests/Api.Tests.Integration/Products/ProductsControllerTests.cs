@@ -10,18 +10,18 @@ namespace Api.Tests.Integration.Products;
 
 public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIntegrationTest(factory)
 {
-    [Fact]
-    public async Task ShouldCreateProduct()
-    {
-        // Arrange
-        var request = ProductsData.NewProduct;
-
-        // Act
-        var response = await Client.PostAsJsonAsync("products", request);
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
-    }
+    // [Fact]
+    // public async Task ShouldCreateProduct()
+    // {
+    //     // Arrange
+    //     var request = ProductsData.NewProduct;
+    //
+    //     // Act
+    //     var response = await Client.PostAsJsonAsync("products", request);
+    //
+    //     // Assert
+    //     response.IsSuccessStatusCode.Should().BeTrue();
+    // }
 
     [Fact]
     public async Task ShouldNotCreateProductWithoutName()

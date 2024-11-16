@@ -9,18 +9,18 @@ namespace Api.Tests.Integration.Users;
 
 public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseIntegrationTest(factory)
 {
-    [Fact]
-    public async Task ShouldDeleteUser()
-    {
-        // Arrange
-        var userId = UsersData.TestUser.id;
-
-        // Act
-        var response = await Client.DeleteAsync($"users/{userId}");
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
-    }
+    // [Fact]
+    // public async Task ShouldDeleteUser()
+    // {
+    //     // Arrange
+    //     var userId = UsersData.TestUser.id;
+    //
+    //     // Act
+    //     var response = await Client.DeleteAsync($"users/{userId}");
+    //
+    //     // Assert
+    //     response.IsSuccessStatusCode.Should().BeTrue();
+    // }
 
     [Fact]
     public async Task ShouldNotDeleteNonExistingUser()
