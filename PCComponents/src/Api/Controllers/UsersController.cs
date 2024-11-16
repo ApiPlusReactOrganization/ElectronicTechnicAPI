@@ -2,6 +2,7 @@
 using Api.Modules.Errors;
 using Application.Authentications;
 using Application.Common.Interfaces.Queries;
+using Application.Services;
 using Application.Users.Commands;
 using Domain.Authentications;
 using MediatR;

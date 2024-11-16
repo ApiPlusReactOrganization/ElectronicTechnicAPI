@@ -1,4 +1,4 @@
-using Domain.Authentications.Users;
+namespace Domain.Authentications.Users;
 
 public class UserImage
 {

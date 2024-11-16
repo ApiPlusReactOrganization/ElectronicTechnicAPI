@@ -3,6 +3,7 @@ using Api.Modules.Errors;
 using Application.Authentications;
 using Application.Authentications.Commands;
 using Application.Common.Interfaces.Queries;
+using Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

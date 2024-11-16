@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace Application.Authentications.Services.HashPasswordService;
+namespace Application.Services.HashPasswordService;
 
 public class HashPasswordService : IHashPasswordService
 {

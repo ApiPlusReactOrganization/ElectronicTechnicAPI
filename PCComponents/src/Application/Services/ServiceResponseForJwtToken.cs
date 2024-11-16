@@ -1,4 +1,4 @@
-namespace Application.Authentications;
+namespace Application.Services;
 
 public class ServiceResponseForJwtToken
 {

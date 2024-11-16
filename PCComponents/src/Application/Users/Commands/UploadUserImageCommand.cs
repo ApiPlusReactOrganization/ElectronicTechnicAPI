@@ -1,7 +1,8 @@
 using Application.Authentications;
-using Application.Authentications.Services.TokenService;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
+using Application.Services;
+using Application.Services.TokenService;
 using Application.Users.Exceptions;
 using Domain.Authentications.Users;
 using MediatR;

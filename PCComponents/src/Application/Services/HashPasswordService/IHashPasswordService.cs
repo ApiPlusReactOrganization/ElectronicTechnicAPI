@@ -1,4 +1,4 @@
-namespace Application.Authentications.Services.HashPasswordService;
+namespace Application.Services.HashPasswordService;
 
 public interface IHashPasswordService
 {
