@@ -1,6 +1,8 @@
 ﻿using Api.Dtos.Users;
 using Api.Modules.Errors;
+using Application.Authentications;
 using Application.Common.Interfaces.Queries;
+using Application.Services;
 using Application.Users.Commands;
 using Domain.Authentications;
 using MediatR;
@@ -58,7 +60,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
     }
 
     [HttpPut("Image/{userId}")]
-    public async Task<ActionResult<UserDto>> Upload([FromRoute] Guid userId, IFormFile imageFile,
+    public async Task<ActionResult<ServiceResponseForJwtToken>> Upload([FromRoute] Guid userId, IFormFile imageFile,
         CancellationToken cancellationToken)
     {
         var input = new UploadUserImageCommand
@@ -69,8 +71,8 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
 
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<UserDto>>(
-            c => UserDto.FromDomainModel(c),
+        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+            r => r,
             e => e.ToObjectResult());
     }
 }

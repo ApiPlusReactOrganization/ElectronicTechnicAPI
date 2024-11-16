@@ -1,14 +1,10 @@
-﻿using Application.Authentications.Services;
-using Application.Authentications.Services.HashPasswordService;
-using Domain;
+﻿using Application.Services.HashPasswordService;
 using Domain.Authentications;
 using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Domain.Categories;
 using Domain.Manufacturers;
-using Domain.Products;
 using Domain.Products.PCComponents;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;

@@ -1,5 +1,8 @@
+using Application.Authentications;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
+using Application.Services;
+using Application.Services.TokenService;
 using Application.Users.Exceptions;
 using Domain.Authentications.Users;
 using MediatR;
@@ -8,27 +11,28 @@ using Optional;
 
 namespace Application.Users.Commands;
 
-public class UploadUserImageCommand : IRequest<Result<User, UserException>>
+public class UploadUserImageCommand : IRequest<Result<ServiceResponseForJwtToken, UserException>>
 {
     public Guid UserId { get; init; }
     public Stream FileStream { get; init; }
 }
 
-public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment)
-    : IRequestHandler<UploadUserImageCommand, Result<User, UserException>>
+public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment, 
+    IJwtTokenService jwtTokenService)
+    : IRequestHandler<UploadUserImageCommand, Result<ServiceResponseForJwtToken, UserException>>
 {
-    public async Task<Result<User, UserException>> Handle(UploadUserImageCommand request,
+    public async Task<Result<ServiceResponseForJwtToken, UserException>> Handle(UploadUserImageCommand request,
         CancellationToken cancellationToken)
     {
         var userId = new UserId(request.UserId);
         var existingUser = await userRepository.GetById(userId, cancellationToken);
 
-        return await existingUser.Match<Task<Result<User, UserException>>>(
+        return await existingUser.Match<Task<Result<ServiceResponseForJwtToken, UserException>>>(
             async user => await UploadOrReplaceImage(user, request.FileStream, cancellationToken),
-            () => Task.FromResult<Result<User, UserException>>(new UserNotFoundException(userId)));
+            () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(new UserNotFoundException(userId)));
     }
 
-    private async Task<Result<User, UserException>> UploadOrReplaceImage(
+    private async Task<Result<ServiceResponseForJwtToken, UserException>> UploadOrReplaceImage(
         User user,
         Stream fileStream,
         CancellationToken cancellationToken)
@@ -37,14 +41,15 @@ public class UploadUserImageCommandHandler(IUserRepository userRepository, IWebH
 
         var imageSaveResult = await SaveImageAsync(ImagePaths.UserImagePath, fileStream, oldImagePath);
 
-        return await imageSaveResult.Match<Task<Result<User, UserException>>>(
+        return await imageSaveResult.Match<Task<Result<ServiceResponseForJwtToken, UserException>>>(
             async imageName =>
             {
                 var imageEntity = UserImage.New(UserImageId.New(), user.Id, imageName);
                 user.UpdateUserImage(imageEntity);
-                return await userRepository.Update(user, cancellationToken);
+                var userWithNewImage =  await userRepository.Update(user, cancellationToken);
+                return ServiceResponseForJwtToken.GetResponse("Image uploaded successfully", jwtTokenService.GenerateToken(userWithNewImage));
             },
-            () => Task.FromResult<Result<User, UserException>>(new ImageSaveException(user.Id)));
+            () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(new ImageSaveException(user.Id)));
     }
 
     private async Task<Option<string>> SaveImageAsync(string path, Stream imageStream, string? oldImagePath)
