@@ -1,5 +1,6 @@
 using Api.Modules;
 using Application;
+using Application.Middlewares;
 using Infrastructure;
 using Microsoft.Extensions.FileProviders;
 
@@ -32,6 +33,8 @@ app.UseCors(options => options
 
 await app.InitialiseDb();
 app.MapControllers();
+
+app.UseMiddleware<MiddlewareValidationExceptionHandling>();
 
 app.UseStaticFiles(new StaticFileOptions
 {
