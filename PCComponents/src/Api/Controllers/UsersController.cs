@@ -66,7 +66,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var input = new UploadUserImageCommand
         {
             UserId = userId,
-            FileStream = imageFile.OpenReadStream()
+            ImageFile = imageFile
         };
 
         var result = await sender.Send(input, cancellationToken);

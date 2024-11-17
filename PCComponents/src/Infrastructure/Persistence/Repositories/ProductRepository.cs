@@ -84,6 +84,11 @@ public class ProductRepository : IProductRepository, IProductQueries
         return entity == null ? Option.None<Product>() : Option.Some(entity);
     }
 
+    public async Task<int> SaveChanges(CancellationToken cancellationToken)
+    {
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+    
     public async Task<Product> Add(Product product, CancellationToken cancellationToken)
     {
         await _context.Products.AddAsync(product, cancellationToken);

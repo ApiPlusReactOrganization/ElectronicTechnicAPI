@@ -1,6 +1,6 @@
 namespace Application.Users;
 
-public class ImagePaths
+public static class ImagePaths
 {
-    public const string UserImagePath = "data/images/userImages";
+    public const string UserImagePath = @"data\images\userImages";
 }

@@ -22,4 +22,6 @@ public interface IProductRepository
         CategoryId categoryId,
         ManufacturerId manufacturerId,
         CancellationToken cancellationToken);
+
+    Task<int> SaveChanges(CancellationToken cancellationToken);
 }

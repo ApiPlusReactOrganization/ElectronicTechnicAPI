@@ -2,6 +2,7 @@ using System.Text;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Application.Services.HashPasswordService;
+using Application.Services.ImageService;
 using Application.Services.TokenService;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,6 +62,7 @@ public static class ConfigurePersistence
         
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IHashPasswordService, HashPasswordService>();
+        services.AddScoped<IImageService, ImageService>();
     }
 
     private static void AddJwtTokenAuth(this IServiceCollection services, WebApplicationBuilder builder)
