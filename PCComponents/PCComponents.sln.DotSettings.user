@@ -15,6 +15,7 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATaskContinuation_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fb86cdfe19de105ff2eab7d5d4c613fd91b9adfe4f95bd82e2d6db593e6d3ca3_003FTaskContinuation_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATask_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2e49d132ea68ff47071c64476ae29138fa965dc555ef7c3f4991586431de241_003FTask_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATaskContinuation_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003Fb86cdfe19de105ff2eab7d5d4c613fd91b9adfe4f95bd82e2d6db593e6d3ca3_003FTaskContinuation_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATestInvoker_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2532c812356b7d5448418be580b9c7afbc61d9f577df866acfb87950ef277b_003FTestInvoker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003ATestInvoker_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F2532c812356b7d5448418be580b9c7afbc61d9f577df866acfb87950ef277b_003FTestInvoker_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AValidationException_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F3c50bb8758fba6d941a815f1792b10e892d0f0bb4358154f2acfa69d870c1e2_003FValidationException_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AValidationException_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2024_002E2_003Fresharper_002Dhost_003FSourcesCache_003F9161da3da671f777cc3652d39696c23db97793e37cb97fcb4e1e87234e56322_003FValidationException_002Ecs_002Fz_003A2_002D1/@EntryIndexedValue">ForceIncluded</s:String>
@@ -22,15 +23,24 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2c4f2030_002Dc79d_002D498b_002D8cfe_002Dcbb3d80ed5c9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from ManufacturersControllerTests.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2fb7551e_002D06b5_002D4dd3_002D9c86_002Df41fa0912b6b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldNotSignUpWithoutPassword #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=2fb7551e_002D06b5_002D4dd3_002D9c86_002Df41fa0912b6b/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ShouldNotSignUpWithoutPassword #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Files/f:FilesControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Products/f:ProductsControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Manufacturers/f:ManufacturersControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;TestAncestor&gt;&#xD;
+      &lt;TestId&gt;xUnit::3293DB0E-C1B0-453C-AAE5-F192D9910642::net8.0::Api.Tests.Integration.Users.UsersControllerTests.ShouldDeleteUser&lt;/TestId&gt;&#xD;
+    &lt;/TestAncestor&gt;&#xD;
+    &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Users/f:UsersControllerTests.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=373fac71_002D2150_002D4ba4_002D93d6_002D0115f11bbccf/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldNotSignUpWithoutPassword #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;xUnit::3293DB0E-C1B0-453C-AAE5-F192D9910642::net8.0::Api.Tests.Integration.Accounts.AccountControllerTests.ShouldNotSignUpWithoutPassword&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9ded90e1_002D61f1_002D4937_002Db739_002D82111d907c81/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ShouldNotSignUpWithInvalidEmail" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9ded90e1_002D61f1_002D4937_002Db739_002D82111d907c81/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ShouldNotSignUpWithInvalidEmail" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Or&gt;&#xD;
     &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Accounts/f:AccountControllerTests.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;3293DB0E-C1B0-453C-AAE5-F192D9910642/d:Categories/f:CategoriesControllerTests.cs&lt;/ProjectFile&gt;&#xD;
