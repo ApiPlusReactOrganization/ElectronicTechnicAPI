@@ -1,15 +1,14 @@
-﻿using Application.Common.Interfaces.Repositories;
 using Application.Products.ComponentCharacteristics;
-using Domain.Products;
 using FluentValidation;
-using FluentValidation.Validators;
 
 namespace Application.Products.Commands;
 
-public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {
-    public CreateProductCommandValidator(IProductRepository productRepository)
+    public UpdateProductCommandValidator()
     {
+        RuleFor(x => x.ProductId).NotEmpty().WithMessage("Product id cannot be empty");
+
         RuleFor(x => x.Name)
             .MaximumLength(255)
             .MinimumLength(3)
@@ -29,7 +28,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
 
         RuleFor(x => x.Price)
             .GreaterThan(0)
-            .PrecisionScale(8, 2,false)
+            .PrecisionScale(8, 2, false)
             .WithMessage("Price must be up to 999999.99 with optional decimal places.");
 
         RuleFor(x => x.Description)
@@ -41,19 +40,19 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             .GreaterThan(0)
             .LessThanOrEqualTo(1000)
             .WithMessage("Stock quantity must be between 0 and 1000.");
-        
+
         When(x => x.ComponentCharacteristic.Case != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Case)
                 .SetValidator(new CreateCaseValidator());
         });
-        
+
         When(x => x.ComponentCharacteristic.Cpu != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Cpu)
                 .SetValidator(new CreateCpuValidator());
         });
-        
+
         When(x => x.ComponentCharacteristic.Gpu != null, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Gpu)
@@ -71,7 +70,7 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
             RuleFor(x => x.ComponentCharacteristic.Psu)
                 .SetValidator(new CreatePsuValidator());
         });
-        
+
         When(x => x.ComponentCharacteristic is { Ram: { } }, () =>
         {
             RuleFor(x => x.ComponentCharacteristic.Ram)
