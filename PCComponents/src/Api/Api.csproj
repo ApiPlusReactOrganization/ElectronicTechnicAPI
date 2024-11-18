@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="data\images\" />
+      <Folder Include="data\images\productImages\" />
       <Folder Include="data\images\UserImages\" />
     </ItemGroup>
 

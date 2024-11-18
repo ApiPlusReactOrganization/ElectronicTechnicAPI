@@ -140,4 +140,21 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             f => CreateProductDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
+    
+    [HttpPut("UploadImages/{productId:guid}")]
+    public async Task<ActionResult<ProductDto>> Upload([FromRoute] Guid productId, IFormFileCollection imagesFiles,
+        CancellationToken cancellationToken)
+    {
+        var input = new UploadProductImagesCommand()
+        {
+            ProductId = productId,
+            ImagesFiles = imagesFiles
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ProductDto>>(
+            r => ProductDto.FromDomainModel(r),
+            e => e.ToObjectResult());
+    }
 }

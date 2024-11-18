@@ -22,7 +22,6 @@ public class UploadUserImageCommand : IRequest<Result<ServiceResponseForJwtToken
 public class UploadUserImageCommandHandler(
     IUserRepository userRepository,
     IJwtTokenService jwtTokenService,
-    // IWebHostEnvironment webHostEnvironment,
     IImageService imageService)
     : IRequestHandler<UploadUserImageCommand, Result<ServiceResponseForJwtToken, UserException>>
 {
@@ -44,7 +43,6 @@ public class UploadUserImageCommandHandler(
         CancellationToken cancellationToken)
     {
         var imageSaveResult = await imageService.SaveImageFromFileAsync(ImagePaths.UserImagePath, imageFile, user.UserImage?.FilePath);
-        // var imageSaveResult = await SaveImageAsync(ImagePaths.UserImagePath, imageFile, oldImagePath);
 
         return await imageSaveResult.Match<Task<Result<ServiceResponseForJwtToken, UserException>>>(
             async imageName =>
@@ -57,33 +55,4 @@ public class UploadUserImageCommandHandler(
             },
             () => Task.FromResult<Result<ServiceResponseForJwtToken, UserException>>(new ImageSaveException(user.Id)));
     }
-
-    // private async Task<Option<string>> SaveImageAsync(string path, Stream imageStream, string? oldImagePath)
-    // {
-    //     try
-    //     {
-    //         if (!string.IsNullOrEmpty(oldImagePath))
-    //         {
-    //             var fullOldPath = Path.Combine(webHostEnvironment.ContentRootPath, path, oldImagePath);
-    //             if (File.Exists(fullOldPath))
-    //             {
-    //                 File.Delete(fullOldPath);
-    //             }
-    //         }
-    //
-    //         var imageName = $"{Guid.NewGuid()}.jpeg";
-    //         var filePath = Path.Combine(webHostEnvironment.ContentRootPath, path, imageName);
-    //
-    //         using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-    //         {
-    //             await imageStream.CopyToAsync(fileStream);
-    //         }
-    //
-    //         return Option.Some(imageName);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return Option.None<string>();
-    //     }
-    // }
 }

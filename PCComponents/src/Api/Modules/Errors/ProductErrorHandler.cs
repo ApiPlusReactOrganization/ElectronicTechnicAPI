@@ -21,7 +21,7 @@ public static class ProductErrorHandler
                 ProductNameExistsWithSameFieldsException
                     => StatusCodes.Status409Conflict,
 
-                ProductUnknownException
+                ProductUnknownException or ImageSaveException
                     => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Product error handler does not implemented")
             }

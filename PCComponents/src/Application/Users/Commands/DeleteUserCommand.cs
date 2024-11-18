@@ -1,5 +1,6 @@
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
+using Application.Services;
 using Application.Users.Exceptions;
 using Domain.Authentications.Users;
 using MediatR;

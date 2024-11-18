@@ -17,6 +17,7 @@ namespace Domain.Products
         public CategoryId CategoryId { get; private set; }
         public Category? Category { get; set; }
 
+        public List<ProductImage>? Images { get; private set; } = [];
 
         private Product(ProductId id, string name, decimal price, string description, int stockQuantity,
             ManufacturerId manufacturerId, CategoryId categoryId)
@@ -47,5 +48,8 @@ namespace Domain.Products
             CategoryId = categoryId;
             ManufacturerId = manufacturerId;
         }
+        
+        public void UpdateProductImage(List<ProductImage> images)
+            => Images = images;
     }
 }
