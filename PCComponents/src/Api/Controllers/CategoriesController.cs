@@ -38,7 +38,7 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
             () => NotFound());
     }
 
-    [HttpPost]
+    /*[HttpPost]
     public async Task<ActionResult<CategoryDto>> Create(
         [FromBody] CategoryDto request,
         CancellationToken cancellationToken)
@@ -89,5 +89,5 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
         return result.Match<ActionResult<CategoryDto>>(
             c => CategoryDto.FromDomainModel(c),
             e => e.ToObjectResult());
-    }
+    }*/
 }
