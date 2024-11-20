@@ -118,7 +118,7 @@ public class UpdateProductCommandHandler(
                 return product;
             }
 
-            return new ProductUnknownException(ProductId.Empty, new Exception("Product was not updated"));
+            return new ProductUnknownException(product.Id, new Exception("Product was not updated"));
         }
         catch (Exception exception)
         {
