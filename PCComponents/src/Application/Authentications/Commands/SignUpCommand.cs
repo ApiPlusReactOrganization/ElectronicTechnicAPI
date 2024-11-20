@@ -7,6 +7,7 @@ using Application.Services.TokenService;
 using Domain.Authentications.Users;
 using MediatR;
 using Domain.Authentications;
+using FluentValidation;
 
 namespace Application.Authentications.Commands;
 
