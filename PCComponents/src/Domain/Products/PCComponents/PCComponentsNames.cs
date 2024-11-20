@@ -1,6 +1,6 @@
 ﻿namespace Domain.Products.PCComponents;
 
-public class PCComponentsNames
+public static class PCComponentsNames
 {
     public const string CPU = "Processor";
     public const string Case = "Computer case";

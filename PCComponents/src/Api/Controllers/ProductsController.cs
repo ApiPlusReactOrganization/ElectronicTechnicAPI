@@ -115,4 +115,29 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             p => Ok(ProductDto.FromDomainModel(p)),
             e => e.ToObjectResult());
     }
+    
+    [HttpPut("{productId:guid}")]
+    public async Task<ActionResult<CreateProductDto>> Update(
+        [FromRoute] Guid productId,
+        [FromBody] CreateProductDto request,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateProductCommand()
+        {
+            ProductId = productId,
+            Name = request.Name,
+            Price = request.Price,
+            Description = request.Description,
+            StockQuantity = request.StockQuantity,
+            ManufacturerId = request.ManufacturerId,
+            CategoryId = request.CategoryId,
+            ComponentCharacteristic = request.ComponentCharacteristic,
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<CreateProductDto>>(
+            f => CreateProductDto.FromDomainModel(f),
+            e => e.ToObjectResult());
+    }
 }

@@ -11,8 +11,8 @@ namespace Application.Authentications.Commands;
 
 public class SignInCommand: IRequest<Result<ServiceResponseForJwtToken, AuthenticationException>>
 {
-    public string Email { get; init; }
-    public string Password { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
 }
 
 public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService, IHashPasswordService hashPasswordService) 

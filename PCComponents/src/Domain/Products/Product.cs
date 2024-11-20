@@ -7,14 +7,14 @@ namespace Domain.Products
     public class Product
     {
         public ProductId Id { get; }
-        public ComponentCharacteristic ComponentCharacteristic { get; private init; }
+        public ComponentCharacteristic ComponentCharacteristic { get; private set; }
         public string Name { get; private set; }
         public decimal Price { get; private set; }
         public string Description { get; private set; }
         public int StockQuantity { get; private set; }
-        public ManufacturerId ManufacturerId { get; set; }
+        public ManufacturerId ManufacturerId { get; private set; }
         public Manufacturer? Manufacturer { get; set; }
-        public CategoryId CategoryId { get; set; }
+        public CategoryId CategoryId { get; private set; }
         public Category? Category { get; set; }
 
 
@@ -35,12 +35,17 @@ namespace Domain.Products
             => new(id, name, price, description, stockQuantity, manufacturerId, categoryId)
                 { ComponentCharacteristic = componentCharacteristic };
 
-        public void UpdateDetails(string name, decimal price, string description, int stockQuantity)
+        public void UpdateDetails(string name, decimal price, string description, int stockQuantity,
+            CategoryId categoryId, ManufacturerId manufacturerId,
+            ComponentCharacteristic componentCharacteristic)
         {
             Name = name;
             Price = price;
             Description = description;
             StockQuantity = stockQuantity;
+            ComponentCharacteristic = componentCharacteristic;
+            CategoryId = categoryId;
+            ManufacturerId = manufacturerId;
         }
     }
 }
