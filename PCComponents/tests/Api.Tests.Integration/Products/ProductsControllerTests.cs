@@ -193,8 +193,12 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         manufacturers.Should().NotBeNull();
         manufacturers!.Should().NotBeEmpty();
 
-        var categoryId = categories.First().Id!.Value;
-        var manufacturerId = manufacturers.First().Id!.Value;
+        var ramCategory = categories.FirstOrDefault(c => c.Name.Contains("RAM", StringComparison.OrdinalIgnoreCase));
+        ramCategory.Should().NotBeNull("Category with 'RAM' should exist in the database.");
+
+        var testManufacturer = manufacturers.FirstOrDefault(m => 
+            m.Name.Contains("NVIDIA Corporation", StringComparison.OrdinalIgnoreCase));
+        testManufacturer.Should().NotBeNull("Manufacturer with 'NVIDIA Corporation' should exist in the database.");
 
         var ram = new RAM
         {
@@ -209,14 +213,14 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         var componentCharacteristic = ComponentCharacteristic.NewRam(ram);
 
         var request = new CreateProductDto(
-            Name: "Product to Delete",
+            Name: "Test RAM for deletion",
             Price: 49.99m,
-            Description: "This product will be deleted.",
+            Description: "High-performance RAM for testing deletion.",
             StockQuantity: 5,
-            ManufacturerId: manufacturerId,
-            CategoryId: categoryId,
+            ManufacturerId: testManufacturer!.Id.Value,
+            CategoryId: ramCategory!.Id.Value,
             ComponentCharacteristic: componentCharacteristic);
-        
+
         var createResponse = await Client.PostAsJsonAsync("products", request);
         createResponse.IsSuccessStatusCode.Should().BeTrue();
         
