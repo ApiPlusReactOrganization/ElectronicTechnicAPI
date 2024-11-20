@@ -34,11 +34,20 @@ app.UseCors(options => options
 await app.InitialiseDb();
 app.MapControllers();
 
+
+var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "data/images");
+
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
 app.UseMiddleware<MiddlewareValidationExceptionHandling>();
+
 
 app.UseStaticFiles(new StaticFileOptions
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "data/images")),
+    FileProvider = new PhysicalFileProvider(imagesPath),
     RequestPath = "/images"
 });
 
