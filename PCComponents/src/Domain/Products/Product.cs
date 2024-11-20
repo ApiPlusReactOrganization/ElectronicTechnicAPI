@@ -17,7 +17,7 @@ namespace Domain.Products
         public CategoryId CategoryId { get; private set; }
         public Category? Category { get; set; }
 
-        public List<ProductImage>? Images { get; private set; } = [];
+        public List<ProductImage> Images { get; private set; } = [];
 
         private Product(ProductId id, string name, decimal price, string description, int stockQuantity,
             ManufacturerId manufacturerId, CategoryId categoryId)
@@ -49,7 +49,16 @@ namespace Domain.Products
             ManufacturerId = manufacturerId;
         }
         
-        public void UpdateProductImage(List<ProductImage> images)
-            => Images = images;
+        public void UploadProductImages(List<ProductImage> images)
+            => Images.AddRange(images);
+        
+        public void RemoveImage(ProductImageId productImageId)
+        {
+            var image = Images.FirstOrDefault(x => x.Id == productImageId);
+            if (image != null)
+            {
+                Images.Remove(image);
+            }
+        }
     }
 }

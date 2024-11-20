@@ -20,9 +20,9 @@ public class AccountController(ISender sender) : ControllerBase
     {
         var input = new SignUpCommand
         {
-            Email = request.email,
-            Password = request.password,
-            Name = request.name,
+            Email = request.Email,
+            Password = request.Password,
+            Name = request.Name,
         };
         
         var result = await sender.Send(input, cancellationToken);
@@ -39,8 +39,8 @@ public class AccountController(ISender sender) : ControllerBase
     {
         var input = new SignInCommand
         {
-            Email = request.email,
-            Password = request.password
+            Email = request.Email,
+            Password = request.Password
         };
         
         var result = await sender.Send(input, cancellationToken);

@@ -30,7 +30,11 @@ public class ProductManufacturerNotFoundException(ManufacturerId id)
 public class ProductUnknownException(ProductId id, Exception innerException)
     : ProductException(id, $"Unknown exception for the product under id: {id}", innerException);
 
-public class ImageSaveException(ProductId id) : ProductException(id, $"Product under id: {id} have problems with images save!");
+public class ImageSaveException(ProductId id)
+    : ProductException(id, $"Product under id: {id} have problems with images save!");
+
+public class ImageNotFoundException(ProductImageId id)
+    : ProductException(ProductId.Empty, $"Product image under id: {id} not found!");
 
 public class ProductInvalidCategoryException(CategoryId id, string categoryName)
     : ProductException(

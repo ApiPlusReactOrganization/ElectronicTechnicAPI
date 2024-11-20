@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("products")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries productQueries) : ControllerBase
 {
@@ -149,6 +149,23 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         {
             ProductId = productId,
             ImagesFiles = imagesFiles
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ProductDto>>(
+            r => ProductDto.FromDomainModel(r),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPut("delete-images/{productId:guid}")]
+    public async Task<ActionResult<ProductDto>> Upload([FromRoute] Guid productId, Guid productImageId,
+        CancellationToken cancellationToken)
+    {
+        var input = new DeleteProductImageCommand()
+        {
+            ProductId = productId,
+            ProductImageId = productImageId
         };
 
         var result = await sender.Send(input, cancellationToken);

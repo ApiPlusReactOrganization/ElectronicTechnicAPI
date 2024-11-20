@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Application.Users.Commands;
 
-public class DeleteUserCommand : IRequest<Result<User, UserException>>
+public record DeleteUserCommand : IRequest<Result<User, UserException>>
 {
     public required Guid UserId { get; init; }
 }

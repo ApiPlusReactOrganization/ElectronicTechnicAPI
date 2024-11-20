@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Products.Commands;
 
-public class UploadProductImagesCommand : IRequest<Result<Product, ProductException>>
+public record UploadProductImagesCommand : IRequest<Result<Product, ProductException>>
 {
     public Guid ProductId { get; init; }
     public IFormFileCollection ImagesFiles { get; init; }
@@ -26,17 +26,17 @@ public class UploadProductImagesCommandHandler(
         var existingProduct = await productRepository.GetById(productId, cancellationToken);
 
         return await existingProduct.Match(
-            async product => await UploadOrReplaceImage(product, request.ImagesFiles, cancellationToken),
+            async product => await UploadImages(product, request.ImagesFiles, cancellationToken),
             () => Task.FromResult<Result<Product, ProductException>>(
                 new ProductNotFoundException(productId)));
     }
     
-    private async Task<Result<Product, ProductException>> UploadOrReplaceImage(
+    private async Task<Result<Product, ProductException>> UploadImages(
         Product product,
         IFormFileCollection imagesFiles,
         CancellationToken cancellationToken)
     {
-        var imageSaveResult = await imageService.SaveImagesFromFilesAsync(ImagePaths.ProductImagesPath, imagesFiles, product.Images);
+        var imageSaveResult = await imageService.SaveImagesFromFilesAsync(ImagePaths.ProductImagesPath, imagesFiles);
 
         return await imageSaveResult.Match<Task<Result<Product, ProductException>>>(
             async imagesNames =>
@@ -48,7 +48,7 @@ public class UploadProductImagesCommandHandler(
                     imagesEntities.Add(ProductImage.New(ProductImageId.New(), product.Id, imageName));
                 }
                 
-                product.UpdateProductImage(imagesEntities);
+                product.UploadProductImages(imagesEntities);
                 
                 var productWithImages = await productRepository.Update(product, cancellationToken);
                 return productWithImages;

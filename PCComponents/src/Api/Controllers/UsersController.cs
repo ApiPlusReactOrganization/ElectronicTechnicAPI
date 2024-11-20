@@ -13,8 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("users")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
@@ -49,7 +49,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var input = new ChangeRolesForUserCommand()
         {
             UserId = userId,
-            Roles = roles.Select(x => x.name.ToString()).ToList()
+            Roles = roles.Select(x => x.Name.ToString()).ToList()
         };
 
         var result = await sender.Send(input, cancellationToken);

@@ -24,7 +24,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
 
         // Assert
         usersResponse.Should().NotBeNullOrEmpty();
-        usersResponse!.Any(u => u.email == signUpRequest.email).Should().BeTrue("Користувач має бути у списку");
+        usersResponse!.Any(u => u.Email == signUpRequest.Email).Should().BeTrue("Користувач має бути у списку");
     }
 
     [Fact]
@@ -37,11 +37,11 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
 
 
         var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var mainUser = users!.FirstOrDefault(u => u.email == signUpRequest.email);
+        var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
 
         // Act
-        var deleteResponse = await Client.DeleteAsync($"users/delete/{mainUser!.id}");
+        var deleteResponse = await Client.DeleteAsync($"users/delete/{mainUser!.Id}");
 
         // Assert
         deleteResponse.IsSuccessStatusCode.Should().BeTrue("Користувач має бути успішно видалений");
@@ -57,7 +57,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
 
 
         var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var mainUser = users!.FirstOrDefault(u => u.email == signUpRequest.email);
+        var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
 
  
@@ -67,7 +67,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         };
 
         // Act
-        var updateRolesResponse = await Client.PutAsJsonAsync($"users/update-roles/{mainUser!.id}", newRoles);
+        var updateRolesResponse = await Client.PutAsJsonAsync($"users/update-roles/{mainUser!.Id}", newRoles);
 
         // Assert
         updateRolesResponse.IsSuccessStatusCode.Should().BeTrue("Ролі мають бути успішно оновлені");
@@ -83,7 +83,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
 
 
         var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var mainUser = users!.FirstOrDefault(u => u.email == signUpRequest.email);
+        var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
         
         using var imageContent = new ByteArrayContent(new byte[0]);
@@ -94,7 +94,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         };
 
         // Act
-        var uploadImageResponse = await Client.PutAsync($"users/image/{mainUser!.id}", content);
+        var uploadImageResponse = await Client.PutAsync($"users/image/{mainUser!.Id}", content);
 
         // Assert
         uploadImageResponse.IsSuccessStatusCode.Should().BeTrue("Зображення має бути успішно завантажене");
@@ -143,14 +143,14 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
 
         // Отримуємо ID користувача
         var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var mainUser = users!.FirstOrDefault(u => u.email == signUpRequest.email);
+        var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
 
         // Порожній список ролей
         var emptyRoles = new List<RoleDto>();
 
         // Act
-        var updateRolesResponse = await Client.PutAsJsonAsync($"users/update-roles/{mainUser!.id}", emptyRoles);
+        var updateRolesResponse = await Client.PutAsJsonAsync($"users/update-roles/{mainUser!.Id}", emptyRoles);
 
         // Assert
         updateRolesResponse.IsSuccessStatusCode.Should().BeFalse();

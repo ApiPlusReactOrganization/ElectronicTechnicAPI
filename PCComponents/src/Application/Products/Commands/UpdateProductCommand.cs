@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Application.Products.Commands;
 
-public class UpdateProductCommand : IRequest<Result<Product, ProductException>>
+public record UpdateProductCommand : IRequest<Result<Product, ProductException>>
 {
     public Guid ProductId { get; init; }
     public required string Name { get; init; }

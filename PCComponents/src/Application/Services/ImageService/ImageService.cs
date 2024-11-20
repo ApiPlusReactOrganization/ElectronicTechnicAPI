@@ -1,4 +1,5 @@
-﻿using Domain.Products;
+﻿using Application.Common;
+using Domain.Products;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Optional;
@@ -46,11 +47,10 @@ namespace Application.Services.ImageService
                 return Option.None<string>();
             }
         }
-        
+
         public async Task<Option<List<string>>> SaveImagesFromFilesAsync(
-            string path, 
-            IFormFileCollection images, 
-            List<ProductImage> productImages)
+            string path,
+            IFormFileCollection images)
         {
             try
             {
@@ -84,5 +84,22 @@ namespace Application.Services.ImageService
             }
         }
 
+        public async Task<Result<bool, string>> DeleteImageAsync(string path, string imagePath)
+        {
+            try
+            {
+                var fullOldPath = Path.Combine(webHostEnvironment.ContentRootPath, path, imagePath);
+                if (File.Exists(fullOldPath))
+                {
+                    File.Delete(fullOldPath);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
     }
 }

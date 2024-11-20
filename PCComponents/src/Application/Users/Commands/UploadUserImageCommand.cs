@@ -13,7 +13,7 @@ using Optional;
 
 namespace Application.Users.Commands;
 
-public class UploadUserImageCommand : IRequest<Result<ServiceResponseForJwtToken, UserException>>
+public record UploadUserImageCommand : IRequest<Result<ServiceResponseForJwtToken, UserException>>
 {
     public Guid UserId { get; init; }
     public IFormFile ImageFile { get; init; }
