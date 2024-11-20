@@ -26,7 +26,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             Name: facultyName);
 
         // Act
-        var response = await Client.PostAsJsonAsync("manufacturers", request);
+        var response = await Client.PostAsJsonAsync("manufacturers/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -51,7 +51,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             Name: newFacultyName);
 
         // Act
-        var response = await Client.PutAsJsonAsync("manufacturers", request);
+        var response = await Client.PutAsJsonAsync("manufacturers/update", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -75,7 +75,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             Name: _mainManufacturer.Name);
 
         // Act
-        var response = await Client.PostAsJsonAsync("manufacturers", request);
+        var response = await Client.PostAsJsonAsync("manufacturers/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -91,7 +91,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
             Name: "New Manufacturer Name");
 
         // Act
-        var response = await Client.PutAsJsonAsync("manufacturers", request);
+        var response = await Client.PutAsJsonAsync("manufacturers/update", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -110,7 +110,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         existingManufacturer.Should().NotBeNull();
 
         // Act
-        var response = await Client.DeleteAsync($"manufacturers/{manufacturerId.Value}");
+        var response = await Client.DeleteAsync($"manufacturers/delete/{manufacturerId.Value}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();

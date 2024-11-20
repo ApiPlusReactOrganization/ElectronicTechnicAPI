@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[Route("[controller]")]
+[Route("account")]
 [ApiController]
 public class AccountController(ISender sender) : ControllerBase
 {

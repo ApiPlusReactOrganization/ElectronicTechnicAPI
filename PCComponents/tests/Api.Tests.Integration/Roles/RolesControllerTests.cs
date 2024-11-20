@@ -13,7 +13,7 @@ public class RolesControllerTests(IntegrationTestWebFactory factory) : BaseInteg
     public async Task ShouldGetAllRoles()
     {
         // Act
-        var response = await Client.GetAsync("roles");
+        var response = await Client.GetAsync("roles/get-all");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -26,7 +26,7 @@ public class RolesControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         Client.DefaultRequestHeaders.Authorization = null;
 
         // Act
-        var response = await Client.GetAsync("roles");
+        var response = await Client.GetAsync("roles/get-all");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
