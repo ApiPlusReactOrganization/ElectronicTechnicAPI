@@ -3,15 +3,15 @@ using Domain.Products.PCComponents;
 
 namespace Api.Dtos.Products;
 
-public record ProductDto
-(
+public record ProductDto(
     Guid? Id,
     string Name,
-    decimal Price ,
+    decimal Price,
     string Description,
-    int StockQuantity, 
+    int StockQuantity,
     ManufacturerDto? Manufacturer,
     CategoryDto? Category,
+    List<ProductImageDto>? Image,
     ComponentCharacteristic ComponentCharacteristic
 )
 {
@@ -25,6 +25,7 @@ public record ProductDto
             product.StockQuantity,
             product.Manufacturer == null ? null : ManufacturerDto.FromDomainModel(product.Manufacturer),
             product.Category == null ? null : CategoryDto.FromDomainModel(product.Category),
+            product.Images.Select(ProductImageDto.FromDomainModel).ToList(),
             product.ComponentCharacteristic
         );
     }

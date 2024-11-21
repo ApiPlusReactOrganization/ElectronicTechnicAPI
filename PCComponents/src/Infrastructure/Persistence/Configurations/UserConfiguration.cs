@@ -18,6 +18,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasMany(x => x.Roles)
             .WithMany(x => x.Users)
-            .UsingEntity(x => x.ToTable("userRoles"));
+            .UsingEntity(x => x.ToTable("user_roles"));
     }
 }

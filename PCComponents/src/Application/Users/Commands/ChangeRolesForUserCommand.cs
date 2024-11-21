@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Application.Users.Commands;
 
-public class ChangeRolesForUserCommand : IRequest<Result<User, UserException>>
+public record ChangeRolesForUserCommand : IRequest<Result<User, UserException>>
 {
     public required Guid UserId { get; init; }
     public List<string> Roles { get; init; }

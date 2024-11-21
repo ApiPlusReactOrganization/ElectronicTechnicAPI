@@ -16,8 +16,8 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldCreateProduct()
     {
         // Arrange
-        var categoriesResponse = await Client.GetAsync("categories");
-        var manufacturersResponse = await Client.GetAsync("manufacturers");
+        var categoriesResponse = await Client.GetAsync("categories/get-all");
+        var manufacturersResponse = await Client.GetAsync("manufacturers/get-all");
         categoriesResponse.IsSuccessStatusCode.Should().BeTrue();
         manufacturersResponse.IsSuccessStatusCode.Should().BeTrue();
 
@@ -57,7 +57,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: componentCharacteristic);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -70,7 +70,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldGetAllProducts()
     {
         // Act
-        var response = await Client.GetAsync("products");
+        var response = await Client.GetAsync("products/get-all");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -83,7 +83,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldGetProductById()
     {
         // Arrange
-        var productsResponse = await Client.GetAsync("products");
+        var productsResponse = await Client.GetAsync("products/get-all");
         productsResponse.IsSuccessStatusCode.Should().BeTrue();
         var products = await productsResponse.Content.ReadFromJsonAsync<List<ProductDto>>();
         products.Should().NotBeNull();
@@ -92,7 +92,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         var productId = products.First().Id!.Value;
 
         // Act
-        var response = await Client.GetAsync($"products/{productId}");
+        var response = await Client.GetAsync($"products/get-by-id/{productId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -105,7 +105,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldGetProductsByCategory()
     {
         // Arrange
-        var categoriesResponse = await Client.GetAsync("categories");
+        var categoriesResponse = await Client.GetAsync("categories/get-all");
         categoriesResponse.IsSuccessStatusCode.Should().BeTrue();
         var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryDto>>();
         categories.Should().NotBeNull();
@@ -126,7 +126,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldGetProductsByManufacturer()
     {
         // Arrange
-        var manufacturersResponse = await Client.GetAsync("manufacturers");
+        var manufacturersResponse = await Client.GetAsync("manufacturers/get-all");
         manufacturersResponse.IsSuccessStatusCode.Should().BeTrue();
         var manufacturers = await manufacturersResponse.Content.ReadFromJsonAsync<List<ManufacturerDto>>();
         manufacturers.Should().NotBeNull();
@@ -147,8 +147,8 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldGetProductsByCategoryAndManufacturer()
     {
         // Arrange
-        var categoriesResponse = await Client.GetAsync("categories");
-        var manufacturersResponse = await Client.GetAsync("manufacturers");
+        var categoriesResponse = await Client.GetAsync("categories/get-all");
+        var manufacturersResponse = await Client.GetAsync("manufacturers/get-all");
 
         categoriesResponse.IsSuccessStatusCode.Should().BeTrue();
         manufacturersResponse.IsSuccessStatusCode.Should().BeTrue();
@@ -178,8 +178,8 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldDeleteProduct()
     {
         // Arrange
-        var categoriesResponse = await Client.GetAsync("categories");
-        var manufacturersResponse = await Client.GetAsync("manufacturers");
+        var categoriesResponse = await Client.GetAsync("categories/get-all");
+        var manufacturersResponse = await Client.GetAsync("manufacturers/get-all");
 
         categoriesResponse.IsSuccessStatusCode.Should().BeTrue();
         manufacturersResponse.IsSuccessStatusCode.Should().BeTrue();
@@ -193,10 +193,10 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         manufacturers.Should().NotBeNull();
         manufacturers!.Should().NotBeEmpty();
 
-        var ramCategory = categories.FirstOrDefault(c => c.Name.Contains("RAM", StringComparison.OrdinalIgnoreCase));
+        var ramCategory = categories!.FirstOrDefault(c => c.Name.Contains("RAM", StringComparison.OrdinalIgnoreCase));
         ramCategory.Should().NotBeNull("Category with 'RAM' should exist in the database.");
 
-        var testManufacturer = manufacturers.FirstOrDefault(m => 
+        var testManufacturer = manufacturers!.FirstOrDefault(m => 
             m.Name.Contains("NVIDIA Corporation", StringComparison.OrdinalIgnoreCase));
         testManufacturer.Should().NotBeNull("Manufacturer with 'NVIDIA Corporation' should exist in the database.");
 
@@ -217,27 +217,27 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             Price: 49.99m,
             Description: "High-performance RAM for testing deletion.",
             StockQuantity: 5,
-            ManufacturerId: testManufacturer!.Id.Value,
-            CategoryId: ramCategory!.Id.Value,
+            ManufacturerId: testManufacturer!.Id!.Value,
+            CategoryId: ramCategory!.Id!.Value,
             ComponentCharacteristic: componentCharacteristic);
 
-        var createResponse = await Client.PostAsJsonAsync("products", request);
+        var createResponse = await Client.PostAsJsonAsync("products/create", request);
         createResponse.IsSuccessStatusCode.Should().BeTrue();
         
-        var getAllResponse = await Client.GetAsync("products");
+        var getAllResponse = await Client.GetAsync("products/get-all");
         getAllResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var products = await getAllResponse.Content.ReadFromJsonAsync<List<ProductDto>>();
         products.Should().NotBeNull();
         products!.Should().NotBeEmpty();
 
-        var createdProduct = products.FirstOrDefault(p => p.Name == request.Name);
+        var createdProduct = products!.FirstOrDefault(p => p.Name == request.Name);
         createdProduct.Should().NotBeNull("The product should exist in the list of all products.");
 
         var productId = createdProduct!.Id!.Value;
 
         // Act: Delete the product
-        var response = await Client.DeleteAsync($"products/{productId}");
+        var response = await Client.DeleteAsync($"products/delete/{productId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -257,7 +257,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -278,7 +278,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -299,7 +299,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -320,7 +320,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -341,7 +341,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -362,7 +362,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
             ComponentCharacteristic: null);
 
         // Act
-        var response = await Client.PostAsJsonAsync("products", request);
+        var response = await Client.PostAsJsonAsync("products/create", request);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -375,7 +375,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         var invalidProductId = Guid.Empty;
 
         // Act
-        var response = await Client.DeleteAsync($"products/{invalidProductId}");
+        var response = await Client.DeleteAsync($"products/delete/{invalidProductId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
@@ -389,7 +389,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         var nonexistentProductId = Guid.NewGuid(); // ID that doesn't exist
 
         // Act
-        var response = await Client.DeleteAsync($"products/{nonexistentProductId}");
+        var response = await Client.DeleteAsync($"products/delete/{nonexistentProductId}");
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
