@@ -11,7 +11,7 @@ public record ProductDto(
     int StockQuantity,
     ManufacturerDto? Manufacturer,
     CategoryDto? Category,
-    List<ProductImageDto>? Image,
+    List<ProductImageDto>? Images,
     ComponentCharacteristic ComponentCharacteristic
 )
 {
