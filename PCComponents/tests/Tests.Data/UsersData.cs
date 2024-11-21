@@ -7,39 +7,39 @@ namespace Tests.Data;
 public static class UsersData
 {
     public static UserDto MainUser => new(
-        id: Guid.NewGuid(),
-        email: "mainuser@example.com",
-        name: "Main User",
-        image : null,
-        roles: new List<RoleDto> { new("User") });
+        Id: Guid.NewGuid(),
+        Email: "mainuser@example.com",
+        Name: "Main User",
+        Image : null,
+        Roles: new List<RoleDto> { new("User") });
 
     public static SignUpDto SignUpMainUser => new(
-        email: "mainuser@gmail.com",
-        password: "MainUserPassword123!",
-        name: "Main User");
+        Email: "mainuser@gmail.com",
+        Password: "MainUserPassword123!",
+        Name: "Main User");
     
     public static SignUpDto SignUpDeleteUser => new(
-        email: "deleteuser@gmail.com",
-        password: "DeleteUserPassword123!",
-        name: "Delete User");
+        Email: "deleteuser@gmail.com",
+        Password: "DeleteUserPassword123!",
+        Name: "Delete User");
     
     public static SignUpDto SignUpUpdateUserRoles => new(
-        email: "updateuserRoles@gmail.com",
-        password: "UpdateUserRolesPassword123!",
-        name: "UpdateRoles User");
+        Email: "updateuserRoles@gmail.com",
+        Password: "UpdateUserRolesPassword123!",
+        Name: "UpdateRoles User");
     public static SignUpDto SignUpNotUpdateUserRoles => new(
-        email: "notupdateuserRoles@gmail.com",
-        password: "notUpdateUserRolesPassword123!",
-        name: "notUpdateRoles User");
+        Email: "notupdateuserRoles@gmail.com",
+        Password: "notUpdateUserRolesPassword123!",
+        Name: "notUpdateRoles User");
     
     public static SignUpDto SignUpUploadUser => new(
-        email: "uploadUseruser@gmail.com",
-        password: "UploadUserUserPassword123!",
-        name: "UploadUser User");
+        Email: "uploadUseruser@gmail.com",
+        Password: "UploadUserUserPassword123!",
+        Name: "UploadUser User");
     
     public static SignUpDto invalidSignUpRequest => new(
-        email: "",
-        password: "123",
-        name: "Invalid User"
+        Email: "",
+        Password: "123",
+        Name: "Invalid User"
         );
 }

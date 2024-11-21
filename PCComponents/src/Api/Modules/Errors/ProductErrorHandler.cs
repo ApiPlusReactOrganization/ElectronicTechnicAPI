@@ -16,12 +16,14 @@ public static class ProductErrorHandler
                     or ProductManufacturerNotFoundException
                     or ProductNotFoundException
                     or ProductInvalidCategoryException
+                    or ImageNotFoundException
                     => StatusCodes.Status404NotFound,
 
-                ProductNameExistsWithSameFieldsException
+                ProductNameExistsWithSameFieldsException 
+                    
                     => StatusCodes.Status409Conflict,
 
-                ProductUnknownException
+                ProductUnknownException or ImageSaveException 
                     => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Product error handler does not implemented")
             }

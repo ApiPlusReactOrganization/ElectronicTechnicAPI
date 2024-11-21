@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("manufacturers")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]*/
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ManufacturersController(ISender sender, IManufacturerQueries manufacturerQueries) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet]
+    [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<ManufacturerDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await manufacturerQueries.GetAll(cancellationToken);
@@ -26,7 +26,7 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
         return entities.Select(ManufacturerDto.FromDomainModel).ToList();
     }
     
-    [HttpGet("{manufacturerId:guid}")]
+    [HttpGet("get-by-id/{manufacturerId:guid}")]
     public async Task<ActionResult<ManufacturerDto>> Get([FromRoute] Guid manufacturerId, CancellationToken cancellationToken)
     {
         var entity = await manufacturerQueries.GetById(
@@ -37,7 +37,7 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
             () => NotFound());
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<ActionResult<ManufacturerDto>> Create(
         [FromBody] ManufacturerDto request,
         CancellationToken cancellationToken)
@@ -54,7 +54,7 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
             e => e.ToObjectResult());
     }
     
-    [HttpPut]
+    [HttpPut("update")]
     public async Task<ActionResult<ManufacturerDto>> Update(
         [FromBody] ManufacturerDto request,
         CancellationToken cancellationToken)
@@ -72,7 +72,7 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
             e => e.ToObjectResult());
     }
     
-    [HttpDelete("{manufacturerId:guid}")]
+    [HttpDelete("delete/{manufacturerId:guid}")]
     public async Task<ActionResult<ManufacturerDto>> 
         Delete([FromRoute] Guid manufacturerId, CancellationToken cancellationToken)
     {

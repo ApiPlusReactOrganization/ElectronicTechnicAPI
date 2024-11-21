@@ -23,6 +23,7 @@ public class ProductRepository : IProductRepository, IProductQueries
         return await _context.Products
             .Include(p => p.Manufacturer)
             .Include(p => p.Category)
+            .Include(i => i.Images)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
@@ -36,10 +37,11 @@ public class ProductRepository : IProductRepository, IProductQueries
             .Where(p => p.CategoryId == category && p.ManufacturerId == manufacturerId)
             .Include(p => p.Manufacturer)
             .Include(p => p.Category)
+            .Include(i => i.Images)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
-    
+
     public async Task<IReadOnlyList<Product>> GetProductsByManufacturer(
         ManufacturerId manufacturerId,
         CancellationToken cancellationToken)
@@ -48,6 +50,7 @@ public class ProductRepository : IProductRepository, IProductQueries
             .Where(p => p.ManufacturerId == manufacturerId)
             .Include(p => p.Manufacturer)
             .Include(p => p.Category)
+            .Include(i => i.Images)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
@@ -60,6 +63,7 @@ public class ProductRepository : IProductRepository, IProductQueries
             .Where(p => p.CategoryId == category)
             .Include(p => p.Manufacturer)
             .Include(p => p.Category)
+            .Include(i => i.Images)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
@@ -69,6 +73,7 @@ public class ProductRepository : IProductRepository, IProductQueries
         var entity = await _context.Products
             .Include(p => p.Manufacturer)
             .Include(p => p.Category)
+            .Include(i => i.Images)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Product>() : Option.Some(entity);
@@ -88,7 +93,7 @@ public class ProductRepository : IProductRepository, IProductQueries
     {
         return await _context.SaveChangesAsync(cancellationToken);
     }
-    
+
     public async Task<Product> Add(Product product, CancellationToken cancellationToken)
     {
         await _context.Products.AddAsync(product, cancellationToken);

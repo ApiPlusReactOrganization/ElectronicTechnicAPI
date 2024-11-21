@@ -14,13 +14,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("products")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]*/
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries productQueries) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet]
+    [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await productQueries.GetAll(cancellationToken);
@@ -66,7 +66,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
 
-    [HttpGet("{productId:guid}")]
+    [HttpGet("get-by-id/{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Get([FromRoute] Guid productId, CancellationToken cancellationToken)
     {
         var entity = await productQueries.GetById(
@@ -77,7 +77,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             () => NotFound());
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<ActionResult<CreateProductDto>> Create(
         [FromBody] CreateProductDto request,
         CancellationToken cancellationToken)
@@ -100,7 +100,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             e => e.ToObjectResult());
     }
 
-    [HttpDelete("{productId:guid}")]
+    [HttpDelete("delete/{productId:guid}")]
     public async Task<ActionResult<ProductDto>>
         Delete([FromRoute] Guid productId, CancellationToken cancellationToken)
     {
@@ -116,7 +116,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             e => e.ToObjectResult());
     }
     
-    [HttpPut("{productId:guid}")]
+    [HttpPut("update/{productId:guid}")]
     public async Task<ActionResult<CreateProductDto>> Update(
         [FromRoute] Guid productId,
         [FromBody] CreateProductDto request,
@@ -138,6 +138,40 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
 
         return result.Match<ActionResult<CreateProductDto>>(
             f => CreateProductDto.FromDomainModel(f),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPut("upload-images/{productId:guid}")]
+    public async Task<ActionResult<ProductDto>> Upload([FromRoute] Guid productId, IFormFileCollection imagesFiles,
+        CancellationToken cancellationToken)
+    {
+        var input = new UploadProductImagesCommand()
+        {
+            ProductId = productId,
+            ImagesFiles = imagesFiles
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ProductDto>>(
+            r => ProductDto.FromDomainModel(r),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPut("delete-images/{productId:guid}")]
+    public async Task<ActionResult<ProductDto>> Upload([FromRoute] Guid productId, Guid productImageId,
+        CancellationToken cancellationToken)
+    {
+        var input = new DeleteProductImageCommand()
+        {
+            ProductId = productId,
+            ProductImageId = productImageId
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ProductDto>>(
+            r => ProductDto.FromDomainModel(r),
             e => e.ToObjectResult());
     }
 }
