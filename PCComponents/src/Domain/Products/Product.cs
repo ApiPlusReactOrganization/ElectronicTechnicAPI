@@ -1,4 +1,5 @@
-﻿using Domain.Categories;
+﻿using Domain.CartItems;
+using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products.PCComponents;
 
@@ -16,8 +17,8 @@ namespace Domain.Products
         public Manufacturer? Manufacturer { get; set; }
         public CategoryId CategoryId { get; private set; }
         public Category? Category { get; set; }
-
         public List<ProductImage> Images { get; private set; } = [];
+        public List<CartItem> CartItems { get; private set; } = new();
 
         private Product(ProductId id, string name, decimal price, string description, int stockQuantity,
             ManufacturerId manufacturerId, CategoryId categoryId)

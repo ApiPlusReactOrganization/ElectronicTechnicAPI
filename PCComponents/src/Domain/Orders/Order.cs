@@ -5,19 +5,45 @@ namespace Domain.Orders;
 
 public class Order
 {
-    public Guid Id { get; set; } 
+    public OrderId Id { get; } 
     
-    public UserId UserId { get; set; } 
-    public User User { get; set; } 
+    public UserId UserId { get; private set; } 
     
-    public Guid CartId { get; set; } 
-    public Cart Cart { get; set; } 
+    public User? User { get; set; } 
     
-    public decimal TotalPrice { get; set; } 
+    public CartId CartId { get; private set; } 
     
-    public string Status { get; set; } 
+    public Cart? Cart { get; set; } 
     
-    public DateTime CreatedAt { get; set; } 
+    public decimal TotalPrice { get; private set; }
     
-    public string? DeliveryAddress { get; set; } 
+    public string Status { get; private set; } 
+    
+    public DateTime CreatedAt { get; private set; } 
+    
+    public string DeliveryAddress { get; private set; }
+
+    private Order(OrderId id, UserId userId, CartId cartId, string status, string deliveryAddress)
+    {
+        Id = id;
+        UserId = userId;
+        CartId = cartId;
+        Status = status;
+        CreatedAt = DateTime.UtcNow;
+        DeliveryAddress = deliveryAddress;
+    }
+    
+    public static Order New(OrderId id, UserId userId, Cart cart, string status, string deliveryAddress)
+    {
+        return new Order(id, userId, cart.Id, status, deliveryAddress)
+        {
+            Cart = cart,
+            TotalPrice = cart.Items.Sum(x => x.Product!.Price * x.Quantity)
+        };
+    }
+    
+    public void UpdateStatus(string status)
+    {
+        Status = status;
+    }
 }
