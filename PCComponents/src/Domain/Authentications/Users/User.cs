@@ -12,7 +12,6 @@ public class User
     public string PasswordHash { get; set; }
     public UserImage? UserImage { get; private set; }
     public List<Role> Roles { get; set; } = new();
-    public CartId CartId { get; private set; }
     public Cart? Cart { get; set; }
     public List<Order> Orders { get; set; } = new();
     

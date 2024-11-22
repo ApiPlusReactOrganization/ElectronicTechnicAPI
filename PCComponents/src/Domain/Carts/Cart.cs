@@ -14,8 +14,6 @@ public class Cart
 
     public List<CartItem> Items { get; private set; } = new();
     
-    public OrderId OrderId { get; private set; } 
-    
     public Order? Order { get; set; } 
 
     private Cart(CartId id, UserId userId)
