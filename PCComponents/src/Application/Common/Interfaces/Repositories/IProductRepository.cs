@@ -24,4 +24,5 @@ public interface IProductRepository
         CancellationToken cancellationToken);
 
     Task<int> SaveChanges(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Product>> GetAll(CancellationToken cancellationToken);
 }
