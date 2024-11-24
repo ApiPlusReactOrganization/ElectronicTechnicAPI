@@ -13,8 +13,8 @@ public class Cart
     public User? User { get; set; }
 
     public List<CartItem> Items { get; private set; } = new();
-    
-    public Order? Order { get; set; } 
+
+    public List<Order> Orders { get; private set; } = new();
 
     private Cart(CartId id, UserId userId)
     {

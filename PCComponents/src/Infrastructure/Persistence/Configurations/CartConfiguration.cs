@@ -15,6 +15,11 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(x => x.Cart)
                 .HasForeignKey<Cart>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            
+            builder.HasMany(x => x.Orders)
+                .WithOne(x => x.Cart)
+                .HasForeignKey(x => x.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

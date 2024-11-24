@@ -19,8 +19,8 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(m => m.Cart)
-                .WithOne(x => x.Order)
-                .HasForeignKey<Order>(x => x.CartId)
+                .WithMany(c => c.Orders) 
+                .HasForeignKey(m => m.CartId)
                 .HasConstraintName("fk_orders_carts_id")
                 .OnDelete(DeleteBehavior.Cascade);
 
