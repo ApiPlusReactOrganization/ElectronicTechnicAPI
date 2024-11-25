@@ -36,6 +36,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .AsNoTracking()
             .Include(x => x.Roles)
             .Include(u => u.UserImage)
+            .Include(u => u.Cart)
             .ToListAsync(cancellationToken);
     }
 
@@ -53,7 +54,8 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
 
-    public async Task<Option<User>> SearchByEmailForUpdate(UserId userId, string email, CancellationToken cancellationToken)
+    public async Task<Option<User>> SearchByEmailForUpdate(UserId userId, string email,
+        CancellationToken cancellationToken)
     {
         var entity = await GetUserAsync(x => x.Email == email && x.Id != userId, cancellationToken, true);
 
@@ -81,6 +83,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             return await _context.Users
                 .Include(u => u.Roles)
                 .Include(u => u.UserImage)
+                .Include(u => u.Cart)
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
@@ -88,6 +91,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .AsNoTracking()
             .Include(u => u.Roles)
             .Include(u => u.UserImage)
+            .Include(u => u.Cart)
             .FirstOrDefaultAsync(predicate, cancellationToken);
     }
 }

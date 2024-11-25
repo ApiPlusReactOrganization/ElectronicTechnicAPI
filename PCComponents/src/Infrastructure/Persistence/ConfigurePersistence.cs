@@ -57,6 +57,10 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
         
+        services.AddScoped<CartRepository>();
+        services.AddScoped<ICartRepository>(provider => provider.GetRequiredService<CartRepository>());
+        services.AddScoped<ICartQueries>(provider => provider.GetRequiredService<CartRepository>());
+        
         services.AddScoped<RoleRepository>();
         services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
         

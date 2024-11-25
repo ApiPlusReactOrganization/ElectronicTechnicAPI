@@ -13,7 +13,8 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(m => m.Id).HasConversion(m => m.Value, x => new OrderId(x));
             
             builder.HasOne(m => m.User)
-                .WithMany(u => u.Orders)
+                // .WithMany(u => u.Orders)
+                .WithMany()
                 .HasForeignKey(m => m.UserId)
                 .HasConstraintName("fk_orders_users_id")
                 .OnDelete(DeleteBehavior.Restrict);

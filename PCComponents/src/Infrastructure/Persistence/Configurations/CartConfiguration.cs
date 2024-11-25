@@ -1,4 +1,5 @@
-﻿using Domain.Carts;
+﻿using Domain.Authentications.Users;
+using Domain.Carts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,6 +11,8 @@ namespace Infrastructure.Persistence.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).HasConversion(x => x.Value, x => new CartId(x));
+            
+            builder.Property(x => x.UserId).HasConversion(x => x.Value, x => new UserId(x));
             
             builder.HasOne(x => x.User)
                 .WithOne(x => x.Cart)

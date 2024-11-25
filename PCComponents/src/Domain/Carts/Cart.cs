@@ -8,10 +8,10 @@ public class Cart
 {
     public CartId Id { get; }
 
-    public UserId UserId { get; private set; }
+    public User? User { get; }
     
-    public User? User { get; set; }
-
+    public UserId UserId { get; }
+    
     public List<CartItem> Items { get; private set; } = new();
 
     public List<Order> Orders { get; private set; } = new();
