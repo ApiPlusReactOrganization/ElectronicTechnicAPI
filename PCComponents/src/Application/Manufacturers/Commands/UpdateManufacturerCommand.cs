@@ -14,7 +14,7 @@ public record UpdateManufacturerCommand : IRequest<Result<Manufacturer, Manufact
 }
 
 public class UpdateFacultyCommandHandler(
-    IManufacturerRepository manufacturerRepository) : 
+    IManufacturerRepository manufacturerRepository) :
     IRequestHandler<UpdateManufacturerCommand, Result<Manufacturer, ManufacturerException>>
 {
     public async Task<Result<Manufacturer, ManufacturerException>> Handle(
@@ -22,21 +22,12 @@ public class UpdateFacultyCommandHandler(
         CancellationToken cancellationToken)
     {
         var manufacturerId = new ManufacturerId(request.ManufacturerId);
-        var manufacturer = await manufacturerRepository.GetById(manufacturerId, cancellationToken);
+        var existingManufacturer = await manufacturerRepository.GetById(manufacturerId, cancellationToken);
 
-        return await manufacturer.Match(
-            async f =>
-            {
-                var existingManufacturer = await CheckDuplicated(
-                    manufacturerId, request.Name, cancellationToken);
-
-                return await existingManufacturer.Match(
-                    m => Task.FromResult<Result<Manufacturer, ManufacturerException>>
-                        (new ManufacturerAlreadyExistsException(m.Id)),
-                    async () => await UpdateEntity(f, request.Name, cancellationToken));
-            },
-            () => Task.FromResult<Result<Manufacturer, ManufacturerException>>
-                (new ManufacturerNotFoundException(manufacturerId)));
+        return await existingManufacturer.Match(
+            async m => await UpdateEntity(m, request.Name, cancellationToken),
+            () => Task.FromResult<Result<Manufacturer, ManufacturerException>>(
+                new ManufacturerNotFoundException(manufacturerId)));
     }
 
     private async Task<Result<Manufacturer, ManufacturerException>> UpdateEntity(
@@ -54,17 +45,5 @@ public class UpdateFacultyCommandHandler(
         {
             return new ManufacturerUnknownException(manufacturer.Id, exception);
         }
-    }
-
-    private async Task<Option<Manufacturer>> CheckDuplicated(
-        ManufacturerId facultyId,
-        string name,
-        CancellationToken cancellationToken)
-    {
-        var faculty = await manufacturerRepository.SearchByName(name, cancellationToken);
-
-        return faculty.Match(
-            m => m.Id == facultyId ? Option.None<Manufacturer>() : Option.Some(m),
-            Option.None<Manufacturer>);
     }
 }

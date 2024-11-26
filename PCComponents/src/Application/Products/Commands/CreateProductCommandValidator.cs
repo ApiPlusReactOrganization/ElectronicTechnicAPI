@@ -1,14 +1,11 @@
-﻿using Application.Common.Interfaces.Repositories;
-using Application.Products.ComponentCharacteristics;
-using Domain.Products;
+﻿using Application.Products.ComponentCharacteristics;
 using FluentValidation;
-using FluentValidation.Validators;
 
 namespace Application.Products.Commands;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    public CreateProductCommandValidator(IProductRepository productRepository)
+    public CreateProductCommandValidator()
     {
         RuleFor(x => x.Name)
             .MaximumLength(255)

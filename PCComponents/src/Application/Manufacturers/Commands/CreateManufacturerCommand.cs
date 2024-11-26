@@ -12,14 +12,14 @@ public record CreateManufacturerCommand : IRequest<Result<Manufacturer, Manufact
 }
 
 public class CreateManufacturerCommandHandler(
-    IManufacturerRepository ManufacturerRepository)
+    IManufacturerRepository manufacturerRepository)
     : IRequestHandler<CreateManufacturerCommand, Result<Manufacturer, ManufacturerException>>
 {
     public async Task<Result<Manufacturer, ManufacturerException>> Handle(
         CreateManufacturerCommand request,
         CancellationToken cancellationToken)
     {
-        var existingManufacturer = await ManufacturerRepository.SearchByName(request.Name, cancellationToken);
+        var existingManufacturer = await manufacturerRepository.SearchByName(request.Name, cancellationToken);
 
         return await existingManufacturer.Match(
             c => Task.FromResult<Result<Manufacturer, ManufacturerException>>(new ManufacturerAlreadyExistsException(c.Id)),
@@ -34,7 +34,7 @@ public class CreateManufacturerCommandHandler(
         {
             var entity = Manufacturer.New(ManufacturerId.New(), name);
 
-            return await ManufacturerRepository.Add(entity, cancellationToken);
+            return await manufacturerRepository.Add(entity, cancellationToken);
         }
         catch (Exception exception)
         {

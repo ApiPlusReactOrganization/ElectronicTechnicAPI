@@ -1,7 +1,6 @@
 ﻿using Application.Common;
 using Application.Common.Interfaces.Repositories;
 using Application.Products.Exceptions;
-using Domain;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;

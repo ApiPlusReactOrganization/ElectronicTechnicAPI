@@ -7,6 +7,7 @@ public class DeleteManufacturerCommandValidator: AbstractValidator<DeleteManufac
     public DeleteManufacturerCommandValidator()
     {
         RuleFor(x => x.ManufacturerId)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("Manufacturer ID is required");
     }
 }

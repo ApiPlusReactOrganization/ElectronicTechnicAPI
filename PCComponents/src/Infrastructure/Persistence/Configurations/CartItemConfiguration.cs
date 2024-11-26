@@ -15,7 +15,7 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(m => m.Cart)
                 .WithMany(c => c.Items)
                 .HasForeignKey(m => m.CartId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.HasOne(m => m.Product)
                 .WithMany(p => p.CartItems)

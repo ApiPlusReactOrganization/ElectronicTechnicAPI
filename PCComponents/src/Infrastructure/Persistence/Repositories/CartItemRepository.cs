@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.Repositories;
 using Domain.CartItems;
 using Domain.Carts;
+using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
@@ -30,15 +31,14 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
     }
-
-    /*public Task<Option<CartItem>> SearchByName(string name, CancellationToken cancellationToken)
+    
+    public async Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Name == name, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ProductId == id, cancellationToken);
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
-    }*/
+    }
 
     public async Task<CartItem> Add(CartItem cartItem, CancellationToken cancellationToken)
     {
@@ -60,4 +60,6 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
         await _context.SaveChangesAsync(cancellationToken);
         return cartItem;
     }
+
+    
 }

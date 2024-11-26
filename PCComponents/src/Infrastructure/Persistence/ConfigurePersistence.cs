@@ -4,6 +4,7 @@ using Application.Common.Interfaces.Repositories;
 using Application.Services.HashPasswordService;
 using Application.Services.ImageService;
 using Application.Services.TokenService;
+using Domain.CartItems;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -56,6 +57,10 @@ public static class ConfigurePersistence
         services.AddScoped<UserRepository>();
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
+        
+        services.AddScoped<CartItemRepository>();
+        services.AddScoped<ICartItemRepository>(provider => provider.GetRequiredService<CartItemRepository>());
+        services.AddScoped<ICartItemQueries>(provider => provider.GetRequiredService<CartItemRepository>());
         
         services.AddScoped<CartRepository>();
         services.AddScoped<ICartRepository>(provider => provider.GetRequiredService<CartRepository>());
