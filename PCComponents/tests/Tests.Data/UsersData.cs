@@ -11,8 +11,7 @@ public static class UsersData
         Email: "mainuser@example.com",
         Name: "Main User",
         Image : null,
-        Roles: new List<RoleDto> { new("User") },
-        CartId: Guid.NewGuid());
+        Roles: new List<RoleDto> { new("User") });
 
     public static SignUpDto SignUpMainUser => new(
         Email: "mainuser@gmail.com",

@@ -1,5 +1,5 @@
-﻿using Domain.CartItems;
-using Domain.Carts;
+﻿using Domain.Authentications.Users;
+using Domain.CartItems;
 using Domain.Products;
 
 namespace Application.CartItems.Exceptions;
@@ -22,11 +22,11 @@ public class CartItemUnknownException(CartItemId id, Exception innerException)
 public class CartItemHasRelatedEntitiesException(CartItemId id)
     : CartItemException(id, $"Cart item with ID {id} cannot be deleted because it has related entities.");
 
-public class CartItemCartNotFoundException(CartId cartId)
-    : CartItemException(CartItemId.Empty, $"Cart under id '{cartId}' not found");
-
 public class CartItemProductNotFoundException(ProductId productId)
     : CartItemException(CartItemId.Empty, $"Product under id '{productId}' not found");
+
+public class CartItemUserNotFoundException(UserId userId)
+    : CartItemException(CartItemId.Empty, $"User under id '{userId}' not found");
 
 public class CartItemQuantityExceedsStockException(ProductId productId, int stockQuantity)
     : CartItemException(

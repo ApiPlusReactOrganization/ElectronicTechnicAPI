@@ -1,4 +1,5 @@
-using Domain.Carts;
+using Domain.Authentications.Users;
+using Domain.Orders;
 using Domain.Products;
 
 namespace Domain.CartItems;
@@ -7,26 +8,30 @@ public class CartItem
 {
     public CartItemId Id { get; set; }
 
-    public CartId CartId { get; private set; }
+    public User User { get; }
     
-    public Cart? Cart { get; set; }
+    public UserId UserId { get; }
 
     public ProductId ProductId { get; private set; }
     
     public Product? Product { get; set; }
 
     public int Quantity { get; private set; }
+    
+    public bool IsFinished { get; private set; } = false;
+    
+    // public List<Order> Orders { get; set; } = new();
 
-    private CartItem(CartItemId id, CartId cartId, ProductId productId, int quantity)
+    private CartItem(CartItemId id, UserId userId, ProductId productId, int quantity)
     {
         Id = id;
-        CartId = cartId;
+        UserId = userId;
         ProductId = productId;
         Quantity = quantity;
     }
 
-    public static CartItem New(CartItemId id, CartId cartId, ProductId productId, int quantity)
-        => new CartItem(id, cartId, productId, quantity);
+    public static CartItem New(CartItemId id, UserId userId, ProductId productId, int quantity)
+        => new CartItem(id, userId, productId, quantity);
     
     public void UpdateQuantity(int quantity)
     {

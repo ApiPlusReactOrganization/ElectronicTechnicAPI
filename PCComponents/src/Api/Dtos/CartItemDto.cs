@@ -7,26 +7,19 @@ namespace Api.Dtos;
 
 public record CartItemDto(
     Guid? Id,
+    Guid? UserId,
     int Quantity,
-    Guid CartId,
-    /*
-    CartDto? Cart,
-    */
-    Guid ProductId,
-    ProductDto? Product
-)
+    Guid? ProductId,
+    bool IsFinished,
+    ProductDto? Product)
 {
     public static CartItemDto FromDomainModel(CartItem cartItem)
-    {
-        return new CartItemDto(
+        => new(
             Id: cartItem.Id.Value,
+            UserId: cartItem.UserId.Value,
             Quantity: cartItem.Quantity,
-            CartId: cartItem.CartId.Value,
-            /*
-            Cart: cartItem.Cart == null ? null : CartDto.FromDomainModel(cartItem.Cart),
-            */
             ProductId: cartItem.ProductId.Value,
+            IsFinished: cartItem.IsFinished,
             Product: cartItem.Product == null ? null : ProductDto.FromDomainModel(cartItem.Product)
         );
-    }
 }

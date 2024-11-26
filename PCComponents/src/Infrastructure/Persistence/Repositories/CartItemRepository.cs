@@ -1,7 +1,7 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Domain.Authentications.Users;
 using Domain.CartItems;
-using Domain.Carts;
 using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -31,7 +31,16 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
     }
-    
+
+    public async Task<IReadOnlyList<CartItem>> GetByUserId(UserId userId, CancellationToken cancellationToken)
+    {
+        return await _context.CartItems
+            .Where(x => x.UserId == userId && x.IsFinished == false)
+            .Include(x => x.User)
+            .Include(x => x.Product)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
@@ -60,6 +69,4 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
         await _context.SaveChangesAsync(cancellationToken);
         return cartItem;
     }
-
-    
 }

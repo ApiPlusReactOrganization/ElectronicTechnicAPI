@@ -7,7 +7,6 @@ using Application.Services.TokenService;
 using Domain.Authentications.Users;
 using MediatR;
 using Domain.Authentications;
-using Domain.Carts;
 using FluentValidation;
 
 namespace Application.Authentications.Commands;
@@ -21,7 +20,6 @@ public class SignUpCommand : IRequest<Result<ServiceResponseForJwtToken, Authent
 
 public class CreateUserCommandHandler(
     IUserRepository userRepository,
-    ICartRepository cartRepository,
     IJwtTokenService jwtTokenService,
     IHashPasswordService hashPasswordService)
     : IRequestHandler<SignUpCommand, Result<ServiceResponseForJwtToken, AuthenticationException>>
@@ -49,10 +47,8 @@ public class CreateUserCommandHandler(
             var userId = UserId.New();
             
             var entity = User.New(userId, email, name, hashPasswordService.HashPassword(password));
-            entity.SetCart(Cart.New(CartId.New(), userId));
             
             await userRepository.Create(entity, cancellationToken);
-            // await cartRepository.Add(Cart.New(CartId.New(), userId), cancellationToken);
 
             string token =
                 jwtTokenService.GenerateToken(await userRepository.AddRole(entity.Id, AuthSettings.UserRole,

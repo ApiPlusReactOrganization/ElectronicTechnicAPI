@@ -2,7 +2,6 @@
 using Domain.Authentications;
 using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
-using Domain.Carts;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products.PCComponents;
@@ -72,13 +71,8 @@ public static class DataSeed
         var admin = User.New(adminId, "admin@example.com", "admin", hashPasswordService.HashPassword("123456"));
         var user = User.New(userId, "user@example.com", "user", hashPasswordService.HashPassword("123456"));
     
-        var adminCart = Cart.New(CartId.New(), adminId);
-        var userCart = Cart.New(CartId.New(), userId);
-    
         modelBuilder.Entity<User>().HasData(admin, user);
-    
-        modelBuilder.Entity<Cart>().HasData(adminCart, userCart);
-    
+        
         modelBuilder.Entity<User>()
             .HasMany(u => u.Roles)
             .WithMany(r => r.Users)

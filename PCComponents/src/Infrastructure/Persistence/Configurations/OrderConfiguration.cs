@@ -13,17 +13,14 @@ namespace Infrastructure.Persistence.Configurations
             builder.Property(m => m.Id).HasConversion(m => m.Value, x => new OrderId(x));
             
             builder.HasOne(m => m.User)
-                // .WithMany(u => u.Orders)
                 .WithMany()
                 .HasForeignKey(m => m.UserId)
                 .HasConstraintName("fk_orders_users_id")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(m => m.Cart)
-                .WithMany(c => c.Orders) 
-                .HasForeignKey(m => m.CartId)
-                .HasConstraintName("fk_orders_carts_id")
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(m => m.Cart)
+                .WithMany()
+                .UsingEntity(x => x.ToTable("order_cards"));
 
             builder.Property(m => m.TotalPrice)
                 .HasPrecision(9, 2);

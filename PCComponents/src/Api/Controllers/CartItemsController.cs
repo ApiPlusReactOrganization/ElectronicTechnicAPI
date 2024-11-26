@@ -2,6 +2,7 @@
 using Api.Modules.Errors;
 using Application.CartItems.Commands;
 using Application.Common.Interfaces.Queries;
+using Domain.Authentications.Users;
 using Domain.CartItems;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,6 +36,15 @@ public class CartItemsController(ISender sender, ICartItemQueries cartItemQuerie
             ci => CartItemDto.FromDomainModel(ci),
             () => NotFound());
     }
+    
+    [HttpGet("get-by-user-id/{userId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<CartItemDto>>> GetByUser([FromRoute] Guid userId, CancellationToken cancellationToken)
+    {
+        var entities = await cartItemQueries.GetByUserId(
+            new UserId(userId), cancellationToken);
+
+        return entities.Select(CartItemDto.FromDomainModel).ToList();
+    }
 
     [HttpPost("create")]
     public async Task<ActionResult<CartItemDto>> Create(
@@ -43,13 +53,13 @@ public class CartItemsController(ISender sender, ICartItemQueries cartItemQuerie
     {
         var input = new CreateCartItemCommand
         {
-            CartId = request.CartId,
-            ProductId = request.ProductId,
+            UserId = request.UserId!.Value,
+            ProductId = request.ProductId!.Value,
             Quantity = request.Quantity,
         };
-
+    
         var result = await sender.Send(input, cancellationToken);
-
+    
         return result.Match<ActionResult<CartItemDto>>(
             ci => CartItemDto.FromDomainModel(ci),
             e => e.ToObjectResult());
