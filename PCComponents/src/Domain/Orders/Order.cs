@@ -34,7 +34,8 @@ public class Order
     {
         return new Order(id, userId, status, deliveryAddress)
         {
-            TotalPrice = cart.Sum(x => x.Product!.Price * x.Quantity)
+            TotalPrice = cart.Sum(x => x.Product!.Price * x.Quantity),
+            Cart = cart
         };
     }
     

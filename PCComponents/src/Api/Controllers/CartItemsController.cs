@@ -2,6 +2,7 @@
 using Api.Modules.Errors;
 using Application.CartItems.Commands;
 using Application.Common.Interfaces.Queries;
+using Domain.Authentications;
 using Domain.Authentications.Users;
 using Domain.CartItems;
 using MediatR;
@@ -13,11 +14,10 @@ namespace Api.Controllers;
 
 [Route("cart-items")]
 // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.AdminRole)]
+// [Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
 public class CartItemsController(ISender sender, ICartItemQueries cartItemQueries) : ControllerBase
 {
-    [AllowAnonymous]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CartItemDto>>> GetAll(CancellationToken cancellationToken)
     {

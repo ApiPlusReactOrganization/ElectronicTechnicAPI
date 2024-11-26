@@ -37,4 +37,7 @@ public class CartItem
     {
         Quantity = quantity;
     }
+    
+    public void Finish()
+     => IsFinished = true;
 }
