@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Domain.CartItems;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;
@@ -114,6 +115,21 @@ public class ProductRepository : IProductRepository, IProductQueries
         await _context.SaveChangesAsync(cancellationToken);
         return product;
     }
+
+    public async Task ChangeStockQuantityForProducts(List<CartItem> cartItemsList, CancellationToken cancellationToken)
+    {
+        foreach (var cartItem in cartItemsList)
+        {
+            var product = await _context.Products.FindAsync(cartItem.ProductId, cancellationToken);
+
+            product!.SetStockQuantity(product.StockQuantity - cartItem.Quantity);
+
+            _context.Products.Update(product);
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
 
     public async Task<Option<Product>> SearchByNameAndDifferentFields(
         string name,

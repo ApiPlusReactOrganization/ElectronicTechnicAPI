@@ -44,7 +44,7 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
     public async Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
-            .FirstOrDefaultAsync(x => x.ProductId == id, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ProductId == id && x.IsFinished == false, cancellationToken);
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
     }

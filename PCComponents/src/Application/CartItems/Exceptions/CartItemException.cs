@@ -22,7 +22,7 @@ public class CartItemUnknownException(CartItemId id, Exception innerException)
 public class CartItemHasRelatedEntitiesException(CartItemId id)
     : CartItemException(id, $"Cart item with ID {id} cannot be deleted because it has related entities.");
 
-public class CartItemProductNotFoundException(ProductId productId)
+public class ProductForCartItemNotFoundException(ProductId productId)
     : CartItemException(CartItemId.Empty, $"Product under id '{productId}' not found");
 
 public class CartItemUserNotFoundException(UserId userId)

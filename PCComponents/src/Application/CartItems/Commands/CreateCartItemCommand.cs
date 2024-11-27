@@ -56,7 +56,7 @@ public class CreateCartItemCommandHandler(
                         new CartItemUserNotFoundException(userId)));
             },
             () => Task.FromResult<Result<CartItem, CartItemException>>(
-                new CartItemProductNotFoundException(productId)));
+                new ProductForCartItemNotFoundException(productId)));
     }
 
 

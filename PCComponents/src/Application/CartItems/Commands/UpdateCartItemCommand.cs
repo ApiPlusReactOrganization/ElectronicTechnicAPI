@@ -41,7 +41,7 @@ public class UpdateCartItemCommandHandler(
                         return await UpdateEntity(cartItem, request.Quantity, cancellationToken);
                     },
                     () => Task.FromResult<Result<CartItem, CartItemException>>(
-                        new CartItemProductNotFoundException(cartItem.ProductId)));
+                        new ProductForCartItemNotFoundException(cartItem.ProductId)));
             },
             () => Task.FromResult<Result<CartItem, CartItemException>>(
                 new CartItemNotFoundException(cartItemId)));
