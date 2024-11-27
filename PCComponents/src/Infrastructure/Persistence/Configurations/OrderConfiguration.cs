@@ -20,7 +20,7 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.HasMany(m => m.Cart)
                 .WithMany()
-                .UsingEntity(x => x.ToTable("order_cards"));
+                .UsingEntity(x => x.ToTable("order_cart_items"));
 
             builder.Property(m => m.TotalPrice)
                 .HasPrecision(9, 2);
