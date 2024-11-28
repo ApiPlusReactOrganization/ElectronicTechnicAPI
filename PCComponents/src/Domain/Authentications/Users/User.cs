@@ -1,22 +1,24 @@
 ﻿using Domain.Authentications.Roles;
-using Domain.Carts;
-using Domain.Orders;
+
 using Domain.Products;
+using Domain.CartItems;
 
 namespace Domain.Authentications.Users;
 
 public class User
 {
-    public UserId Id { get; set; }
-    public string Email { get; set; }
-    public string? Name { get; set; }
-    public string PasswordHash { get; set; }
+    public UserId Id { get; }
+    public string Email { get; private set; }
+    public string? Name { get; private set; }
+    public string PasswordHash { get; }
     public UserImage? UserImage { get; private set; }
-    public List<Role> Roles { get; set; } = new();
-    public Cart? Cart { get; set; }
-    public List<Order> Orders { get; set; } = new();
+
     public List<Product> FavoriteProducts { get; private set; } = new();
     
+    public List<CartItem> Cart { get; private set; } = new();
+    public List<Role> Roles { get; private set; } = new();
+    // public List<Order> Orders { get; set; } = new();
+
     private User(UserId id, string email, string? name, string passwordHash)
     {
         Id = id;
@@ -33,7 +35,18 @@ public class User
         Email = email;
         Name = name;
     }
-    
+
     public void UpdateUserImage(UserImage userImage)
-    => UserImage = userImage;
+        => UserImage = userImage;
+
+    public void SetRoles(List<Role> roles)
+        => Roles = roles;
+
+    public void ClearCart()
+    {
+        foreach (var c in Cart)
+        {
+            c.Finish();
+        }
+    }
 }

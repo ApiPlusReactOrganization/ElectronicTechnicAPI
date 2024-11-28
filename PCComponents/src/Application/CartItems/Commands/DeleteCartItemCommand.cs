@@ -34,6 +34,11 @@ public class DeleteCartItemCommandHandler(
         CartItem cartItem,
         CancellationToken cancellationToken)
     {
+        if (cartItem.OrderId is not null)
+        {
+            return await Task.FromResult<Result<CartItem, CartItemException>>(new CartItemHaveOrderException(cartItem.Id));
+        }
+        
         try
         {
             return await cartItemRepository.Delete(cartItem, cancellationToken);

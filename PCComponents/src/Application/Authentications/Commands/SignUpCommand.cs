@@ -44,7 +44,10 @@ public class CreateUserCommandHandler(
     {
         try
         {
-            var entity = User.New(UserId.New(), email, name, hashPasswordService.HashPassword(password));
+            var userId = UserId.New();
+            
+            var entity = User.New(userId, email, name, hashPasswordService.HashPassword(password));
+            
             await userRepository.Create(entity, cancellationToken);
 
             string token =

@@ -1,4 +1,5 @@
-﻿using Domain.Categories;
+﻿using Domain.CartItems;
+using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products;
 using Domain.Products.PCComponents;
@@ -13,6 +14,7 @@ public interface IProductRepository
     Task<Product> Add(Product product, CancellationToken cancellationToken);
     Task<Product> Update(Product product, CancellationToken cancellationToken);
     Task<Product> Delete(Product product, CancellationToken cancellationToken);
+    Task ChangeStockQuantityForProducts(List<CartItem> cartItemsList, CancellationToken cancellationToken);
 
     Task<Option<Product>> SearchByNameAndDifferentFields(
         string name,
@@ -24,4 +26,5 @@ public interface IProductRepository
         CancellationToken cancellationToken);
 
     Task<int> SaveChanges(CancellationToken cancellationToken);
+    Task<IReadOnlyList<Product>> GetAll(CancellationToken cancellationToken);
 }

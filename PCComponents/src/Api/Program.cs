@@ -2,6 +2,7 @@ using Api.Modules;
 using Application;
 using Application.Middlewares;
 using Infrastructure;
+using Infrastructure.Persistence;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +51,8 @@ app.UseStaticFiles(new StaticFileOptions
     FileProvider = new PhysicalFileProvider(imagesPath),
     RequestPath = "/images"
 });
+
+//app.SeedData();
 
 app.Run();
 

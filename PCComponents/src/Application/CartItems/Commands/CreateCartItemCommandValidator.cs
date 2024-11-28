@@ -10,9 +10,9 @@ public class CreateCartItemCommandValidator: AbstractValidator<CreateCartItemCom
             .NotEmpty()
             .WithMessage("Product ID is required.");
         
-        RuleFor(x => x.CartId)
+        RuleFor(x => x.UserId)
             .NotEmpty()
-            .WithMessage("Cart ID is required.");
+            .WithMessage("User ID is required.");
         
         RuleFor(x => x.Quantity)
             .GreaterThan(0)

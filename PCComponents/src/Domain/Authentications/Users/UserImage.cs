@@ -14,6 +14,6 @@ public class UserImage
         FilePath = filePath;
     }
 
-    public static UserImage New(UserImageId id, UserId userId, string filePath) 
-        => new UserImage(id, userId, filePath);
+    public static UserImage New(UserImageId id, UserId userId, string filePath)
+        => new(id, userId, filePath);
 }

@@ -9,20 +9,28 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<CartItem> builder)
         {
-            builder.HasKey(m => m.Id);
-            builder.Property(m => m.Id).HasConversion(m => m.Value, x => new CartItemId(x));
-            
-            builder.HasOne(m => m.Cart)
-                .WithMany(c => c.Items)
-                .HasForeignKey(m => m.CartId)
-                .OnDelete(DeleteBehavior.Restrict); 
+            builder.HasKey(ci => ci.Id);
+            builder.Property(ci => ci.Id).HasConversion(ci => ci.Value, x => new CartItemId(x));
 
-            builder.HasOne(m => m.Product)
+            builder.HasOne(ci => ci.User)
+                .WithMany(c => c.Cart)
+                .HasForeignKey(ci => ci.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(ci => ci.Product)
                 .WithMany(p => p.CartItems)
-                .HasForeignKey(m => m.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);  
+                .HasForeignKey(ci => ci.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
             
+            builder.HasOne(ci => ci.Order)
+                .WithMany(o => o.Cart)
+                .HasForeignKey(ci => ci.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
             builder.Property(x => x.Quantity).IsRequired();
+
+            builder.Property(x => x.IsFinished).HasDefaultValue(false);
         }
     }
 }

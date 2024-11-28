@@ -1,4 +1,5 @@
-﻿using Domain.CartItems;
+﻿using Domain.Authentications.Users;
+using Domain.CartItems;
 using Domain.Products;
 using Optional;
 
@@ -11,4 +12,5 @@ public interface ICartItemRepository
     Task<CartItem> Update(CartItem сategory, CancellationToken cancellationToken);
     Task<CartItem> Delete(CartItem сategory, CancellationToken cancellationToken);
     Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CartItem>> GetByUserId(UserId userId, CancellationToken cancellationToken);
 }

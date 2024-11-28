@@ -5,7 +5,9 @@ using Domain.Authentications.Users;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Products.PCComponents;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Optional;
 
 namespace Infrastructure.Persistence;
 
@@ -19,7 +21,7 @@ public static class DataSeed
         _seedUsers(modelBuilder, hashPasswordService);
     }
 
-    public static void _seedCategories(ModelBuilder modelBuilder)
+    private static void _seedCategories(ModelBuilder modelBuilder)
     {
         var categories = new List<Category>();
 
@@ -31,8 +33,8 @@ public static class DataSeed
         modelBuilder.Entity<Category>()
             .HasData(categories);
     }
-    
-    public static void _seedManufactures(ModelBuilder modelBuilder)
+
+    private static void _seedManufactures(ModelBuilder modelBuilder)
     {
         var manufacturers = new List<Manufacturer>();
 
@@ -45,7 +47,7 @@ public static class DataSeed
             .HasData(manufacturers);
     }
 
-    public static void _seedRoles(ModelBuilder modelBuilder)
+    private static void _seedRoles(ModelBuilder modelBuilder)
     {
         var roles = new List<Role>();
 
@@ -57,22 +59,20 @@ public static class DataSeed
         modelBuilder.Entity<Role>()
             .HasData(roles);
     }
-
-    public static void _seedUsers(ModelBuilder modelBuilder, IHashPasswordService hashPasswordService)
-    {
-        var users = new List<User>();
     
+    private static void _seedUsers(ModelBuilder modelBuilder, IHashPasswordService hashPasswordService)
+    {
         var adminRole = Role.New(AuthSettings.AdminRole);
         var userRole = Role.New(AuthSettings.UserRole);
     
-        var admin = User.New(UserId.New(), "admin@example.com", "admin", hashPasswordService.HashPassword("123456"));
-        var user = User.New(UserId.New(), "user@example.com", "user", hashPasswordService.HashPassword("123456"));
-
-        users.Add(admin);
-        users.Add(user);
-
-        modelBuilder.Entity<User>().HasData(users);
-
+        var adminId = UserId.New();
+        var userId = UserId.New();
+    
+        var admin = User.New(adminId, "admin@example.com", "admin", hashPasswordService.HashPassword("123456"));
+        var user = User.New(userId, "user@example.com", "user", hashPasswordService.HashPassword("123456"));
+    
+        modelBuilder.Entity<User>().HasData(admin, user);
+        
         modelBuilder.Entity<User>()
             .HasMany(u => u.Roles)
             .WithMany(r => r.Users)

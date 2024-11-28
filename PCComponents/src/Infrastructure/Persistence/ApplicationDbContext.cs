@@ -3,7 +3,6 @@ using Application.Services.HashPasswordService;
 using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Domain.CartItems;
-using Domain.Carts;
 using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Orders;
@@ -21,7 +20,6 @@ public class ApplicationDbContext(
     public DbSet<Category> Categories { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
-    public DbSet<Cart> Carts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Order> Orders { get; set; }
 
