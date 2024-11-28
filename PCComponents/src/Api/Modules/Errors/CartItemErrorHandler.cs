@@ -15,6 +15,7 @@ public static class CartItemErrorHandler
                     StatusCodes.Status404NotFound,
                 CartItemAlreadyExistsException or CartItemHasRelatedEntitiesException
                     or CartItemQuantityExceedsStockException
+                    or CartItemHaveOrderException
                     => StatusCodes.Status409Conflict,
                 CartItemUnknownException =>
                     StatusCodes.Status500InternalServerError,

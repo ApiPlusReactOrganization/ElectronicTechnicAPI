@@ -52,13 +52,13 @@ public class CreateOrderCommandHandler(
 
         var orderId = OrderId.New();
         
-        foreach (var uc in userCart)
-        {
-            if (uc.Product.StockQuantity < uc.Quantity)
-            {
-                throw new Exception($"Недостатньо товару на складі для продукту {uc.Product.Name}. Доступно: {uc.Product.StockQuantity}, запитано: {uc.Quantity}.");
-            }
-        }
+        // foreach (var uc in userCart)
+        // {
+        //     if (uc.Product.StockQuantity < uc.Quantity)
+        //     {
+        //         throw new Exception($"Недостатньо товару на складі для продукту {uc.Product.Name}. Доступно: {uc.Product.StockQuantity}, запитано: {uc.Quantity}.");
+        //     }
+        // }
         
         try
         {
