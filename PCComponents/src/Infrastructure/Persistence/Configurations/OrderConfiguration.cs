@@ -19,8 +19,9 @@ namespace Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(m => m.Cart)
-                .WithMany()
-                .UsingEntity(x => x.ToTable("order_cart_items"));
+                .WithOne(x => x.Order)
+                .HasConstraintName("fk_orders_carts_id")
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(m => m.TotalPrice)
                 .HasPrecision(9, 2);

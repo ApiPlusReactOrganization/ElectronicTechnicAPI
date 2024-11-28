@@ -21,6 +21,12 @@ namespace Infrastructure.Persistence.Configurations
                 .WithMany(p => p.CartItems)
                 .HasForeignKey(ci => ci.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.HasOne(ci => ci.Order)
+                .WithMany(o => o.Cart)
+                .HasForeignKey(ci => ci.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Property(x => x.Quantity).IsRequired();
 

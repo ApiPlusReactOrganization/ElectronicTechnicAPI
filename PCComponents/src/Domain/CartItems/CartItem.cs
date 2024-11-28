@@ -19,6 +19,9 @@ public class CartItem
     public int Quantity { get; private set; }
     
     public bool IsFinished { get; private set; } = false;
+    public OrderId? OrderId { get; }
+
+    public Order? Order { get; }
     
     // public List<Order> Orders { get; set; } = new();
 

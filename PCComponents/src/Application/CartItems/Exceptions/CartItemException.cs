@@ -25,6 +25,9 @@ public class CartItemHasRelatedEntitiesException(CartItemId id)
 public class ProductForCartItemNotFoundException(ProductId productId)
     : CartItemException(CartItemId.Empty, $"Product under id '{productId}' not found");
 
+public class CartItemHaveOrderException(CartItemId id)
+    : CartItemException(CartItemId.Empty, $"Cart item under id '{id}' already have ordered");
+
 public class CartItemUserNotFoundException(UserId userId)
     : CartItemException(CartItemId.Empty, $"User under id '{userId}' not found");
 
