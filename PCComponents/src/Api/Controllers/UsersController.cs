@@ -1,10 +1,10 @@
 ﻿using Api.Dtos.Users;
 using Api.Modules.Errors;
-using Application.Authentications;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
 using Application.Users.Commands;
 using Domain.Authentications;
+using Domain.Authentications.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +24,16 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var entities = await userQueries.GetAll(cancellationToken);
 
         return entities.Select(UserDto.FromDomainModel).ToList();
+    }
+    
+    [HttpGet("get-by-id/{userId:guid}")]
+    public async Task<ActionResult<UserDto>> Get([FromRoute] Guid userId, CancellationToken cancellationToken)
+    {
+        var entity = await userQueries.GetById(new UserId(userId), cancellationToken);
+
+        return entity.Match<ActionResult<UserDto>>(
+            p => UserDto.FromDomainModel(p),
+            () => NotFound());
     }
 
     [HttpDelete("delete/{userId:guid}")]

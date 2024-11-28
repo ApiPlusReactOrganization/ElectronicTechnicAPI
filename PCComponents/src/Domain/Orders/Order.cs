@@ -1,5 +1,5 @@
 using Domain.Authentications.Users;
-using Domain.Carts;
+using Domain.CartItems;
 
 namespace Domain.Orders;
 
@@ -11,9 +11,7 @@ public class Order
     
     public User? User { get; set; } 
     
-    public CartId CartId { get; private set; } 
-    
-    public Cart? Cart { get; set; } 
+    public List<CartItem>? Cart { get; private set; } = new();
     
     public decimal TotalPrice { get; private set; }
     
@@ -23,22 +21,21 @@ public class Order
     
     public string DeliveryAddress { get; private set; }
 
-    private Order(OrderId id, UserId userId, CartId cartId, string status, string deliveryAddress)
+    private Order(OrderId id, UserId userId, string status, string deliveryAddress)
     {
         Id = id;
         UserId = userId;
-        CartId = cartId;
         Status = status;
         CreatedAt = DateTime.UtcNow;
         DeliveryAddress = deliveryAddress;
     }
     
-    public static Order New(OrderId id, UserId userId, Cart cart, string status, string deliveryAddress)
+    public static Order New(OrderId id, UserId userId, string status, string deliveryAddress, List<CartItem> cart)
     {
-        return new Order(id, userId, cart.Id, status, deliveryAddress)
+        return new Order(id, userId, status, deliveryAddress)
         {
-            Cart = cart,
-            TotalPrice = cart.Items.Sum(x => x.Product!.Price * x.Quantity)
+            TotalPrice = cart.Sum(x => x.Product!.Price * x.Quantity),
+            Cart = cart
         };
     }
     

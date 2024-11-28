@@ -117,7 +117,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
     }
     
     [HttpPut("update/{productId:guid}")]
-    public async Task<ActionResult<CreateProductDto>> Update(
+    public async Task<ActionResult<ProductDto>> Update(
         [FromRoute] Guid productId,
         [FromBody] CreateProductDto request,
         CancellationToken cancellationToken)
@@ -136,8 +136,8 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
 
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<CreateProductDto>>(
-            f => CreateProductDto.FromDomainModel(f),
+        return result.Match<ActionResult<ProductDto>>(
+            f => ProductDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
     
@@ -158,7 +158,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
             e => e.ToObjectResult());
     }
     
-    [HttpPut("delete-images/{productId:guid}")]
+    [HttpPut("delete-image/{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Upload([FromRoute] Guid productId, Guid productImageId,
         CancellationToken cancellationToken)
     {

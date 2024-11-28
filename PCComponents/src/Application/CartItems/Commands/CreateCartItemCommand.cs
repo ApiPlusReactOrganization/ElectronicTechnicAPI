@@ -1,8 +1,8 @@
 ﻿using Application.CartItems.Exceptions;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
+using Domain.Authentications.Users;
 using Domain.CartItems;
-using Domain.Carts;
 using Domain.Products;
 using MediatR;
 
@@ -10,7 +10,7 @@ namespace Application.CartItems.Commands;
 
 public record CreateCartItemCommand : IRequest<Result<CartItem, CartItemException>>
 {
-    public required Guid CartId { get; init; }
+    public required Guid UserId { get; init; }
     public required Guid ProductId { get; init; }
     public required int Quantity { get; init; }
 }
@@ -18,7 +18,7 @@ public record CreateCartItemCommand : IRequest<Result<CartItem, CartItemExceptio
 public class CreateCartItemCommandHandler(
     ICartItemRepository cartItemRepository,
     IProductRepository productRepository,
-    ICartRepository cartRepository)
+    IUserRepository userRepository)
     : IRequestHandler<CreateCartItemCommand, Result<CartItem, CartItemException>>
 {
     public async Task<Result<CartItem, CartItemException>> Handle(
@@ -37,10 +37,10 @@ public class CreateCartItemCommandHandler(
                         new CartItemQuantityExceedsStockException(productId, p.StockQuantity));
                 }
 
-                var cartId = new CartId(request.CartId);
-                var cart = await cartRepository.GetById(cartId, cancellationToken);
+                var userId = new UserId(request.UserId);
+                var user = await userRepository.GetById(userId, cancellationToken);
 
-                return await cart.Match<Task<Result<CartItem, CartItemException>>>(
+                return await user.Match<Task<Result<CartItem, CartItemException>>>(
                     async c =>
                     {
                         var existingCartItem = await cartItemRepository.GetByProduct(
@@ -50,25 +50,25 @@ public class CreateCartItemCommandHandler(
                         return await existingCartItem.Match<Task<Result<CartItem, CartItemException>>>(
                             ci => Task.FromResult<Result<CartItem, CartItemException>>(
                                 new CartItemAlreadyExistsException(ci.Id)),
-                            async () => await CreateEntity(cartId, productId, request.Quantity, cancellationToken));
+                            async () => await CreateEntity(userId, productId, request.Quantity, cancellationToken));
                     },
                     () => Task.FromResult<Result<CartItem, CartItemException>>(
-                        new CartItemCartNotFoundException(cartId)));
+                        new CartItemUserNotFoundException(userId)));
             },
             () => Task.FromResult<Result<CartItem, CartItemException>>(
-                new CartItemProductNotFoundException(productId)));
+                new ProductForCartItemNotFoundException(productId)));
     }
 
 
     private async Task<Result<CartItem, CartItemException>> CreateEntity(
-        CartId cartId,
+        UserId userId,
         ProductId productId,
         int quantity,
         CancellationToken cancellationToken)
     {
         try
         {
-            var entity = CartItem.New(CartItemId.New(), cartId, productId, quantity);
+            var entity = CartItem.New(CartItemId.New(), userId, productId, quantity);
 
             return await cartItemRepository.Add(entity, cancellationToken);
         }

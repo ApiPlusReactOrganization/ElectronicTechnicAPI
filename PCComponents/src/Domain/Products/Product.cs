@@ -61,5 +61,8 @@ namespace Domain.Products
                 Images.Remove(image);
             }
         }
+        
+        public void SetStockQuantity(int quantity)
+         => StockQuantity = quantity;
     }
 }

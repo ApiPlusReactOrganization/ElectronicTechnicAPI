@@ -61,8 +61,7 @@ public class ChangeRolesForUserCommandHandler(
        
         try
         {
-            user.Roles.Clear();
-            user.Roles.AddRange(roles);
+            user.SetRoles(roles);
             
             return await userRepository.Update(user, cancellationToken);
         }

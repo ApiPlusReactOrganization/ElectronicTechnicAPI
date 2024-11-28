@@ -11,7 +11,7 @@ public static class CartItemErrorHandler
         {
             StatusCode = exception switch
             {
-                CartItemNotFoundException or CartItemCartNotFoundException or CartItemProductNotFoundException =>
+                CartItemNotFoundException or ProductForCartItemNotFoundException =>
                     StatusCodes.Status404NotFound,
                 CartItemAlreadyExistsException or CartItemHasRelatedEntitiesException
                     or CartItemQuantityExceedsStockException
