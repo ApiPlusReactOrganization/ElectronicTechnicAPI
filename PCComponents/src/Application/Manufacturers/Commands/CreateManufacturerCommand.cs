@@ -22,7 +22,8 @@ public class CreateManufacturerCommandHandler(
         var existingManufacturer = await manufacturerRepository.SearchByName(request.Name, cancellationToken);
 
         return await existingManufacturer.Match(
-            c => Task.FromResult<Result<Manufacturer, ManufacturerException>>(new ManufacturerAlreadyExistsException(c.Id)),
+            c => Task.FromResult<Result<Manufacturer, ManufacturerException>>(
+                new ManufacturerAlreadyExistsException(c.Id)),
             async () => await CreateEntity(request.Name, cancellationToken));
     }
 

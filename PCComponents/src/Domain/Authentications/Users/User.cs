@@ -1,6 +1,7 @@
 ﻿using Domain.Authentications.Roles;
 using Domain.Carts;
 using Domain.Orders;
+using Domain.Products;
 
 namespace Domain.Authentications.Users;
 
@@ -14,6 +15,7 @@ public class User
     public List<Role> Roles { get; set; } = new();
     public Cart? Cart { get; set; }
     public List<Order> Orders { get; set; } = new();
+    public List<Product> FavoriteProducts { get; private set; } = new();
     
     private User(UserId id, string email, string? name, string passwordHash)
     {
