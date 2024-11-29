@@ -7,6 +7,7 @@ using Domain.Categories;
 using Domain.Manufacturers;
 using Domain.Orders;
 using Domain.Products;
+using Domain.RefreshTokens;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -22,6 +23,7 @@ public class ApplicationDbContext(
     public DbSet<Role> Roles { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
