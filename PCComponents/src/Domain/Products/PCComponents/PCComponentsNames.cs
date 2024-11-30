@@ -1,4 +1,6 @@
-﻿namespace Domain.Products.PCComponents;
+﻿using Value;
+
+namespace Domain.Products.PCComponents;
 
 public static class PCComponentsNames
 {
@@ -24,13 +26,69 @@ public static class PCComponentsNames
         HDD,
         SSD
     };
-    
-    public static void UpdateComponentList(string oldName, string newName)
+    //
+    // public static void UpdateComponentList(string oldName, string newName)
+    // {
+    //     var index = ListOfComponents.IndexOf(oldName);
+    //     if (index >= 0)
+    //     {
+    //         ListOfComponents[index] = newName;
+    //     }
+    // }
+}
+
+public class SelectionCategoryType(string Value) : ValueObject
+{
+    public static SelectionCategoryType From(string value)
     {
-        var index = ListOfComponents.IndexOf(oldName);
-        if (index >= 0)
+        var categoryType = new SelectionCategoryType(value);
+
+        if (!SupportedSSelectionCategoryTypes.Contains(categoryType))
         {
-            ListOfComponents[index] = newName;
+            throw new ArgumentException($"Invalid PCComponents name: {value}");
+        }
+        
+        return categoryType;
+    }
+
+    public static SelectionCategoryType CPU => new SelectionCategoryType(PCComponentsNames.CPU);
+    public static SelectionCategoryType Case => new SelectionCategoryType(PCComponentsNames.Case);
+    public static SelectionCategoryType GPU => new SelectionCategoryType(PCComponentsNames.GPU);
+    public static SelectionCategoryType RAM => new SelectionCategoryType(PCComponentsNames.RAM);
+    public static SelectionCategoryType PSU => new SelectionCategoryType(PCComponentsNames.PSU);
+    public static SelectionCategoryType Motherboard => new SelectionCategoryType(PCComponentsNames.Motherboard);
+    public static SelectionCategoryType Cooler => new SelectionCategoryType(PCComponentsNames.Cooler);
+    public static SelectionCategoryType HDD => new SelectionCategoryType(PCComponentsNames.HDD);
+    public static SelectionCategoryType SSD => new SelectionCategoryType(PCComponentsNames.SSD);
+
+    public static implicit operator string(SelectionCategoryType value)
+    {
+        return value.ToString();
+    }
+
+    public static explicit operator SelectionCategoryType(string value)
+    {
+        return From(value);
+    }
+
+    public override string ToString()
+    {
+        return Value;
+    }
+
+    private static IEnumerable<SelectionCategoryType> SupportedSSelectionCategoryTypes
+    {
+        get
+        {
+            yield return CPU;
+            yield return Case;
+            yield return GPU;
+            yield return RAM;
+            yield return PSU;
+            yield return Motherboard;
+            yield return Cooler;
+            yield return HDD;
+            yield return SSD;
         }
     }
 }

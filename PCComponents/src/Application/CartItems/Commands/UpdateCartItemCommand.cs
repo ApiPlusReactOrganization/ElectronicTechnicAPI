@@ -27,21 +27,19 @@ public class UpdateCartItemCommandHandler(
         return await cartItemOption.Match<Task<Result<CartItem, CartItemException>>>(
             async cartItem =>
             {
-                var product = await productRepository.GetById(cartItem.ProductId, cancellationToken);
+                if (cartItem.IsFinished)
+                {
+                    return await Task.FromResult<Result<CartItem, CartItemException>>(
+                        new CartItemIsAlreadyFinishedException(cartItem.Id));
+                }
 
-                return await product.Match<Task<Result<CartItem, CartItemException>>>(
-                    async p =>
-                    {
-                        if (request.Quantity > p.StockQuantity)
-                        {
-                            return await Task.FromResult<Result<CartItem, CartItemException>>(
-                                new CartItemQuantityExceedsStockException(p.Id, p.StockQuantity));
-                        }
+                if (request.Quantity > cartItem.Product!.StockQuantity)
+                {
+                    return await Task.FromResult<Result<CartItem, CartItemException>>(
+                        new CartItemQuantityExceedsStockException(cartItem.Product.Id, cartItem.Product.StockQuantity));
+                }
 
-                        return await UpdateEntity(cartItem, request.Quantity, cancellationToken);
-                    },
-                    () => Task.FromResult<Result<CartItem, CartItemException>>(
-                        new ProductForCartItemNotFoundException(cartItem.ProductId)));
+                return await UpdateEntity(cartItem, request.Quantity, cancellationToken);
             },
             () => Task.FromResult<Result<CartItem, CartItemException>>(
                 new CartItemNotFoundException(cartItemId)));
