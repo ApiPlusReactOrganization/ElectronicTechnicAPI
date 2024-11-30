@@ -2,9 +2,9 @@
 
 namespace Application.Authentications.Commands;
 
-public class CreateUserCommandValidator : AbstractValidator<SignUpCommand>
+public class SignUpCommandValidator : AbstractValidator<SignUpCommand>
 {
-    public CreateUserCommandValidator()
+    public SignUpCommandValidator()
     {
         RuleFor(u => u.Email)
             .NotEmpty().WithMessage("Enter your email address")

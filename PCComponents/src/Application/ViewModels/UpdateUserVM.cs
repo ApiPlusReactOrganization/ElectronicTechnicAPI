@@ -1,4 +1,4 @@
-namespace Api.Dtos.Users;
+namespace Application.ViewModels;
 
 public class UpdateUserVM
 {

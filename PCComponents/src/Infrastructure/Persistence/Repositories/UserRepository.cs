@@ -37,19 +37,20 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .Include(x => x.Roles)
             .Include(u => u.UserImage)
             .Include(u => u.Cart)
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
 
     public async Task<Option<User>> GetById(UserId id, CancellationToken cancellationToken)
     {
-        var entity = await GetUserAsync(x => x.Id == id, cancellationToken, true);
+        var entity = await GetUserAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
 
     public async Task<Option<User>> SearchByEmail(string email, CancellationToken cancellationToken)
     {
-        var entity = await GetUserAsync(x => x.Email == email, cancellationToken, true);
+        var entity = await GetUserAsync(x => x.Email == email, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
@@ -57,14 +58,14 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
     public async Task<Option<User>> SearchByEmailForUpdate(UserId userId, string email,
         CancellationToken cancellationToken)
     {
-        var entity = await GetUserAsync(x => x.Email == email && x.Id != userId, cancellationToken, true);
+        var entity = await GetUserAsync(x => x.Email == email && x.Id != userId, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
 
     public async Task<User> AddRole(UserId userId, string idRole, CancellationToken cancellationToken)
     {
-        var entity = await GetUserAsync(x => x.Id == userId, cancellationToken, true);
+        var entity = await GetUserAsync(x => x.Id == userId, cancellationToken);
 
         var role = await _context.Roles.FirstOrDefaultAsync(x => x.Id == idRole, cancellationToken);
 
@@ -84,11 +85,11 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
                 .Include(u => u.Roles)
                 .Include(u => u.UserImage)
                 .Include(u => u.Cart)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
         return await _context.Users
-            .AsNoTracking()
             .Include(u => u.Roles)
             .Include(u => u.UserImage)
             .Include(u => u.Cart)

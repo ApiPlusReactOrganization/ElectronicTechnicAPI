@@ -4,31 +4,32 @@ using Application.Common.Interfaces.Repositories;
 using Application.Services;
 using Application.Services.HashPasswordService;
 using Application.Services.TokenService;
+using Application.ViewModels;
 using Domain.Authentications.Users;
 using MediatR;
 
 namespace Application.Authentications.Commands;
 
-public class SignInCommand: IRequest<Result<ServiceResponseForJwtToken, AuthenticationException>>
+public class SignInCommand: IRequest<Result<JwtVM, AuthenticationException>>
 {
     public required string Email { get; init; }
     public required string Password { get; init; }
 }
 
 public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService, IHashPasswordService hashPasswordService) 
-    : IRequestHandler<SignInCommand, Result<ServiceResponseForJwtToken, AuthenticationException>>
+    : IRequestHandler<SignInCommand, Result<JwtVM, AuthenticationException>>
 {
-    public async Task<Result<ServiceResponseForJwtToken, AuthenticationException>> Handle(
+    public async Task<Result<JwtVM, AuthenticationException>> Handle(
         SignInCommand request,
         CancellationToken cancellationToken)
     {
         var existingUser = await userRepository.SearchByEmail(request.Email, cancellationToken);
         
         return await existingUser.Match(
-            u => Task.FromResult(SignIn(u, request.Password, cancellationToken)),
-            () => Task.FromResult<Result<ServiceResponseForJwtToken, AuthenticationException>>(new EmailOrPasswordAreIncorrect()));
+            async u => await SignIn(u, request.Password, cancellationToken),
+            () => Task.FromResult<Result<JwtVM, AuthenticationException>>(new EmailOrPasswordAreIncorrectException()));
     }
-    private Result<ServiceResponseForJwtToken, AuthenticationException> SignIn(
+    private async Task<Result<JwtVM, AuthenticationException>> SignIn(
          User user,
          string password,
          CancellationToken cancellationToken)
@@ -37,13 +38,13 @@ public class SignInCommandHandler(IUserRepository userRepository, IJwtTokenServi
 
          if (!hashPasswordService.VerifyPassword(password, storedHash))
          {
-             return new EmailOrPasswordAreIncorrect();
+             return new EmailOrPasswordAreIncorrectException();
          }
 
          try
          {
-             string token = jwtTokenService.GenerateToken(user);
-             return ServiceResponseForJwtToken.GetResponse("You're logged in", token);
+             var token = await jwtTokenService.GenerateTokensAsync(user, cancellationToken);
+             return token;
          }
          catch (Exception exception)
          {

@@ -72,6 +72,9 @@ public static class ConfigurePersistence
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IHashPasswordService, HashPasswordService>();
         services.AddScoped<IImageService, ImageService>();
+        
+        services.AddScoped<RefreshTokenRepository>();
+        services.AddScoped<IRefreshTokenRepository>(provider => provider.GetRequiredService<RefreshTokenRepository>());
     }
 
     private static void AddJwtTokenAuth(this IServiceCollection services, WebApplicationBuilder builder)

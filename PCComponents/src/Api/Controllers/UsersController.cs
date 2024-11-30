@@ -3,6 +3,7 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
 using Application.Users.Commands;
+using Application.ViewModels;
 using Domain.Authentications;
 using Domain.Authentications.Users;
 using MediatR;
@@ -70,7 +71,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
     }
 
     [HttpPut("image/{userId}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> Upload([FromRoute] Guid userId, IFormFile imageFile,
+    public async Task<ActionResult<JwtVM>> Upload([FromRoute] Guid userId, IFormFile imageFile,
         CancellationToken cancellationToken)
     {
         var input = new UploadUserImageCommand
@@ -81,13 +82,13 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
 
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+        return result.Match<ActionResult<JwtVM>>(
             r => r,
             e => e.ToObjectResult());
     }
 
     [HttpPut("update/{userId:guid}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> UpdateUser([FromRoute] Guid userId,
+    public async Task<ActionResult<JwtVM>> UpdateUser([FromRoute] Guid userId,
         [FromBody] UpdateUserVM user,
         CancellationToken cancellationToken)
     {
@@ -100,7 +101,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
 
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+        return result.Match<ActionResult<JwtVM>>(
             r => r,
             e => e.ToObjectResult());
     }
