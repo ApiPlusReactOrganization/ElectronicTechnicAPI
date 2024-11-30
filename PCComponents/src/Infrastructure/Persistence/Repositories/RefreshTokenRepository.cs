@@ -1,4 +1,5 @@
 using Application.Common.Interfaces.Repositories;
+using Domain.Authentications.Users;
 using Domain.RefreshTokens;
 using Microsoft.EntityFrameworkCore;
 using Optional;
@@ -12,7 +13,7 @@ public class RefreshTokenRepository(ApplicationDbContext context) : IRefreshToke
     {
         var entity = await context.RefreshTokens
             .FirstOrDefaultAsync(t => t.Token == refreshToken, cancellationToken);
-        
+
         return entity == null ? Option.None<RefreshToken>() : Option.Some(entity);
     }
 
@@ -23,11 +24,17 @@ public class RefreshTokenRepository(ApplicationDbContext context) : IRefreshToke
         return refreshToken;
     }
 
-    public async Task<RefreshToken> Update(RefreshToken refreshToken, CancellationToken cancellationToken)
+    public async Task MakeAllRefreshTokensExpiredForUser(UserId userId, CancellationToken cancellationToken)
     {
-        context.RefreshTokens.Update(refreshToken);
-        await context.SaveChangesAsync(cancellationToken);
+        var refreshTokens = context.RefreshTokens.Where(t => t.UserId == userId);
+
+        if (!await refreshTokens.AnyAsync(cancellationToken))
+        {
+            return;
+        }
         
-        return refreshToken;
+        await refreshTokens.ForEachAsync(t => { t.IsUsed = true; }, cancellationToken);
+
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

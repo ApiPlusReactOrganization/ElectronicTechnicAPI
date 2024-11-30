@@ -118,6 +118,8 @@ namespace Application.Services.TokenService
             var accessToken = GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
 
+            await refreshTokenRepository.MakeAllRefreshTokensExpiredForUser(user.Id, cancellationToken);
+            
             var saveResult = await SaveRefreshTokenAsync(user, refreshToken, accessToken.Id, cancellationToken);
 
             var tokens = new JwtVM

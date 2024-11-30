@@ -58,17 +58,6 @@ public class RefreshTokenCommandHandler(
             return await Task.FromResult<Result<JwtVM, AuthenticationException>>(new InvalidAccessTokenException());
         }
 
-        try
-        {
-            storedToken.IsUsed = true;
-
-            await refreshTokenRepository.Update(storedToken, cancellationToken);
-        }
-        catch (Exception exception)
-        {
-            return new AuthenticationUnknownException(UserId.Empty, exception);
-        }
-
         var existingUser = await userRepository.GetById(storedToken.UserId, cancellationToken);
 
         return await existingUser.Match<Task<Result<JwtVM, AuthenticationException>>>(

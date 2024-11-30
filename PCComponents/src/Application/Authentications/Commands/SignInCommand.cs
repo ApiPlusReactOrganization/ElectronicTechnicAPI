@@ -1,7 +1,6 @@
 ﻿using Application.Authentications.Exceptions;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
-using Application.Services;
 using Application.Services.HashPasswordService;
 using Application.Services.TokenService;
 using Application.ViewModels;
