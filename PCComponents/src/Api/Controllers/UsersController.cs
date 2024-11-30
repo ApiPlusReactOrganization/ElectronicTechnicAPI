@@ -1,4 +1,5 @@
-﻿using Api.Dtos.Users;
+﻿using Api.Dtos.Products;
+using Api.Dtos.Users;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
@@ -37,29 +38,13 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             () => NotFound());
     }
 
-    [HttpGet("get-by-id/{userId:guid}")]
-    public async Task<ActionResult<UserDto>> Get([FromRoute] Guid userId, CancellationToken cancellationToken)
-    {
-        var entity = await userQueries.GetById(new UserId(userId), cancellationToken);
-
-        return entity.Match<ActionResult<UserDto>>(
-            u => UserDto.FromDomainModel(u),
-            () => NotFound());
-    }
-
     [HttpGet("get-all-favorite-products/{userId:guid}")]
-    public async Task<ActionResult<UserFavoriteProductsListDto>> GetAllFavoriteProducts(
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAllFavoriteProducts(
         [FromRoute] Guid userId, CancellationToken cancellationToken)
     {
         var favoriteProducts = await userQueries.GetFavoriteProductsByUserId(new UserId(userId), cancellationToken);
         
-        if (favoriteProducts == null || !favoriteProducts.Any())
-        {
-            return NotFound();
-        }
-        
-        var result = UserFavoriteProductsListDto.FromProductList(userId, favoriteProducts.ToList());
-        return Ok(result);
+        return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
     }
 
     [HttpPut("update/{userId:guid}")]
@@ -94,7 +79,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<UserFavoriteProductsDto>>(
-            u => Ok(UserFavoriteProductsDto.FromDomainModel(u)),
+            u => UserFavoriteProductsDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
 
@@ -111,7 +96,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var result = await sender.Send(input, cancellationToken);
 
         return result.Match<ActionResult<UserFavoriteProductsDto>>(
-            u => Ok(UserFavoriteProductsDto.FromDomainModel(u)),
+            u => UserFavoriteProductsDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
 

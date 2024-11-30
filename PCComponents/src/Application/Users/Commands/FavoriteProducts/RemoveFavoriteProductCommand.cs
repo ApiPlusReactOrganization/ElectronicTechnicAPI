@@ -25,22 +25,22 @@ public class RemoveFavoriteProductCommandHandler(
         var userId = new UserId(request.UserId);
         var productId = new ProductId(request.ProductId);
 
-        var userOption = await userRepository.GetById(userId, cancellationToken);
-        var productOption = await productRepository.GetById(productId, cancellationToken);
+        var user = await userRepository.GetById(userId, cancellationToken);
+        var product = await productRepository.GetById(productId, cancellationToken);
 
-        return await productOption.Match<Task<Result<User, UserException>>>(
-            async product =>
+        return await product.Match<Task<Result<User, UserException>>>(
+            async p =>
             {
-                return await userOption.Match<Task<Result<User, UserException>>>(
-                    async user =>
+                return await user.Match<Task<Result<User, UserException>>>(
+                    async u =>
                     {
-                        if (!user.FavoriteProducts.Contains(product))
+                        if (!u.FavoriteProducts.Contains(p))
                         {
                             return await Task.FromResult<Result<User, UserException>>(
-                                new UserFavoriteProductNotFoundException(user.Id, product.Id));
+                                new UserFavoriteProductNotFoundException(userId, productId));
                         }
 
-                        return await RemoveProductFromFavorites(userId, product, cancellationToken);
+                        return await RemoveProductFromFavorites(userId, p, cancellationToken);
                     },
                     () => Task.FromResult<Result<User, UserException>>(
                         new UserNotFoundException(userId))

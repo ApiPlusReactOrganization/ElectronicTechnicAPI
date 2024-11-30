@@ -19,5 +19,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasMany(x => x.Roles)
             .WithMany(x => x.Users)
             .UsingEntity(x => x.ToTable("user_roles"));
+            
+        builder.HasMany(x => x.FavoriteProducts)
+            .WithMany()
+            .UsingEntity(x => x.ToTable("user_favorite_products"));
     }
 }

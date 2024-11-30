@@ -80,6 +80,7 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
                 .Include(u => u.Roles)
                 .Include(u => u.UserImage)
                 .Include(u => u.Cart)
+                .Include(u => u.FavoriteProducts)
                 .FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
@@ -88,15 +89,16 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .Include(u => u.Roles)
             .Include(u => u.UserImage)
             .Include(u => u.Cart)
+            .Include(u => u.FavoriteProducts)
             .FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
     public async Task<IReadOnlyList<Product>> GetFavoriteProductsByUserId(UserId userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .Include(u => u.FavoriteProducts)  // Завантажуємо улюблені продукти користувача
-            .AsNoTracking()                    // Без відстеження для оптимізації
-            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);  // Знаходимо користувача за його ID
+            .Include(u => u.FavoriteProducts)  
+            .AsNoTracking()                   
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);  
 
         return user?.FavoriteProducts!;
     }
