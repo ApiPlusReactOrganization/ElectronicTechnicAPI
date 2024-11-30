@@ -51,7 +51,7 @@ public class AccountController(ISender sender) : ControllerBase
             e => e.ToObjectResult());
     }
     
-    [HttpPost("refresh")]
+    [HttpPost("refresh-token")]
     public async Task<ActionResult<JwtVM>> RefreshTokensAsync([FromBody] JwtVM model, CancellationToken cancellationToken)
     {
         var input = new RefreshTokenCommand()

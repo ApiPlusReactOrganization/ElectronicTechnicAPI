@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("users")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.AdminRole)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
@@ -70,6 +70,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
     [HttpPut("image/{userId}")]
     public async Task<ActionResult<JwtVM>> Upload([FromRoute] Guid userId, IFormFile imageFile,
         CancellationToken cancellationToken)
@@ -87,6 +88,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
     [HttpPut("update/{userId:guid}")]
     public async Task<ActionResult<JwtVM>> UpdateUser([FromRoute] Guid userId,
         [FromBody] UpdateUserVM user,
