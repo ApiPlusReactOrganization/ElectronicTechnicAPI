@@ -3,6 +3,7 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Manufacturers.Commands;
 using Domain.Authentications;
+using Domain.Categories;
 using Domain.Manufacturers;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,7 +16,11 @@ namespace Api.Controllers;
 // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 // [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
-public class ManufacturersController(ISender sender, IManufacturerQueries manufacturerQueries) : ControllerBase
+public class ManufacturersController(
+    ISender sender,
+    IManufacturerQueries manufacturerQueries,
+    ICategoryQueries categoryQueries) 
+    : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("get-all")]
@@ -25,15 +30,28 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
 
         return entities.Select(ManufacturerDto.FromDomainModel).ToList();
     }
-    
+
     [HttpGet("get-by-id/{manufacturerId:guid}")]
-    public async Task<ActionResult<ManufacturerDto>> Get([FromRoute] Guid manufacturerId, CancellationToken cancellationToken)
+    public async Task<ActionResult<ManufacturerDto>> Get([FromRoute] Guid manufacturerId,
+        CancellationToken cancellationToken)
     {
         var entity = await manufacturerQueries.GetById(
             new ManufacturerId(manufacturerId), cancellationToken);
 
         return entity.Match<ActionResult<ManufacturerDto>>(
             m => ManufacturerDto.FromDomainModel(m),
+            () => NotFound());
+    }
+
+    [HttpGet("get-by-category-id/{categoryId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<ManufacturerDto>>> GetByCategory([FromRoute] Guid categoryId,
+        CancellationToken cancellationToken)
+    {
+        var category = await categoryQueries.GetById(
+            new CategoryId(categoryId), cancellationToken);
+
+        return category.Match<ActionResult<IReadOnlyList<ManufacturerDto>>>(
+            m => m.Manufacturers.Select(ManufacturerDto.FromDomainModel).ToList(),
             () => NotFound());
     }
 
@@ -53,7 +71,7 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
             m => ManufacturerDto.FromDomainModel(m),
             e => e.ToObjectResult());
     }
-    
+
     [HttpPut("update")]
     public async Task<ActionResult<ManufacturerDto>> Update(
         [FromBody] ManufacturerDto request,
@@ -62,7 +80,8 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
         var input = new UpdateManufacturerCommand()
         {
             ManufacturerId = request.Id!.Value,
-            Name = request.Name
+            Name = request.Name, 
+            Categories = request.Categories.Select(c => c.Id!.Value).ToList(),
         };
 
         var result = await sender.Send(input, cancellationToken);
@@ -71,9 +90,9 @@ public class ManufacturersController(ISender sender, IManufacturerQueries manufa
             m => ManufacturerDto.FromDomainModel(m),
             e => e.ToObjectResult());
     }
-    
+
     [HttpDelete("delete/{manufacturerId:guid}")]
-    public async Task<ActionResult<ManufacturerDto>> 
+    public async Task<ActionResult<ManufacturerDto>>
         Delete([FromRoute] Guid manufacturerId, CancellationToken cancellationToken)
     {
         var input = new DeleteManufacturerCommand()
