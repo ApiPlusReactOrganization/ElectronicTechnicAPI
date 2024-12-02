@@ -55,6 +55,73 @@ public class ProductRepository : IProductRepository, IProductQueries
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
+    public async Task<IReadOnlyList<Product>> GetProductsByManufacturers(
+        List<ManufacturerId> manufacturerIds,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Products
+            .Where(p => manufacturerIds.Contains(p.ManufacturerId))
+            .Include(p => p.Manufacturer)
+            .Include(p => p.Category)
+            .Include(i => i.Images)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+    public async Task<IReadOnlyList<Product>> FilterProducts(
+        Guid? categoryId = null,
+        List<Guid>? manufacturerIds = null,
+        string? name = null,
+        decimal? minPrice = null,
+        decimal? maxPrice = null,
+        int? minStockQuantity = null,
+        int? maxStockQuantity = null,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<Product> query = _context.Products
+            .Include(p => p.Manufacturer)
+            .Include(p => p.Category)
+            .Include(i => i.Images);
+
+        if (categoryId.HasValue)
+        {
+            query = query.Where(p => p.CategoryId == new CategoryId(categoryId.Value));
+        }
+
+        if (manufacturerIds != null && manufacturerIds.Any())
+        {
+            var manufacturerIdObjects = manufacturerIds.Select(id => new ManufacturerId(id)).ToList();
+            query = query.Where(p => manufacturerIdObjects.Contains(p.ManufacturerId));
+        }
+
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            query = query.Where(p => EF.Functions.Like(p.Name, $"%{name}%"));
+        }
+
+        if (minPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice.Value);
+        }
+
+        if (minStockQuantity.HasValue)
+        {
+            query = query.Where(p => p.StockQuantity >= minStockQuantity.Value);
+        }
+
+        if (maxStockQuantity.HasValue)
+        {
+            query = query.Where(p => p.StockQuantity <= maxStockQuantity.Value);
+        }
+
+        return await query.AsNoTracking().ToListAsync(cancellationToken);
+    }
+
 
     public async Task<IReadOnlyList<Product>> GetProductsByCategory(
         CategoryId category,
