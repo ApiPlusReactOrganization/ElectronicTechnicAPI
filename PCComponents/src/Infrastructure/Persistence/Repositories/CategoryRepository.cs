@@ -24,6 +24,7 @@ public class CategoryRepository : ICategoryRepository, ICategoryQueries
     public async Task<Option<Category>> GetById(CategoryId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Categories
+            .Include(x=>x.Manufacturers)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Category>() : Option.Some(entity);

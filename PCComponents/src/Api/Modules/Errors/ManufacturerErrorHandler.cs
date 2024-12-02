@@ -11,7 +11,7 @@ public static class ManufacturerErrorHandler
         {
             StatusCode = exception switch
             {
-                ManufacturerNotFoundException => StatusCodes.Status404NotFound,
+                ManufacturerNotFoundException or CategoryNotFoundException => StatusCodes.Status404NotFound,
                 ManufacturerAlreadyExistsException or ManufacturerHasRelatedProductsException 
                     => StatusCodes.Status409Conflict,
                 ManufacturerUnknownException => StatusCodes.Status500InternalServerError,
