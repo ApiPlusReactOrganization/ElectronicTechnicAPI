@@ -12,8 +12,15 @@ public static class AuthenticationErrorHandler
             StatusCode = exception switch
             {
                 UserByThisEmailAlreadyExistsException => StatusCodes.Status409Conflict,
-                EmailOrPasswordAreIncorrect => StatusCodes.Status401Unauthorized,
+                EmailOrPasswordAreIncorrectException => StatusCodes.Status401Unauthorized,
                 AuthenticationUnknownException => StatusCodes.Status500InternalServerError,
+                UserNorFoundException => StatusCodes.Status404NotFound,
+
+                InvalidTokenException
+                    or TokenExpiredException
+                    or InvalidAccessTokenException
+                    => StatusCodes.Status426UpgradeRequired,
+
                 _ => throw new NotImplementedException("Authentication error handler does not implemented")
             }
         };

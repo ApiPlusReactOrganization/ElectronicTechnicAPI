@@ -1,5 +1,6 @@
 ﻿using Domain.Categories;
 using Domain.Manufacturers;
+using Domain.Products.PCComponents;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,7 +12,8 @@ namespace Infrastructure.Persistence.Configurations
         {
             builder.HasKey(m => m.Id);
             builder.Property(m => m.Id).HasConversion(m => m.Value, x => new CategoryId(x));
-            builder.Property(m => m.Name).IsRequired().HasMaxLength(100);
+            builder.Property(m => m.Name).HasConversion(x => x.ToString(), x => SelectionCategoryType.From(x))
+                .IsRequired().HasMaxLength(100);
         }
     }
 }

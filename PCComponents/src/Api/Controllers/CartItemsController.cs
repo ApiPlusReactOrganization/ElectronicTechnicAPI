@@ -65,15 +65,15 @@ public class CartItemsController(ISender sender, ICartItemQueries cartItemQuerie
             e => e.ToObjectResult());
     }
 
-    [HttpPut("update")]
+    [HttpPut("update-quantity/{cartItemId:guid}")]
     public async Task<ActionResult<CartItemDto>> Update(
-        [FromBody] CartItemDto request,
+        [FromRoute] Guid cartItemId, int quantity,
         CancellationToken cancellationToken)
     {
         var input = new UpdateCartItemCommand()
         {
-            CartItemId = request.Id!.Value,
-            Quantity = request.Quantity
+            CartItemId = cartItemId,
+            Quantity = quantity
         };
 
         var result = await sender.Send(input, cancellationToken);

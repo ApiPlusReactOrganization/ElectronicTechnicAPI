@@ -4,6 +4,7 @@ using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
 using Application.Users.Commands;
+using Application.ViewModels;
 using Application.Users.Commands.FavoriteProducts;
 using Domain.Authentications;
 using Domain.Authentications.Users;
@@ -15,8 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("users")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.AdminRole)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
@@ -45,25 +46,6 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         var favoriteProducts = await userQueries.GetFavoriteProductsByUserId(new UserId(userId), cancellationToken);
         
         return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
-    }
-
-    [HttpPut("update/{userId:guid}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> UpdateUser([FromRoute] Guid userId,
-        [FromBody] UpdateUserVM user,
-        CancellationToken cancellationToken)
-    {
-        var input = new UpdateUserCommand()
-        {
-            UserId = userId,
-            UserName = user.UserName,
-            Email = user.Email
-        };
-
-        var result = await sender.Send(input, cancellationToken);
-
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
-            r => r,
-            e => e.ToObjectResult());
     }
 
     [HttpPut("{userId:guid}/favorite-products-add/{productId:guid}")]
@@ -134,8 +116,9 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
     [HttpPut("image/{userId}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> Upload([FromRoute] Guid userId, IFormFile imageFile,
+    public async Task<ActionResult<JwtVM>> Upload([FromRoute] Guid userId, IFormFile imageFile,
         CancellationToken cancellationToken)
     {
         var input = new UploadUserImageCommand
@@ -146,7 +129,27 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
 
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+        return result.Match<ActionResult<JwtVM>>(
+            r => r,
+            e => e.ToObjectResult());
+    }
+
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
+    [HttpPut("update/{userId:guid}")]
+    public async Task<ActionResult<JwtVM>> UpdateUser([FromRoute] Guid userId,
+        [FromBody] UpdateUserVM user,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateUserCommand()
+        {
+            UserId = userId,
+            UserName = user.UserName,
+            Email = user.Email
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<JwtVM>>(
             r => r,
             e => e.ToObjectResult());
     }

@@ -27,6 +27,7 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
     public async Task<Option<CartItem>> GetById(CartItemId id, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
+            .Include(x => x.Product)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);

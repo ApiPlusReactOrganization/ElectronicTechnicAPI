@@ -4,6 +4,7 @@ using Application.Authentications;
 using Application.Authentications.Commands;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
+using Application.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +15,7 @@ namespace Api.Controllers;
 public class AccountController(ISender sender) : ControllerBase
 {
     [HttpPost("signup")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> SignUpAsync(
+    public async Task<ActionResult<JwtVM>> SignUpAsync(
         [FromBody] SignUpDto request,
         CancellationToken cancellationToken)
     {
@@ -27,13 +28,13 @@ public class AccountController(ISender sender) : ControllerBase
         
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+        return result.Match<ActionResult<JwtVM>>(
             f => f,
             e => e.ToObjectResult());
     }
     
     [HttpPost("signin")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> SignUpAsync(
+    public async Task<ActionResult<JwtVM>> SignUpAsync(
         [FromBody] SignInDto request,
         CancellationToken cancellationToken)
     {
@@ -45,7 +46,23 @@ public class AccountController(ISender sender) : ControllerBase
         
         var result = await sender.Send(input, cancellationToken);
 
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+        return result.Match<ActionResult<JwtVM>>(
+            f => f,
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<JwtVM>> RefreshTokensAsync([FromBody] JwtVM model, CancellationToken cancellationToken)
+    {
+        var input = new RefreshTokenCommand()
+        {
+            AccessToken = model.AccessToken,
+            RefreshToken = model.RefreshToken
+        };
+        
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<JwtVM>>(
             f => f,
             e => e.ToObjectResult());
     }

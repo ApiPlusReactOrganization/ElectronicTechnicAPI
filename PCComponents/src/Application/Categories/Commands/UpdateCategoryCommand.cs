@@ -51,7 +51,7 @@ public class UpdateCategoryCommandHandler(
 
             category.UpdateName(name);
 
-            PCComponentsNames.UpdateComponentList(oldName, name);
+            // PCComponentsNames.UpdateComponentList(oldName, name);
 
             return await categoryRepository.Update(category, cancellationToken);
         }

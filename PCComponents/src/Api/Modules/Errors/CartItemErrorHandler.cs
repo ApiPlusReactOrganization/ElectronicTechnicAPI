@@ -11,11 +11,14 @@ public static class CartItemErrorHandler
         {
             StatusCode = exception switch
             {
-                CartItemNotFoundException or ProductForCartItemNotFoundException =>
+                CartItemNotFoundException 
+                    or ProductForCartItemNotFoundException 
+                    or CartItemUserNotFoundException =>
                     StatusCodes.Status404NotFound,
                 CartItemAlreadyExistsException or CartItemHasRelatedEntitiesException
                     or CartItemQuantityExceedsStockException
                     or CartItemHaveOrderException
+                    or CartItemIsAlreadyFinishedException
                     => StatusCodes.Status409Conflict,
                 CartItemUnknownException =>
                     StatusCodes.Status500InternalServerError,

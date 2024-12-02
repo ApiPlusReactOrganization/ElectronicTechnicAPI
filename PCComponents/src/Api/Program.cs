@@ -31,6 +31,8 @@ app.UseCors(options => options
     .AllowAnyHeader()
     .AllowCredentials()
 );
+app.UseAuthentication();
+app.UseAuthorization();
 
 await app.InitialiseDb();
 app.MapControllers();
@@ -52,7 +54,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-/*app.SeedData();*/
+app.SeedData();
 
 app.Run();
 
