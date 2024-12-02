@@ -96,7 +96,8 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
     public async Task<IReadOnlyList<Product>> GetFavoriteProductsByUserId(UserId userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
-            .Include(u => u.FavoriteProducts)  
+            .Include(u => u.FavoriteProducts)
+            .ThenInclude(p => p.Images)
             .AsNoTracking()                   
             .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);  
 
