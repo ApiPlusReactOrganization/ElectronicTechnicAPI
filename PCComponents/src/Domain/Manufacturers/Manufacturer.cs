@@ -1,4 +1,5 @@
-﻿using Domain.Products;
+﻿using Domain.Categories;
+using Domain.Products;
 
 namespace Domain.Manufacturers
 {
@@ -6,6 +7,7 @@ namespace Domain.Manufacturers
     {
         public ManufacturerId Id { get; }
         public string Name { get; private set; }
+        public List<Category> Categories { get; }
         
         private Manufacturer(ManufacturerId id, string name)
         {

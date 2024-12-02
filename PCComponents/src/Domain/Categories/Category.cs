@@ -1,9 +1,12 @@
-﻿namespace Domain.Categories;
+﻿using Domain.Manufacturers;
+
+namespace Domain.Categories;
 
 public class Category
 {
     public CategoryId Id { get; set; }
     public string Name { get; set; }
+    public List<Manufacturer> Manufacturers { get; }
     
     private Category(CategoryId id, string name)
     {
