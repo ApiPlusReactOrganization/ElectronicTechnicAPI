@@ -48,25 +48,6 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
     }
 
-    [HttpPut("update/{userId:guid}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> UpdateUser([FromRoute] Guid userId,
-        [FromBody] UpdateUserVM user,
-        CancellationToken cancellationToken)
-    {
-        var input = new UpdateUserCommand()
-        {
-            UserId = userId,
-            UserName = user.UserName,
-            Email = user.Email
-        };
-
-        var result = await sender.Send(input, cancellationToken);
-
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
-            r => r,
-            e => e.ToObjectResult());
-    }
-
     [HttpPut("{userId:guid}/favorite-products-add/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> AddFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
