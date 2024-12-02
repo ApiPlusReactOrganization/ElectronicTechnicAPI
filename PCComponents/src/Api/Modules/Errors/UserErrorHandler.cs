@@ -11,11 +11,20 @@ public static class UserErrorHandler
         {
             StatusCode = exception switch
             {
-                UserByThisEmailAlreadyExistsException => StatusCodes.Status409Conflict,
-                UserNotFoundException 
-                    or RoleNotFoundException => StatusCodes.Status404NotFound,
+                UserByThisEmailAlreadyExistsException
+                    or ProductAlreadyInFavoritesException =>
+                    StatusCodes.Status409Conflict,
+
+                UserNotFoundException
+                    or RoleNotFoundException
+                    or ProductNotFoundException
+                    or UserFavoriteProductNotFoundException =>
+                    StatusCodes.Status404NotFound,
+
                 EmailOrPasswordAreIncorrect => StatusCodes.Status401Unauthorized,
+                
                 UserUnknownException or ImageSaveException => StatusCodes.Status500InternalServerError,
+                
                 _ => throw new NotImplementedException("Authentication error handler does not implemented")
             }
         };

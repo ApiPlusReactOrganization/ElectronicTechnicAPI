@@ -43,7 +43,7 @@ public class UpdateFacultyCommandHandler(
         }
         catch (Exception exception)
         {
-            return new ManufacturerUnknownException(manufacturer.Id, exception);
+            return new ManufacturerUnknownException(ManufacturerId.Empty, exception);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
 using Domain.Authentications.Users;
+using Domain.Products;
 using Microsoft.EntityFrameworkCore;
 using Optional;
 
@@ -36,18 +37,19 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .AsNoTracking()
             .Include(x => x.Roles)
             .Include(u => u.UserImage)
+            .Include(u => u.FavoriteProducts) 
             .Include(u => u.Cart)
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
-
+    
     public async Task<Option<User>> GetById(UserId id, CancellationToken cancellationToken)
     {
         var entity = await GetUserAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<User>() : Option.Some(entity);
     }
-
+    
     public async Task<Option<User>> SearchByEmail(string email, CancellationToken cancellationToken)
     {
         var entity = await GetUserAsync(x => x.Email == email, cancellationToken);
@@ -68,11 +70,8 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
         var entity = await GetUserAsync(x => x.Id == userId, cancellationToken);
 
         var role = await _context.Roles.FirstOrDefaultAsync(x => x.Id == idRole, cancellationToken);
-
         entity.Roles.Add(role);
-
         await _context.SaveChangesAsync(cancellationToken);
-
         return entity;
     }
 
@@ -93,6 +92,40 @@ public class UserRepository(ApplicationDbContext _context) : IUserRepository, IU
             .Include(u => u.Roles)
             .Include(u => u.UserImage)
             .Include(u => u.Cart)
+            .Include(u => u.FavoriteProducts)
             .FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Product>> GetFavoriteProductsByUserId(UserId userId, CancellationToken cancellationToken)
+    {
+        var user = await _context.Users
+            .Include(u => u.FavoriteProducts)
+            .ThenInclude(p => p.Images)
+            .AsNoTracking()                   
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);  
+
+        return user?.FavoriteProducts!;
+    }
+
+    public async Task<User> AddFavoriteProduct(UserId userId, Product product, CancellationToken cancellationToken)
+    {
+        var user = await _context.Users
+            .Include(u => u.FavoriteProducts)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        user!.FavoriteProducts.Add(product);
+        await _context.SaveChangesAsync(cancellationToken);
+        return user;
+    }
+    
+    public async Task<User> RemoveFavoriteProduct(UserId userId, Product product, CancellationToken cancellationToken)
+    {
+        var user = await _context.Users
+            .Include(u => u.FavoriteProducts)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        user!.FavoriteProducts.Remove(product);
+        await _context.SaveChangesAsync(cancellationToken);
+        return user;
     }
 }

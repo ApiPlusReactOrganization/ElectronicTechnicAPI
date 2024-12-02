@@ -1,4 +1,6 @@
 ﻿using Domain.Authentications.Roles;
+
+using Domain.Products;
 using Domain.CartItems;
 using Domain.RefreshTokens;
 
@@ -11,6 +13,7 @@ public class User
     public string? Name { get; private set; }
     public string PasswordHash { get; }
     public UserImage? UserImage { get; private set; }
+    public List<Product> FavoriteProducts { get;  set; } = new();
     public List<CartItem> Cart { get; private set; } = new();
     public List<Role> Roles { get; private set; } = new();
     public List<RefreshToken> RefreshTokens { get; private set; } = new();
