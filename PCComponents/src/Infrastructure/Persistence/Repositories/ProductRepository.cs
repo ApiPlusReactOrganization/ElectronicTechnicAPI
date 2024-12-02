@@ -89,9 +89,17 @@ public class ProductRepository : IProductRepository, IProductQueries
 
         if (manufacturerIds != null && manufacturerIds.Any())
         {
-            var manufacturerIdObjects = manufacturerIds.Select(id => new ManufacturerId(id)).ToList();
-            query = query.Where(p => manufacturerIdObjects.Contains(p.ManufacturerId));
+            var result = new List<Product>();
+            foreach (var id in manufacturerIds)
+            {
+                var products = await query
+                    .Where(p => p.ManufacturerId == new ManufacturerId(id))
+                    .ToListAsync(cancellationToken);
+                result.AddRange(products);
+            }
+            return result;
         }
+
 
 
         if (!string.IsNullOrEmpty(name))
