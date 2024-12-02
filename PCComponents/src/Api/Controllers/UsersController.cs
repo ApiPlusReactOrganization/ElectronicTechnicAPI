@@ -1,8 +1,10 @@
-﻿using Api.Dtos.Users;
+﻿using Api.Dtos.Products;
+using Api.Dtos.Users;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Services;
 using Application.Users.Commands;
+using Application.Users.Commands.FavoriteProducts;
 using Domain.Authentications;
 using Domain.Authentications.Users;
 using MediatR;
@@ -35,6 +37,69 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             p => UserDto.FromDomainModel(p),
             () => NotFound());
     }
+
+    [HttpGet("get-all-favorite-products/{userId:guid}")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAllFavoriteProducts(
+        [FromRoute] Guid userId, CancellationToken cancellationToken)
+    {
+        var favoriteProducts = await userQueries.GetFavoriteProductsByUserId(new UserId(userId), cancellationToken);
+        
+        return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
+    }
+
+    [HttpPut("update/{userId:guid}")]
+    public async Task<ActionResult<ServiceResponseForJwtToken>> UpdateUser([FromRoute] Guid userId,
+        [FromBody] UpdateUserVM user,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateUserCommand()
+        {
+            UserId = userId,
+            UserName = user.UserName,
+            Email = user.Email
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
+            r => r,
+            e => e.ToObjectResult());
+    }
+
+    [HttpPut("{userId:guid}/favorite-products-add/{productId:guid}")]
+    public async Task<ActionResult<UserFavoriteProductsDto>> AddFavoriteProduct(
+        [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
+    {
+        var input = new AddFavoriteProductCommand
+        {
+            UserId = userId,
+            ProductId = productId
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<UserFavoriteProductsDto>>(
+            u => UserFavoriteProductsDto.FromDomainModel(u),
+            e => e.ToObjectResult());
+    }
+
+    [HttpPut("{userId:guid}/favorite-products-remove/{productId:guid}")]
+    public async Task<ActionResult<UserFavoriteProductsDto>> RemoveFavoriteProduct(
+        [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
+    {
+        var input = new RemoveFavoriteProductCommand
+        {
+            UserId = userId,
+            ProductId = productId
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<UserFavoriteProductsDto>>(
+            u => UserFavoriteProductsDto.FromDomainModel(u),
+            e => e.ToObjectResult());
+    }
+
 
     [HttpDelete("delete/{userId:guid}")]
     public async Task<ActionResult<UserDto>>
@@ -77,25 +142,6 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         {
             UserId = userId,
             ImageFile = imageFile
-        };
-
-        var result = await sender.Send(input, cancellationToken);
-
-        return result.Match<ActionResult<ServiceResponseForJwtToken>>(
-            r => r,
-            e => e.ToObjectResult());
-    }
-
-    [HttpPut("update/{userId:guid}")]
-    public async Task<ActionResult<ServiceResponseForJwtToken>> UpdateUser([FromRoute] Guid userId,
-        [FromBody] UpdateUserVM user,
-        CancellationToken cancellationToken)
-    {
-        var input = new UpdateUserCommand()
-        {
-            UserId = userId,
-            UserName = user.UserName,
-            Email = user.Email
         };
 
         var result = await sender.Send(input, cancellationToken);

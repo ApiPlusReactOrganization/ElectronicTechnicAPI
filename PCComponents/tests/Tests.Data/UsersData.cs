@@ -6,12 +6,12 @@ namespace Tests.Data;
 
 public static class UsersData
 {
-    public static UserDto MainUser => new(
+    /*public static UserDto MainUser => new(
         Id: Guid.NewGuid(),
         Email: "mainuser@example.com",
         Name: "Main User",
         Image : null,
-        Roles: new List<RoleDto> { new("User") });
+        Roles: new List<RoleDto> { new("User") });*/
 
     public static SignUpDto SignUpMainUser => new(
         Email: "mainuser@gmail.com",

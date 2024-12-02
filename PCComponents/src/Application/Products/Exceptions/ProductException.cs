@@ -40,3 +40,4 @@ public class ProductInvalidCategoryException(CategoryId id, string categoryName)
     : ProductException(
         ProductId.Empty,
         $"Selected characteristic does not match the category: {categoryName} ID: {id}");
+        

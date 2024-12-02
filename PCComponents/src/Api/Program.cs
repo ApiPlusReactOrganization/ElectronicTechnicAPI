@@ -52,7 +52,7 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-//app.SeedData();
+/*app.SeedData();*/
 
 app.Run();
 
