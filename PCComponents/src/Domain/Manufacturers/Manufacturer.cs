@@ -7,7 +7,7 @@ namespace Domain.Manufacturers
     {
         public ManufacturerId Id { get; }
         public string Name { get; private set; }
-        public List<Category> Categories { get; }
+        public List<Category> Categories { get; private set; } = new();
         
         private Manufacturer(ManufacturerId id, string name)
         {
@@ -24,5 +24,8 @@ namespace Domain.Manufacturers
         {
             Name = name;
         }
+
+        public void SetCategories(List<Category> categories)
+        => Categories = categories;
     }
 }

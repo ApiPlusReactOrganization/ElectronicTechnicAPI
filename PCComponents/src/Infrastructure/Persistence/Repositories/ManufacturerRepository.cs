@@ -18,6 +18,7 @@ public class ManufacturerRepository : IManufacturerRepository, IManufacturerQuer
     public async Task<IReadOnlyList<Manufacturer>> GetAll(CancellationToken cancellationToken)
     {
         return await _context.Manufacturers
+            .Include(x=>x.Categories)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }

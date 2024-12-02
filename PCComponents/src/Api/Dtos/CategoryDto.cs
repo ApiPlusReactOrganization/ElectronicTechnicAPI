@@ -1,4 +1,5 @@
 ﻿using Domain.Categories;
+using Domain.Manufacturers;
 
 namespace Api.Dtos;
 
