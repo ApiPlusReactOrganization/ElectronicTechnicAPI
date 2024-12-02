@@ -23,7 +23,8 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         var facultyName = "From Test Manufacturer";
         var request = new ManufacturerDto(
             Id: null,
-            Name: facultyName);
+            Name: facultyName,
+            Categories: null);
 
         // Act
         var response = await Client.PostAsJsonAsync("manufacturers/create", request);
@@ -48,7 +49,8 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         var newFacultyName = "New Manufacturer Name";
         var request = new ManufacturerDto(
             Id: _mainManufacturer.Id.Value,
-            Name: newFacultyName);
+            Name: newFacultyName,
+            Categories: null);
 
         // Act
         var response = await Client.PutAsJsonAsync("manufacturers/update", request);
@@ -72,7 +74,8 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         // Arrange
         var request = new ManufacturerDto(
             Id: null,
-            Name: _mainManufacturer.Name);
+            Name: _mainManufacturer.Name,
+            Categories: null);
 
         // Act
         var response = await Client.PostAsJsonAsync("manufacturers/create", request);
@@ -88,7 +91,8 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         // Arrange
         var request = new ManufacturerDto(
             Id: Guid.NewGuid(),
-            Name: "New Manufacturer Name");
+            Name: "New Manufacturer Name",
+            Categories: null);
 
         // Act
         var response = await Client.PutAsJsonAsync("manufacturers/update", request);
