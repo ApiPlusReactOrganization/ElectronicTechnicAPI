@@ -1,4 +1,6 @@
 using Api.Dtos.Products;
+using Domain.Products.PCComponents;
+
 namespace Tests.Data;
 
 public static class ProductsData
@@ -10,5 +12,15 @@ public static class ProductsData
         StockQuantity: 10,
         ManufacturerId: Guid.NewGuid(),
         CategoryId: Guid.NewGuid(),
-        ComponentCharacteristic: null);
+        ComponentCharacteristic: new ComponentCharacteristic
+        {
+            Case = new Case
+            {
+                NumberOfFans = 2,
+                CoolingDescription = "Efficient cooling system.",
+                FormFactor = "Mid Tower",
+                CompartmentDescription = "Standard ATX Compartment",
+                PortsDescription = "USB 3.0, USB-C, Audio Jack"
+            }
+        });
 }
