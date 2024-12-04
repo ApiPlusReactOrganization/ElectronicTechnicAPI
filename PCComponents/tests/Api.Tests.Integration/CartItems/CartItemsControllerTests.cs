@@ -16,16 +16,14 @@ namespace Api.Tests.Integration.CartItems;
 public class CartItemsControllerTests : BaseIntegrationTest, IAsyncLifetime
 {
     private readonly User _mainUser = UsersData.MainUser;
-    private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
     private readonly Product _mainProduct;
     private readonly Product _productForCreate;
     private readonly CartItem _mainCartItem;
-    private readonly Category _mainCategory = CategoriesData.MainCategory;
 
     public CartItemsControllerTests(IntegrationTestWebFactory factory) : base(factory)
     {
-        _mainProduct = ProductsData.MainProduct(_mainManufacturer.Id, _mainCategory.Id);
-        _productForCreate = ProductsData.MainProduct(_mainManufacturer.Id, _mainCategory.Id);
+        _mainProduct = ProductsData.MainProduct(Context.Manufacturers.First().Id, Context.Categories.First().Id);
+        _productForCreate = ProductsData.MainProduct(Context.Manufacturers.First().Id, Context.Categories.First().Id);
         
         _mainCartItem = CartItemsData.MainCartItem(_mainUser.Id, _mainProduct.Id);
     }
@@ -68,8 +66,6 @@ public class CartItemsControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task InitializeAsync()
     {
         await Context.Users.AddAsync(_mainUser);
-        await Context.Categories.AddAsync(_mainCategory);
-        await Context.Manufacturers.AddAsync(_mainManufacturer);
         await Context.Products.AddAsync(_mainProduct);
         await Context.Products.AddAsync(_productForCreate);
         await Context.CartItems.AddAsync(_mainCartItem);
@@ -81,8 +77,6 @@ public class CartItemsControllerTests : BaseIntegrationTest, IAsyncLifetime
         Context.CartItems.RemoveRange(Context.CartItems);
         Context.Products.RemoveRange(Context.Products);
         Context.Users.RemoveRange(Context.Users);
-        Context.Manufacturers.RemoveRange(Context.Manufacturers);
-        Context.Categories.RemoveRange(Context.Categories);
         await SaveChangesAsync();
     }
 }

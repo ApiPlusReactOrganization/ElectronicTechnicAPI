@@ -38,12 +38,4 @@ public static class UsersData
         Password: "123",
         Name: "Invalid User"
         );
-    
-
-    public static SignUpDto RemoveFavorite => new(
-        Email: "RemoveFavorite@gmail.com",
-        Password: "RemoveFavoriteF123!",
-        Name: "RemoveFavorite");
-
-    
 }

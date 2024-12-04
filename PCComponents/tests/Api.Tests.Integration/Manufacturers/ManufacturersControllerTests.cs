@@ -11,11 +11,14 @@ using Xunit;
 
 namespace Api.Tests.Integration.Manufacturers;
 
-public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
-    : BaseIntegrationTest(factory), IAsyncLifetime
+public class ManufacturersControllerTests : BaseIntegrationTest, IAsyncLifetime
 {
-    private readonly Manufacturer _mainManufacturer = ManufacturersData.MainManufacturer;
+    private readonly Manufacturer _mainManufacturer;
 
+    public ManufacturersControllerTests(IntegrationTestWebFactory factory) : base(factory)
+    {
+        _mainManufacturer = ManufacturersData.MainManufacturer;
+    }
     [Fact]
     public async Task ShouldCreateManufacturer()
     {

@@ -5,6 +5,8 @@ using Api.Dtos.Authentications;
 using Api.Dtos.Products;
 using Api.Dtos.Users;
 using Application.ViewModels;
+using Domain.Authentications.Users;
+using Domain.Products;
 using Domain.Products.PCComponents;
 using FluentAssertions;
 using Tests.Common;
@@ -13,8 +15,17 @@ using Xunit;
 
 namespace Api.Tests.Integration.Users;
 
-public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseIntegrationTest(factory)
+public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
 {
+    
+    private readonly User _mainUser = UsersData.MainUser;
+    private readonly Product _mainProduct;
+
+    public UsersControllerTests(IntegrationTestWebFactory factory) : base(factory)
+    {
+        _mainProduct = ProductsData.MainProduct(Context.Manufacturers.First().Id, Context.Categories.First().Id);
+
+    }
     [Fact]
     public async Task ShouldGetAllUsers()
     {
@@ -199,37 +210,23 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
     public async Task ShouldAddFavoriteProduct()
     {
         // Arrange
-        var signUpRequest = UsersData.SignUpMainUser;
-        var signUpResponse = await Client.PostAsJsonAsync("account/signup", signUpRequest);
-        signUpResponse.IsSuccessStatusCode.Should().BeTrue();
-
-        var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var user = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
-        user.Should().NotBeNull("Користувач має існувати");
-
-        var productsResponse = await Client.GetAsync("products/get-all");
-        productsResponse.IsSuccessStatusCode.Should().BeTrue();
-        productsResponse.Should().NotBeNull();
-        var products = await productsResponse.Content.ReadFromJsonAsync<List<CategoryDto>>();
-        var product = products.FirstOrDefault();
-        product.Should().NotBeNull();
 
 
         // Act
-        var response = await Client.PutAsJsonAsync<object>($"users/{user.Id}/favorite-products-add/{product.Id}", null);
+        var response = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
         var content = await response.Content.ReadFromJsonAsync<UserFavoriteProductsDto>();
         content.Should().NotBeNull();
-        content!.FavoriteProducts.Should().ContainSingle(p => p.Id == product.Id);
+        content!.FavoriteProducts.Should().ContainSingle(p => p.Id == _mainProduct.Id.Value);
     }
 
     [Fact]
     public async Task ShouldNotAddFavoriteProductToNonExistentUser()
     {
         // Arrange
-        var userId = Guid.NewGuid(); // Non-existent User ID
+        var userId = Guid.NewGuid(); 
         var productId = Guid.NewGuid();
 
         // Act
@@ -244,82 +241,34 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
     public async Task ShouldRemoveFavoriteProduct()
     {
         // Arrange
-        var signUpRequest = UsersData.RemoveFavorite;
-        var signUpResponse = await Client.PostAsJsonAsync("account/signup", signUpRequest);
-        signUpResponse.IsSuccessStatusCode.Should().BeTrue();
-
-        var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
-        var user = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
-        user.Should().NotBeNull("Користувач має існувати");
-
-        
-        
-        
-        var categoriesResponse = await Client.GetAsync("categories/get-all");
-        var manufacturersResponse = await Client.GetAsync("manufacturers/get-all");
-        categoriesResponse.IsSuccessStatusCode.Should().BeTrue();
-        manufacturersResponse.IsSuccessStatusCode.Should().BeTrue();
-
-        var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryDto>>();
-        var manufacturers = await manufacturersResponse.Content.ReadFromJsonAsync<List<ManufacturerDto>>();
-
-        categories.Should().NotBeNull();
-        categories!.Should().NotBeEmpty();
-
-        manufacturers.Should().NotBeNull();
-        manufacturers!.Should().NotBeEmpty();
-
-        var ramCategory = categories.FirstOrDefault(c => c.Name.Contains("RAM", StringComparison.OrdinalIgnoreCase));
-        ramCategory.Should().NotBeNull("Category with 'RAM' should exist in the database.");
-        var testManufacturer = manufacturers.FirstOrDefault(m =>
-            m.Name.Contains("NVIDIA Corporation", StringComparison.OrdinalIgnoreCase));
-        testManufacturer.Should().NotBeNull("Manufacturer with 'Test Manufacturer' should exist in the database.");
-        var ram = new RAM
-        {
-            MemoryAmount = 16,
-            MemorySpeed = 3200,
-            MemoryType = "DDR4",
-            FormFactor = "DIMM",
-            Voltage = 1.35f,
-            MemoryBandwidth = 25.6f
-        };
-
-        var componentCharacteristic = ComponentCharacteristic.NewRam(ram);
-
-        var request = new CreateProductDto(
-            Name: "RemoveFavorite Test RAM",
-            Price: 99.99m,
-            Description: "RemoveFavorite High-performance RAM for testing.",
-            StockQuantity: 10,
-            ManufacturerId: testManufacturer!.Id.Value,
-            CategoryId: ramCategory!.Id.Value,
-            ComponentCharacteristic: componentCharacteristic);
-
-        var productResponse = await Client.PostAsJsonAsync("products/create", request);
-        productResponse.IsSuccessStatusCode.Should().BeTrue();
-        productResponse.Should().NotBeNull();
-        
-        var productsResponse = await Client.GetAsync("products/get-all");
-        productsResponse.IsSuccessStatusCode.Should().BeTrue();
-        productsResponse.Should().NotBeNull();
-        var products = await productsResponse.Content.ReadFromJsonAsync<List<CategoryDto>>();
-        var product = products.FirstOrDefault(c => c.Name == "RemoveFavorite Test RAM");
-        product.Should().NotBeNull();
-
-
-        
-        var addResponse = await Client.PutAsJsonAsync<object>($"users/{user.Id}/favorite-products-add/{product.Id}", null);
+        var addResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
         addResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var removeResponse = await Client.PutAsJsonAsync<object>($"users/{user.Id}/favorite-products-remove/{product.Id}", null);
+        var removeResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-remove/{_mainProduct.Id}", null);
 
         // Assert
         removeResponse.IsSuccessStatusCode.Should().BeTrue();
         var content = await removeResponse.Content.ReadFromJsonAsync<UserFavoriteProductsDto>();
         content.Should().NotBeNull();
-        content!.FavoriteProducts.Should().NotContain(p => p.Id == product.Id);
+        content!.FavoriteProducts.Should().NotContain(p => p.Id == _mainProduct.Id.Value);
     }
-    
+    public async Task InitializeAsync()
+    {
+        await Context.Users.AddAsync(_mainUser);
+        await Context.Products.AddAsync(_mainProduct);
+
+
+        await SaveChangesAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        Context.Users.RemoveRange(Context.Users);
+        Context.Products.RemoveRange(_mainProduct);
+
+
+        await SaveChangesAsync();
+    }
 
 }
