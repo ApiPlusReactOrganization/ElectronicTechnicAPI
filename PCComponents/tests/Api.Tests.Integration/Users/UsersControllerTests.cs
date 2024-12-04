@@ -1,7 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
+using Api.Dtos;
 using Api.Dtos.Authentications;
+using Api.Dtos.Products;
 using Api.Dtos.Users;
+using Application.ViewModels;
+using Domain.Authentications.Users;
+using Domain.Products;
+using Domain.Products.PCComponents;
 using FluentAssertions;
 using Tests.Common;
 using Tests.Data;
@@ -9,8 +15,17 @@ using Xunit;
 
 namespace Api.Tests.Integration.Users;
 
-public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseIntegrationTest(factory)
+public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
 {
+    
+    private readonly User _mainUser = UsersData.MainUser;
+    private readonly Product _mainProduct;
+
+    public UsersControllerTests(IntegrationTestWebFactory factory) : base(factory)
+    {
+        _mainProduct = ProductsData.MainProduct(Context.Manufacturers.First().Id, Context.Categories.First().Id);
+
+    }
     [Fact]
     public async Task ShouldGetAllUsers()
     {
@@ -190,4 +205,70 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         signUpResponse.IsSuccessStatusCode.Should().BeFalse();
         signUpResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest, "Запит має бути некоректним");
     }
+    
+       [Fact]
+    public async Task ShouldAddFavoriteProduct()
+    {
+        // Arrange
+
+
+        // Act
+        var response = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+        var content = await response.Content.ReadFromJsonAsync<UserFavoriteProductsDto>();
+        content.Should().NotBeNull();
+        content!.FavoriteProducts.Should().ContainSingle(p => p.Id == _mainProduct.Id.Value);
+    }
+
+    [Fact]
+    public async Task ShouldNotAddFavoriteProductToNonExistentUser()
+    {
+        // Arrange
+        var userId = Guid.NewGuid(); 
+        var productId = Guid.NewGuid();
+
+        // Act
+        var response = await Client.PutAsJsonAsync<object>($"users/{userId}/favorite-products-add/{productId}", null);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task ShouldRemoveFavoriteProduct()
+    {
+        // Arrange
+        var addResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
+        addResponse.IsSuccessStatusCode.Should().BeTrue();
+
+        // Act
+        var removeResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-remove/{_mainProduct.Id}", null);
+
+        // Assert
+        removeResponse.IsSuccessStatusCode.Should().BeTrue();
+        var content = await removeResponse.Content.ReadFromJsonAsync<UserFavoriteProductsDto>();
+        content.Should().NotBeNull();
+        content!.FavoriteProducts.Should().NotContain(p => p.Id == _mainProduct.Id.Value);
+    }
+    public async Task InitializeAsync()
+    {
+        await Context.Users.AddAsync(_mainUser);
+        await Context.Products.AddAsync(_mainProduct);
+
+
+        await SaveChangesAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        Context.Users.RemoveRange(Context.Users);
+        Context.Products.RemoveRange(_mainProduct);
+
+
+        await SaveChangesAsync();
+    }
+
 }

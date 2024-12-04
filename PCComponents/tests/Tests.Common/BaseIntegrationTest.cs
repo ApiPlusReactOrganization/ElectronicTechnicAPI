@@ -63,7 +63,11 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestWebFact
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtSecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new List<Claim> { new Claim(ClaimTypes.Role, AuthSettings.AdminRole) };
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Role, AuthSettings.AdminRole),
+            new Claim(ClaimTypes.Role, AuthSettings.UserRole)
+        };
         var token = new JwtSecurityToken(
             issuer: JwtIssuer,
             audience: JwtAudience,
