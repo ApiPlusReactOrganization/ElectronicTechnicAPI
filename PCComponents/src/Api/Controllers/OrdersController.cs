@@ -12,7 +12,7 @@ namespace Api.Controllers;
 // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 // [Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
-public class OrdersController(ISender sender, IOrderQueries orderQueries) : ControllerBase
+public class OrdersController(ISender sender, IOrderQueries orderQueries, IStatusQueries statusQueries) : ControllerBase
 {
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAll(CancellationToken cancellationToken)
@@ -20,6 +20,14 @@ public class OrdersController(ISender sender, IOrderQueries orderQueries) : Cont
         var entities = await orderQueries.GetAll(cancellationToken);
 
         return entities.Select(OrderDto.FromDomainModel).ToList();
+    }
+    
+    [HttpGet("get-all-status")]
+    public async Task<ActionResult<IReadOnlyList<StatusDto>>> GetAllStatuses(CancellationToken cancellationToken)
+    {
+        var entities = await statusQueries.GetAllStatuses(cancellationToken);
+
+        return entities.Select(StatusDto.FromDomainModel).ToList();
     }
 
     [HttpPost("create")]
