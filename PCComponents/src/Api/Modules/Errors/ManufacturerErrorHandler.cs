@@ -11,7 +11,9 @@ public static class ManufacturerErrorHandler
         {
             StatusCode = exception switch
             {
-                ManufacturerAlreadyExistsException => StatusCodes.Status409Conflict,
+                ManufacturerNotFoundException or CategoryNotFoundException => StatusCodes.Status404NotFound,
+                ManufacturerAlreadyExistsException or ManufacturerHasRelatedProductsException 
+                    => StatusCodes.Status409Conflict,
                 ManufacturerUnknownException => StatusCodes.Status500InternalServerError,
                 _ => throw new NotImplementedException("Manufacturer error handler does not implemented")
             }

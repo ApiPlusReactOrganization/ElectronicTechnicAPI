@@ -1,7 +1,10 @@
 using System.Text;
-using Application.Authentications.Services.TokenService;
 using Application.Common.Interfaces.Queries;
 using Application.Common.Interfaces.Repositories;
+using Application.Services.HashPasswordService;
+using Application.Services.ImageService;
+using Application.Services.TokenService;
+using Domain.CartItems;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -55,7 +58,24 @@ public static class ConfigurePersistence
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
         
+        services.AddScoped<CartItemRepository>();
+        services.AddScoped<ICartItemRepository>(provider => provider.GetRequiredService<CartItemRepository>());
+        services.AddScoped<ICartItemQueries>(provider => provider.GetRequiredService<CartItemRepository>());
+        
+        services.AddScoped<OrderRepository>();
+        services.AddScoped<IOrderRepository>(provider => provider.GetRequiredService<OrderRepository>());
+        services.AddScoped<IOrderQueries>(provider => provider.GetRequiredService<OrderRepository>());
+        services.AddScoped<IStatusQueries>(provider => provider.GetRequiredService<OrderRepository>());
+        
+        services.AddScoped<RoleRepository>();
+        services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
+        
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IHashPasswordService, HashPasswordService>();
+        services.AddScoped<IImageService, ImageService>();
+        
+        services.AddScoped<RefreshTokenRepository>();
+        services.AddScoped<IRefreshTokenRepository>(provider => provider.GetRequiredService<RefreshTokenRepository>());
     }
 
     private static void AddJwtTokenAuth(this IServiceCollection services, WebApplicationBuilder builder)
@@ -70,6 +90,8 @@ public static class ConfigurePersistence
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     RequireExpirationTime = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
@@ -112,5 +134,4 @@ public static class ConfigurePersistence
             });
         });
     }
-
 }

@@ -16,10 +16,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(p => p.Email).IsRequired();
         builder.Property(x => x.PasswordHash).IsRequired();
 
-        builder.Property(x => x.Image).HasDefaultValue(null);
-
         builder.HasMany(x => x.Roles)
             .WithMany(x => x.Users)
-            .UsingEntity(x => x.ToTable("userRoles"));
+            .UsingEntity(x => x.ToTable("user_roles"));
+            
+        builder.HasMany(x => x.FavoriteProducts)
+            .WithMany()
+            .UsingEntity(x => x.ToTable("user_favorite_products"));
     }
 }

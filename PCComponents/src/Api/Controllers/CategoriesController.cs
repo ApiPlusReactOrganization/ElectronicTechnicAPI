@@ -3,6 +3,7 @@ using Api.Modules.Errors;
 using Application.Categories.Commands;
 using Application.Common.Interfaces.Queries;
 using Domain.Authentications;
+using Domain.Categories;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -16,28 +17,24 @@ namespace Api.Controllers;
 [ApiController]
 public class CategoriesController(ISender sender, ICategoryQueries categoryQueries) : ControllerBase
 {
-    [HttpGet]
+    [AllowAnonymous]
+    [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetAll(CancellationToken cancellationToken)
     {
         var entities = await categoryQueries.GetAll(cancellationToken);
 
         return entities.Select(CategoryDto.FromDomainModel).ToList();
     }
-
-    [HttpPost]
-    public async Task<ActionResult<CategoryDto>> Create(
-        [FromBody] CategoryDto request,
-        CancellationToken cancellationToken)
+    
+    [AllowAnonymous]
+    [HttpGet("getById/{categoryId:guid}")]
+    public async Task<ActionResult<CategoryDto>> Get([FromRoute] Guid categoryId, CancellationToken cancellationToken)
     {
-        var input = new CreateCategoryCommand
-        {
-            Name = request.Name,
-        };
+        var entity = await categoryQueries.GetById(
+            new CategoryId(categoryId), cancellationToken);
 
-        var result = await sender.Send(input, cancellationToken);
-
-        return result.Match<ActionResult<CategoryDto>>(
-            f => CategoryDto.FromDomainModel(f),
-            e => e.ToObjectResult());
+        return entity.Match<ActionResult<CategoryDto>>(
+            c => CategoryDto.FromDomainModel(c),
+            () => NotFound());
     }
 }

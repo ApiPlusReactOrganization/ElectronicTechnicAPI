@@ -33,6 +33,7 @@ public class CreateCategoryCommandHandler(
         try
         {
             var entity = Category.New(CategoryId.New(), name);
+            
 
             return await categoryRepository.Add(entity, cancellationToken);
         }

@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Faculties\" />
       <Folder Include="Users\" />
     </ItemGroup>
 

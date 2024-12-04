@@ -1,9 +1,22 @@
-﻿using Domain.Authentications.Users;
+﻿using Api.Dtos.Products;
+using Domain.Authentications.Users;
 
 namespace Api.Dtos.Users;
 
-public record UserDto(Guid? id, string email, string? name, string? image, List<RoleDto>? roles)
+public record UserDto(
+    Guid? Id, 
+    string Email,
+    string? Name, 
+    UserImageDto? Image,
+    List<RoleDto>? Roles,
+    List<ProductDto>? FavoriteProducts) 
 {
     public static UserDto FromDomainModel(User user)
-    => new(user.Id.Value, user.Email, user.Name, user.Image, user.Roles.Select(RoleDto.FromDomainModel).ToList());
+        => new(
+            user.Id.Value,
+            user.Email, 
+            user.Name,
+            user.UserImage != null ? UserImageDto.FromDomainModel(user.UserImage) : null,
+            user.Roles.Select(RoleDto.FromDomainModel).ToList(),
+            user.FavoriteProducts.Select(ProductDto.FromDomainModel).ToList()); 
 }

@@ -1,6 +1,9 @@
 using Api.Modules;
 using Application;
+using Application.Middlewares;
 using Infrastructure;
+using Infrastructure.Persistence;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +31,30 @@ app.UseCors(options => options
     .AllowAnyHeader()
     .AllowCredentials()
 );
+app.UseAuthentication();
+app.UseAuthorization();
 
 await app.InitialiseDb();
 app.MapControllers();
+
+
+var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "data/images");
+
+if (!Directory.Exists(imagesPath))
+{
+    Directory.CreateDirectory(imagesPath);
+}
+
+app.UseMiddleware<MiddlewareValidationExceptionHandling>();
+
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(imagesPath),
+    RequestPath = "/images"
+});
+
+// app.SeedData();
 
 app.Run();
 
