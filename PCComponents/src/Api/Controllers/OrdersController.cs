@@ -2,6 +2,7 @@ using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Orders.Commands;
+using Domain.Orders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,25 @@ public class OrdersController(ISender sender, IOrderQueries orderQueries) : Cont
         {
             UserId = request.UserId!.Value,
             DeliveryAddress = request.DeliveryAddress,
+        };
+    
+        var result = await sender.Send(input, cancellationToken);
+    
+        return result.Match<ActionResult<OrderDto>>(
+            order => OrderDto.FromDomainModel(order),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPut("update-status/{orderId:guid}")]
+    public async Task<ActionResult<OrderDto>> UpdateStatus(
+        [FromRoute] Guid orderId,
+        [FromBody] StatusDto request,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateStatusForOrderCommand()
+        {
+            OrderId = orderId,
+            StatusId = request.Name!,
         };
     
         var result = await sender.Send(input, cancellationToken);

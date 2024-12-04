@@ -10,7 +10,7 @@ using Optional;
 
 namespace Application.Orders.Commands;
 
-public class CreateOrderCommand : IRequest<Result<Order, OrderException>>
+public record CreateOrderCommand : IRequest<Result<Order, OrderException>>
 {
     public required Guid UserId { get; init; }
     public required string DeliveryAddress { get; init; }
@@ -47,14 +47,6 @@ public class CreateOrderCommandHandler(
         }
 
         var orderId = OrderId.New();
-        
-        // foreach (var uc in userCart)
-        // {
-        //     if (uc.Product.StockQuantity < uc.Quantity)
-        //     {
-        //         throw new Exception($"Недостатньо товару на складі для продукту {uc.Product.Name}. Доступно: {uc.Product.StockQuantity}, запитано: {uc.Quantity}.");
-        //     }
-        // }
         
         try
         {
