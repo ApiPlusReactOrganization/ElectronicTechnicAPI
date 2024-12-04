@@ -15,7 +15,8 @@ public static class CartItemErrorHandler
                     or ProductForCartItemNotFoundException 
                     or CartItemUserNotFoundException =>
                     StatusCodes.Status404NotFound,
-                CartItemAlreadyExistsException or CartItemHasRelatedEntitiesException
+                CartItemAlreadyExistsException 
+                    or CartItemHasRelatedEntitiesException
                     or CartItemQuantityExceedsStockException
                     or CartItemHaveOrderException
                     or CartItemIsAlreadyFinishedException
