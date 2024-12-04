@@ -17,7 +17,7 @@ public record OrderDto(
             Id: order.Id.Value,
             UserId: order.UserId.Value,
             TotalPrice: order.TotalPrice,
-            Status: order.Status,
+            Status: order.StatusId,
             CreatedAt: order.CreatedAt,
             DeliveryAddress: order.DeliveryAddress,
             CartItems: order.Cart?.Count == 0 ? null : order.Cart?.Select(CartItemDto.FromDomainModel).ToList()

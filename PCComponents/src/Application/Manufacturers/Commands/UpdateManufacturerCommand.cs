@@ -31,7 +31,7 @@ public class UpdateManufacturerCommandHandler(
         var categoryList = new List<Category>();
         foreach (var categoryId in request.Categories)
         {
-            var existingCategory = await categoryQueries.GetById(new CategoryId(categoryId), cancellationToken);
+            var existingCategory = await categoryQueries.GetById(new CategoryId(categoryId), cancellationToken, false);
 
             var categoryResult = await existingCategory.Match<Task<Result<Category, ManufacturerException>>>(
                 async c =>

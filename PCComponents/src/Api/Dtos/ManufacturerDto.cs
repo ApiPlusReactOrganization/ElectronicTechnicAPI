@@ -2,7 +2,7 @@
 
 namespace Api.Dtos;
 
-public record ManufacturerDto(Guid? Id, string Name, List<CategoryDto> Categories)
+public record ManufacturerDto(Guid? Id, string Name, List<CategoryDto>? Categories)
 {
     public static ManufacturerDto FromDomainModel(Manufacturer manufacturer)
         => new(manufacturer.Id.Value, manufacturer.Name,

@@ -13,7 +13,6 @@ namespace Application.Orders.Commands;
 public class CreateOrderCommand : IRequest<Result<Order, OrderException>>
 {
     public required Guid UserId { get; init; }
-    public required string Status { get; init; }
     public required string DeliveryAddress { get; init; }
 }
 
@@ -31,17 +30,14 @@ public class CreateOrderCommandHandler(
         var user = await userRepository.GetById(userId, cancellationToken);
 
         return await user.Match(
-            async u =>
-            {
-                return await CreateEntity(u, request.DeliveryAddress, request.Status,
-                    cancellationToken);
-            },
+            async u => await CreateEntity(u, request.DeliveryAddress,
+                cancellationToken),
             () => Task.FromResult<Result<Order, OrderException>>(
                 new OrderUserNotFoundException(userId)));
     }
 
     private async Task<Result<Order, OrderException>> CreateEntity(User user,
-        string requestDeliveryAddress, string requestStatus, CancellationToken cancellationToken)
+        string requestDeliveryAddress, CancellationToken cancellationToken)
     {
         var userCart = await cartItemRepository.GetByUserId(user.Id, cancellationToken);
         
@@ -62,7 +58,7 @@ public class CreateOrderCommandHandler(
         
         try
         {
-            var order = Order.New(orderId, user.Id, requestStatus, requestDeliveryAddress, userCart!.ToList());
+            var order = Order.New(orderId, user.Id, StatusesConstants.Processing, requestDeliveryAddress, userCart!.ToList());
             
             user.ClearCart();
             

@@ -21,11 +21,21 @@ public class CategoryRepository : ICategoryRepository, ICategoryQueries
             .ToListAsync(cancellationToken);
     }
     
-    public async Task<Option<Category>> GetById(CategoryId id, CancellationToken cancellationToken)
+    public async Task<Option<Category>> GetById(CategoryId id, CancellationToken cancellationToken, bool includes = true)
     {
-        var entity = await _context.Categories
-            .Include(x=>x.Manufacturers)
-            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        Category? entity;
+
+        if (includes)
+        {
+            entity = await _context.Categories
+                .Include(x=>x.Manufacturers)
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+        else
+        {
+            entity = await _context.Categories
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
 
         return entity == null ? Option.None<Category>() : Option.Some(entity);
     }

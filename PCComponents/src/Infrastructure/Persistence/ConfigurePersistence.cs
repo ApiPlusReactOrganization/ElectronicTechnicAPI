@@ -65,6 +65,7 @@ public static class ConfigurePersistence
         services.AddScoped<OrderRepository>();
         services.AddScoped<IOrderRepository>(provider => provider.GetRequiredService<OrderRepository>());
         services.AddScoped<IOrderQueries>(provider => provider.GetRequiredService<OrderRepository>());
+        services.AddScoped<IStatusQueries>(provider => provider.GetRequiredService<OrderRepository>());
         
         services.AddScoped<RoleRepository>();
         services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());

@@ -11,7 +11,10 @@ public static class OrderErrorHandler
         {
             StatusCode = exception switch
             {
-                OrderNotFoundException or OrderUserCartIsEmpty or OrderUserNotFoundException =>
+                OrderNotFoundException 
+                    or OrderUserCartIsEmpty 
+                    or OrderUserNotFoundException 
+                    or StatusNotFoundException =>
                     StatusCodes.Status404NotFound,
                 OrderAlreadyExistsException or OrderHasRelatedEntitiesException
                     or OrderQuantityExceedsStockException

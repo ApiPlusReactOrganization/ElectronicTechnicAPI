@@ -50,7 +50,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         var request = new ManufacturerDto(
             Id: _mainManufacturer.Id.Value,
             Name: newFacultyName,
-            Categories: null);
+            Categories: new List<CategoryDto>());
 
         // Act
         var response = await Client.PutAsJsonAsync("manufacturers/update", request);
@@ -92,7 +92,7 @@ public class ManufacturersControllerTests(IntegrationTestWebFactory factory)
         var request = new ManufacturerDto(
             Id: Guid.NewGuid(),
             Name: "New Manufacturer Name",
-            Categories: null);
+            Categories: new List<CategoryDto>());
 
         // Act
         var response = await Client.PutAsJsonAsync("manufacturers/update", request);
