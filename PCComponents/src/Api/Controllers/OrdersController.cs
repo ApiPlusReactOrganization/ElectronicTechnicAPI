@@ -2,15 +2,18 @@ using Api.Dtos;
 using Api.Modules.Errors;
 using Application.Common.Interfaces.Queries;
 using Application.Orders.Commands;
+using Domain.Authentications;
 using Domain.Orders;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [Route("orders")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.UserRole)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
 public class OrdersController(ISender sender, IOrderQueries orderQueries, IStatusQueries statusQueries) : ControllerBase
 {

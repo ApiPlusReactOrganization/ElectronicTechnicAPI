@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("categories")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.AdminRole)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class CategoriesController(ISender sender, ICategoryQueries categoryQueries) : ControllerBase
 {
