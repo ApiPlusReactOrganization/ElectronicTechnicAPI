@@ -8,8 +8,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
     {
         RuleFor(x=>x.UserId).NotEmpty().WithMessage("UserId cannot be empty");
         
-        RuleFor(x=>x.Status).NotEmpty().WithMessage("Status cannot be empty");
-        
         RuleFor(x=>x.DeliveryAddress).NotEmpty().WithMessage("DeliveryAddress cannot be empty");
     }
 }

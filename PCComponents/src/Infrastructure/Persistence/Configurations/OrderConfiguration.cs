@@ -17,6 +17,12 @@ namespace Infrastructure.Persistence.Configurations
                 .HasForeignKey(m => m.UserId)
                 .HasConstraintName("fk_orders_users_id")
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.HasOne(m => m.Status)
+                .WithMany()
+                .HasForeignKey(m => m.StatusId)
+                .HasConstraintName("fk_orders_statuses_id")
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(m => m.Cart)
                 .WithOne(x => x.Order)
@@ -25,10 +31,6 @@ namespace Infrastructure.Persistence.Configurations
 
             builder.Property(m => m.TotalPrice)
                 .HasPrecision(9, 2);
-            
-            builder.Property(m => m.Status)
-                .HasMaxLength(50)
-                .IsRequired();
             
             builder.Property(m => m.DeliveryAddress)
                 .HasMaxLength(200)

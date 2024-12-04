@@ -6,25 +6,18 @@ using Optional;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class OrderRepository : IOrderRepository, IOrderQueries
+public class OrderRepository(ApplicationDbContext context) : IOrderRepository, IOrderQueries, IStatusQueries
 {
-    private readonly ApplicationDbContext _context;
-
-    public OrderRepository(ApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<IReadOnlyList<Order>> GetAll(CancellationToken cancellationToken)
     {
-        return await _context.Orders
+        return await context.Orders
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
 
     public async Task<Option<Order>> GetById(OrderId id, CancellationToken cancellationToken)
     {
-        var entity = await _context.Orders
+        var entity = await context.Orders
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Order>() : Option.Some(entity);
@@ -32,22 +25,37 @@ public class OrderRepository : IOrderRepository, IOrderQueries
 
     public async Task<Order> Add(Order order, CancellationToken cancellationToken)
     {
-        await _context.Orders.AddAsync(order, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.Orders.AddAsync(order, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
         return order;
     }
 
     public async Task<Order> Update(Order order, CancellationToken cancellationToken)
     {
-        _context.Orders.Update(order);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Orders.Update(order);
+        await context.SaveChangesAsync(cancellationToken);
         return order;
     }
 
     public async Task<Order> Delete(Order order, CancellationToken cancellationToken)
     {
-        _context.Orders.Remove(order);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Orders.Remove(order);
+        await context.SaveChangesAsync(cancellationToken);
         return order;
+    }
+
+    public async Task<IReadOnlyList<Status>> GetAllStatuses(CancellationToken cancellationToken)
+    {
+        return await context.Statuses
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Option<Status>> GetStatusByName(string statusName, CancellationToken cancellationToken)
+    {
+        var entity = await context.Statuses
+            .FirstOrDefaultAsync(x => x.Name == statusName, cancellationToken);
+
+        return entity == null ? Option.None<Status>() : Option.Some(entity);
     }
 }

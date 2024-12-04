@@ -15,32 +15,33 @@ public class Order
     
     public decimal TotalPrice { get; private set; }
     
-    public string Status { get; private set; } 
-    
     public DateTime CreatedAt { get; private set; } 
     
     public string DeliveryAddress { get; private set; }
+    
+    public Status? Status { get; set; }
+    public string StatusId { get; private set; }
 
-    private Order(OrderId id, UserId userId, string status, string deliveryAddress)
+    private Order(OrderId id, UserId userId, string statusId, string deliveryAddress)
     {
         Id = id;
         UserId = userId;
-        Status = status;
+        StatusId = statusId;
         CreatedAt = DateTime.UtcNow;
         DeliveryAddress = deliveryAddress;
     }
     
-    public static Order New(OrderId id, UserId userId, string status, string deliveryAddress, List<CartItem> cart)
+    public static Order New(OrderId id, UserId userId, string statusId, string deliveryAddress, List<CartItem> cart)
     {
-        return new Order(id, userId, status, deliveryAddress)
+        return new Order(id, userId, statusId, deliveryAddress)
         {
             TotalPrice = cart.Sum(x => x.Product!.Price * x.Quantity),
             Cart = cart
         };
     }
     
-    public void UpdateStatus(string status)
+    public void UpdateStatus(string statusId)
     {
-        Status = status;
+        StatusId = statusId;
     }
 }

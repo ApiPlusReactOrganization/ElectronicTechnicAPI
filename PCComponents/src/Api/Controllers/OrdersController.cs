@@ -28,7 +28,6 @@ public class OrdersController(ISender sender, IOrderQueries orderQueries) : Cont
         var input = new CreateOrderCommand()
         {
             UserId = request.UserId!.Value,
-            Status = request.Status,
             DeliveryAddress = request.DeliveryAddress,
         };
     
