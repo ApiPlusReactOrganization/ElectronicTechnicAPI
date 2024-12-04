@@ -6,13 +6,9 @@ namespace Tests.Data;
 
 public static class UsersData
 {
-    /*public static UserDto MainUser => new(
-        Id: Guid.NewGuid(),
-        Email: "mainuser@example.com",
-        Name: "Main User",
-        Image : null,
-        Roles: new List<RoleDto> { new("User") });*/
 
+    public static User MainUser => User.New(UserId.New(), "test@mail.com", "test", "hash_password");
+    
     public static SignUpDto SignUpMainUser => new(
         Email: "mainuser@gmail.com",
         Password: "MainUserPassword123!",
