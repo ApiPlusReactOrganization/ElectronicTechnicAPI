@@ -5,5 +5,5 @@ namespace Tests.Data;
 public static class ManufacturersData
 {
     public static Manufacturer MainManufacturer => Manufacturer.New(
-        ManufacturerId.New(), "Main Test Manufacturer");
+        ManufacturerId.New(), "Main 123 Test Manufacturer");
 }

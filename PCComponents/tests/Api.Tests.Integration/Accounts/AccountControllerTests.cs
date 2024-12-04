@@ -99,7 +99,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
         // Arrange
         var signUpRequest = AccountData.SignUpForSignInRequest;
         await Client.PostAsJsonAsync("account/signup", signUpRequest);
-        
+
         var request = AccountData.SignInWithInvalidCredentialsRequest;
 
         // Act
@@ -116,7 +116,7 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
         // Arrange
         var signUpRequest = AccountData.SignUpForSignInRequest;
         await Client.PostAsJsonAsync("account/signup", signUpRequest);
-        
+
         var request = AccountData.SignInWithInvalidEmailRequest;
 
         // Act
@@ -133,11 +133,108 @@ public class AccountControllerTests(IntegrationTestWebFactory factory) : BaseInt
         // Arrange
         var signUpRequest = AccountData.SignUpForSignInRequest;
         await Client.PostAsJsonAsync("account/signup", signUpRequest);
-        
+
         var request = AccountData.SignInWithoutPasswordRequest;
 
         // Act
         var response = await Client.PostAsJsonAsync("account/signin", request);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task ShouldRefreshTokens()
+    {
+        // Arrange
+        var signUpRequest = AccountData.SignUpForSignInRequest;
+        await Client.PostAsJsonAsync("account/signup", signUpRequest);
+
+        var signInRequest = AccountData.SignInRequest;
+        var signInResponse = await Client.PostAsJsonAsync("account/signin", signInRequest);
+        var tokens = await signInResponse.Content.ReadFromJsonAsync<JwtVM>();
+
+        var refreshRequest = new JwtVM
+        {
+            AccessToken = tokens!.AccessToken,
+            RefreshToken = tokens.RefreshToken
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync("account/refresh-token", refreshRequest);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+        var newTokens = await response.Content.ReadFromJsonAsync<JwtVM>();
+        newTokens.Should().NotBeNull();
+        newTokens!.AccessToken.Should().NotBe(tokens.AccessToken);
+        newTokens.RefreshToken.Should().NotBe(tokens.RefreshToken);
+    }
+
+    [Fact]
+    public async Task ShouldNotRefreshTokensWithInvalidRefreshToken()
+    {
+        // Arrange
+        var signUpRequest = AccountData.SignUpForSignInRequest;
+        await Client.PostAsJsonAsync("account/signup", signUpRequest);
+
+        var signInRequest = AccountData.SignInRequest;
+        var signInResponse = await Client.PostAsJsonAsync("account/signin", signInRequest);
+        var tokens = await signInResponse.Content.ReadFromJsonAsync<JwtVM>();
+
+        var refreshRequest = new JwtVM
+        {
+            AccessToken = tokens!.AccessToken,
+            RefreshToken = "invalid-refresh-token"
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync("account/refresh-token", refreshRequest);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.UpgradeRequired);
+    }
+
+    [Fact]
+    public async Task ShouldNotRefreshTokensWithExpiredAccessToken()
+    {
+        // Arrange
+        var signUpRequest = AccountData.SignUpForSignInRequest;
+        await Client.PostAsJsonAsync("account/signup", signUpRequest);
+
+        var signInRequest = AccountData.SignInRequest;
+        var signInResponse = await Client.PostAsJsonAsync("account/signin", signInRequest);
+        var tokens = await signInResponse.Content.ReadFromJsonAsync<JwtVM>();
+
+        // Імітація дії з простроченим токеном (у реальному світі можна зробити через зміну часу в системі).
+        var refreshRequest = new JwtVM
+        {
+            AccessToken = "expired-access-token",
+            RefreshToken = tokens!.RefreshToken
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync("account/refresh-token", refreshRequest);
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeFalse();
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+    }
+
+    [Fact]
+    public async Task ShouldNotRefreshTokensWithoutTokens()
+    {
+        // Arrange
+        var refreshRequest = new JwtVM
+        {
+            AccessToken = null,
+            RefreshToken = null
+        };
+
+        // Act
+        var response = await Client.PostAsJsonAsync("account/refresh-token", refreshRequest);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeFalse();
