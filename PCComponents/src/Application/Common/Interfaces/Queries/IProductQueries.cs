@@ -20,6 +20,24 @@ public interface IProductQueries
         ManufacturerId manufacturerId,
         CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<Product>> GetProductsByManufacturers(
+        List<ManufacturerId> manufacturerIds,
+        CancellationToken cancellationToken);
+    Task<IReadOnlyList<Product>> FilterProducts(
+        Guid? categoryId = null,
+        List<Guid>? manufacturerIds = null,
+        string? name = null,
+        decimal? minPrice = null,
+        decimal? maxPrice = null,
+        int? minStockQuantity = null,
+        int? maxStockQuantity = null,
+        CancellationToken cancellationToken = default);
+
+
+
+
+
+
     Task<IReadOnlyList<Product>> GetProductsByCategory(
         CategoryId category,
         CancellationToken cancellationToken);

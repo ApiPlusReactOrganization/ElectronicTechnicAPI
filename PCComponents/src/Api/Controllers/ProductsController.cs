@@ -65,7 +65,42 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
+    
+    [HttpGet("under-manufacturers")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturers(
+        [FromQuery] List<Guid> manufacturerIds,
+        CancellationToken cancellationToken)
+    {
+        var ids = manufacturerIds.Select(id => new ManufacturerId(id)).ToList();
+        var products = await productQueries.GetProductsByManufacturers(ids, cancellationToken);
 
+        return products.Select(ProductDto.FromDomainModel).ToList();
+    }
+    
+    [HttpGet("filter")]
+    public async Task<ActionResult<IReadOnlyList<ProductDto>>> FilterProducts(
+        [FromQuery] Guid? categoryId,
+        [FromQuery] List<Guid>? manufacturerIds,
+        [FromQuery] string? name,
+        [FromQuery] decimal? minPrice,
+        [FromQuery] decimal? maxPrice,
+        [FromQuery] int? minStockQuantity,
+        [FromQuery] int? maxStockQuantity,
+        CancellationToken cancellationToken)
+    {
+        var products = await productQueries.FilterProducts(
+            categoryId,
+            manufacturerIds,
+            name,
+            minPrice,
+            maxPrice,
+            minStockQuantity,
+            maxStockQuantity,
+            cancellationToken);
+
+        return products.Select(ProductDto.FromDomainModel).ToList();
+    }
+    
     [HttpGet("get-by-id/{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Get([FromRoute] Guid productId, CancellationToken cancellationToken)
     {
@@ -172,6 +207,25 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
 
         return result.Match<ActionResult<ProductDto>>(
             r => ProductDto.FromDomainModel(r),
+            e => e.ToObjectResult());
+    }
+    
+    [HttpPut("change-stock-quantity/{productId:guid}")]
+    public async Task<ActionResult<ProductDto>> UpdateStockQuantity(
+        [FromRoute] Guid productId,
+        [FromQuery] int stockQuantity,
+        CancellationToken cancellationToken)
+    {
+        var input = new UpdateStockQuantityForProductCommand()
+        {
+            ProductId = productId,
+            StockQuantity = stockQuantity
+        };
+
+        var result = await sender.Send(input, cancellationToken);
+
+        return result.Match<ActionResult<ProductDto>>(
+            f => ProductDto.FromDomainModel(f),
             e => e.ToObjectResult());
     }
 }

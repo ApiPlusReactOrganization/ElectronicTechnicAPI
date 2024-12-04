@@ -4,6 +4,7 @@ using Domain.Authentications.Roles;
 using Domain.Authentications.Users;
 using Domain.Categories;
 using Domain.Manufacturers;
+using Domain.Orders;
 using Domain.Products.PCComponents;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,20 @@ public static class DataSeed
         _seedManufactures(modelBuilder);
         _seedRoles(modelBuilder);
         _seedUsers(modelBuilder, hashPasswordService);
+        _seedStatuses(modelBuilder);
+    }
+
+    private static void _seedStatuses(ModelBuilder modelBuilder)
+    {
+        var statuses = new List<Status>();
+
+        foreach (var status in StatusesConstants.ListOfStatuses)
+        {
+            statuses.Add(Status.New(status));
+        }
+
+        modelBuilder.Entity<Status>()
+            .HasData(statuses);
     }
 
     private static void _seedCategories(ModelBuilder modelBuilder)

@@ -60,7 +60,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
 
- 
+
         var newRoles = new List<RoleDto>
         {
             new("Administrator")
@@ -85,7 +85,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         var users = await Client.GetFromJsonAsync<UserDto[]>("users/get-all");
         var mainUser = users!.FirstOrDefault(u => u.Email == signUpRequest.Email);
         mainUser.Should().NotBeNull("Користувач має існувати");
-        
+
         using var imageContent = new ByteArrayContent(new byte[0]);
         imageContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/png");
         var content = new MultipartFormDataContent
@@ -101,7 +101,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
     }
 
 
-        [Fact]
+    [Fact]
     public async Task ShouldNotDeleteNonExistingUser()
     {
         // Arrange
@@ -177,7 +177,7 @@ public class UsersControllerTests(IntegrationTestWebFactory factory) : BaseInteg
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound, "Користувач не існує");
     }
-    
+
     [Fact]
     public async Task ShouldNotRegisterUserWithInvalidData()
     {

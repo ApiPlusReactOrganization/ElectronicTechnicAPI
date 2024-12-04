@@ -25,6 +25,9 @@ public class OrderHasRelatedEntitiesException(OrderId id)
 public class OrderUserNotFoundException(UserId userId)
     : OrderException(OrderId.Empty, $"User under id '{userId}' not found");
 
+public class StatusNotFoundException(string statusName)
+    : OrderException(OrderId.Empty, $"Status under name '{statusName}' not found");
+
 public class OrderUserCartIsEmpty(UserId userId)
     : OrderException(OrderId.Empty, $"User under id '{userId}' has no cart item.");
 

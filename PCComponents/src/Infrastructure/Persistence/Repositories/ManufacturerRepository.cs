@@ -14,21 +14,24 @@ public class ManufacturerRepository : IManufacturerRepository, IManufacturerQuer
     {
         _context = context;
     }
-    
+
     public async Task<IReadOnlyList<Manufacturer>> GetAll(CancellationToken cancellationToken)
     {
         return await _context.Manufacturers
+            .Include(x => x.Categories)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
     }
-    
+
     public async Task<Option<Manufacturer>> GetById(ManufacturerId id, CancellationToken cancellationToken)
     {
         var entity = await _context.Manufacturers
+            .Include(x => x.Categories)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         return entity == null ? Option.None<Manufacturer>() : Option.Some(entity);
     }
+
     public async Task<Option<Manufacturer>> SearchByName(string name, CancellationToken cancellationToken)
     {
         var entity = await _context.Manufacturers

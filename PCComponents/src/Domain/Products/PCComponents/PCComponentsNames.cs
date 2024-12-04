@@ -51,15 +51,15 @@ public class SelectionCategoryType(string Value) : ValueObject
         return categoryType;
     }
 
-    public static SelectionCategoryType CPU => new SelectionCategoryType(PCComponentsNames.CPU);
-    public static SelectionCategoryType Case => new SelectionCategoryType(PCComponentsNames.Case);
-    public static SelectionCategoryType GPU => new SelectionCategoryType(PCComponentsNames.GPU);
-    public static SelectionCategoryType RAM => new SelectionCategoryType(PCComponentsNames.RAM);
-    public static SelectionCategoryType PSU => new SelectionCategoryType(PCComponentsNames.PSU);
-    public static SelectionCategoryType Motherboard => new SelectionCategoryType(PCComponentsNames.Motherboard);
-    public static SelectionCategoryType Cooler => new SelectionCategoryType(PCComponentsNames.Cooler);
-    public static SelectionCategoryType HDD => new SelectionCategoryType(PCComponentsNames.HDD);
-    public static SelectionCategoryType SSD => new SelectionCategoryType(PCComponentsNames.SSD);
+    public static SelectionCategoryType CPU => new(PCComponentsNames.CPU);
+    public static SelectionCategoryType Case => new(PCComponentsNames.Case);
+    public static SelectionCategoryType GPU => new(PCComponentsNames.GPU);
+    public static SelectionCategoryType RAM => new(PCComponentsNames.RAM);
+    public static SelectionCategoryType PSU => new(PCComponentsNames.PSU);
+    public static SelectionCategoryType Motherboard => new(PCComponentsNames.Motherboard);
+    public static SelectionCategoryType Cooler => new(PCComponentsNames.Cooler);
+    public static SelectionCategoryType HDD => new(PCComponentsNames.HDD);
+    public static SelectionCategoryType SSD => new(PCComponentsNames.SSD);
 
     public static implicit operator string(SelectionCategoryType value)
     {

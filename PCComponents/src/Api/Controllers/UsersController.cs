@@ -64,8 +64,9 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             u => UserFavoriteProductsDto.FromDomainModel(u),
             e => e.ToObjectResult());
     }
-
-    [HttpPut("favorite-product-remove/{userId:guid}/{productId:guid}")]
+    
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
+    [HttpPut("{userId:guid}/favorite-products-remove/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> RemoveFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
     {
