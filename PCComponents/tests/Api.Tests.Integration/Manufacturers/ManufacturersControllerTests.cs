@@ -139,19 +139,6 @@ public class ManufacturersControllerTests : BaseIntegrationTest, IAsyncLifetime
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
-    [Fact]
-    public async Task ShouldGetAllManufacturers()
-    {
-        // Act
-        var response = await Client.GetAsync("manufacturers/get-all");
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
-
-        var manufacturers = await response.ToResponseModel<List<ManufacturerDto>>();
-        manufacturers.Should().NotBeEmpty();
-    }
 
     [Fact]
     public async Task ShouldGetManufacturerById()
@@ -166,20 +153,6 @@ public class ManufacturersControllerTests : BaseIntegrationTest, IAsyncLifetime
         manufacturer.Should().NotBeNull();
         manufacturer.Name.Should().Be(_mainManufacturer.Name);
     }
-
-    [Fact]
-    public async Task ShouldNotDeleteManufacturerBecauseManufacturerNotFound()
-    {
-        // Arrange
-        var nonExistentManufacturerId = Guid.NewGuid(); 
-
-        // Act
-        var response = await Client.DeleteAsync($"manufacturers/delete/{nonExistentManufacturerId}");
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeFalse();
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
     
     [Fact]
     public async Task ShouldGetAllManufacturers()
@@ -193,20 +166,7 @@ public class ManufacturersControllerTests : BaseIntegrationTest, IAsyncLifetime
         var manufacturers = await response.ToResponseModel<List<ManufacturerDto>>();
         manufacturers.Should().NotBeEmpty();
     }
-
-    [Fact]
-    public async Task ShouldGetManufacturerById()
-    {
-        // Act
-        var response = await Client.GetAsync($"manufacturers/get-by-id/{_mainManufacturer.Id.Value}");
-
-        // Assert
-        response.IsSuccessStatusCode.Should().BeTrue();
-
-        var manufacturer = await response.ToResponseModel<ManufacturerDto>();
-        manufacturer.Should().NotBeNull();
-        manufacturer.Name.Should().Be(_mainManufacturer.Name);
-    }
+    
 
     public async Task InitializeAsync()
     {

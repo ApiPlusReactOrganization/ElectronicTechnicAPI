@@ -48,6 +48,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
     }
 
+    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
     [HttpPut("favorite-product-add/{userId:guid}/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> AddFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
@@ -66,7 +67,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
     }
     
     [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
-    [HttpPut("{userId:guid}/favorite-products-remove/{productId:guid}")]
+    [HttpPut("favorite-product-remove/{userId:guid}/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> RemoveFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
     {
