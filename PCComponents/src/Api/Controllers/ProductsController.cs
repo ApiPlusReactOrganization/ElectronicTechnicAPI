@@ -28,6 +28,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return entities.Select(ProductDto.FromDomainModel).ToList();
     }
 
+    [AllowAnonymous]
     [HttpGet("under-category-and-manufacturer/{categoryId:guid}/{manufacturerId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategoryAndManufacturer(
         [FromRoute] Guid categoryId,
@@ -42,6 +43,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
+    [AllowAnonymous]
     [HttpGet("under-category/{categoryId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategory(
         [FromRoute] Guid categoryId,
@@ -54,6 +56,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
+    [AllowAnonymous]
     [HttpGet("under-manufacturer/{manufacturerId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturer(
         [FromRoute] Guid manufacturerId,
@@ -66,6 +69,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
+    [AllowAnonymous]
     [HttpGet("under-manufacturers")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturers(
         [FromQuery] List<Guid> manufacturerIds,
@@ -77,6 +81,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
+    [AllowAnonymous]
     [HttpGet("filter")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> FilterProducts(
         [FromQuery] Guid? categoryId,
@@ -101,6 +106,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
+    [AllowAnonymous]
     [HttpGet("get-by-id/{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Get([FromRoute] Guid productId, CancellationToken cancellationToken)
     {

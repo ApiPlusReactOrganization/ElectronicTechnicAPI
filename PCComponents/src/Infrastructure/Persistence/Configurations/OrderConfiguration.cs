@@ -27,7 +27,7 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(m => m.Cart)
                 .WithOne(x => x.Order)
                 .HasConstraintName("fk_orders_carts_id")
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(m => m.TotalPrice)
                 .HasPrecision(9, 2);

@@ -62,7 +62,110 @@ public class CartItemsControllerTests : BaseIntegrationTest, IAsyncLifetime
         cartItemFromDatabase.UserId.Should().Be(_mainUser.Id);
         cartItemFromDatabase.Quantity.Should().Be(3);
     }
+    
+    [Fact]
+    public async Task ShouldReturnNotFoundWhenProductDoesNotExist()
+    {
+        // Arrange
+        var request = new CartItemDto(
+            Id: null,
+            UserId: _mainUser.Id.Value,
+            Quantity: 2,
+            ProductId: Guid.NewGuid(), // Невірний ID продукту
+            IsFinished: false,
+            Product: null
+        );
 
+        // Act
+        var response = await Client.PostAsJsonAsync("cart-items/create", request);
+
+        // Assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        errorMessage.Should().Contain("Product under id");
+    }
+
+    [Fact]
+    public async Task ShouldUpdateCartItemQuantity()
+    {
+        // Arrange
+        var newQuantity = 5;
+
+        // Act
+        var response = await Client.PutAsJsonAsync(
+            $"cart-items/update-quantity/{_mainCartItem.Id.Value}?quantity={newQuantity}", 
+            new { }
+        );
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+
+        var updatedCartItem = await Context.CartItems.FirstOrDefaultAsync(x => x.Id == _mainCartItem.Id);
+        updatedCartItem.Should().NotBeNull();
+        updatedCartItem!.Quantity.Should().Be(newQuantity);
+    }
+
+    [Fact]
+    public async Task ShouldReturnNotFound_WhenCartItemDoesNotExist()
+    {
+        // Act
+        var response = await Client.PutAsJsonAsync(
+            $"cart-items/update-quantity/{Guid.NewGuid()}?quantity=5", 
+            new { }
+        );
+
+        // Assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        errorMessage.Should().Contain("Cart item under id");
+    }
+
+    [Fact]
+    public async Task ShouldDeleteCartItem()
+    {
+        // Act
+        var response = await Client.DeleteAsync($"cart-items/delete/{_mainCartItem.Id.Value}");
+
+        // Assert
+        response.IsSuccessStatusCode.Should().BeTrue();
+
+        var deletedCartItem = await Context.CartItems.FirstOrDefaultAsync(x => x.Id == _mainCartItem.Id);
+        deletedCartItem.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ShouldReturnNotFoundWhenDeletingNonExistentCartItem()
+    {
+        // Act
+        var response = await Client.DeleteAsync($"cart-items/delete/{Guid.NewGuid()}");
+
+        // Assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.NotFound);
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        errorMessage.Should().Contain("Cart item under id");
+    }
+
+    [Fact]
+    public async Task ShouldReturnConflictWhenQuantityExceedsStock()
+    {
+        // Arrange
+        var request = new CartItemDto(
+            Id: null,
+            UserId: _mainUser.Id.Value,
+            Quantity: _mainProduct.StockQuantity + 1,
+            ProductId: _mainProduct.Id.Value,
+            IsFinished: false,
+            Product: null
+        );
+
+        // Act
+        var response = await Client.PostAsJsonAsync("cart-items/create", request);
+
+        // Assert
+        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Conflict);
+        var errorMessage = await response.Content.ReadAsStringAsync();
+        errorMessage.Should().Contain("Requested quantity exceeds stock for product");
+    }
     public async Task InitializeAsync()
     {
         await Context.Users.AddAsync(_mainUser);
