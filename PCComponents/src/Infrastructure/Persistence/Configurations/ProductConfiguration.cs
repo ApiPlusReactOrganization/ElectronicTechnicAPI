@@ -103,7 +103,7 @@ namespace Infrastructure.Persistence.Configurations
                     coolerBuilder.Property(x => x.Voltage).HasJsonPropertyName("voltage");
                     coolerBuilder.Property(x => x.MaxTDP).HasJsonPropertyName("maxTdp");
                     coolerBuilder.Property(x => x.FanSupply).HasJsonPropertyName("fanSupply");
-                    coolerBuilder.Property(x => x.Sockets).HasJsonPropertyName("sockets");
+                    // coolerBuilder.Property(x => x.Sockets).HasJsonPropertyName("sockets");
                 });
 
                 productBuilder.OwnsOne(x => x.Hdd, hddBuilder =>

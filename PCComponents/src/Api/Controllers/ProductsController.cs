@@ -14,12 +14,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("products")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]*/
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries productQueries) : ControllerBase
 {
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAll(CancellationToken cancellationToken)
     {
@@ -28,7 +28,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return entities.Select(ProductDto.FromDomainModel).ToList();
     }
 
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("under-category-and-manufacturer/{categoryId:guid}/{manufacturerId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategoryAndManufacturer(
         [FromRoute] Guid categoryId,
@@ -43,7 +43,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("under-category/{categoryId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByCategory(
         [FromRoute] Guid categoryId,
@@ -56,7 +56,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("under-manufacturer/{manufacturerId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturer(
         [FromRoute] Guid manufacturerId,
@@ -69,7 +69,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("under-manufacturers")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetByManufacturers(
         [FromQuery] List<Guid> manufacturerIds,
@@ -81,7 +81,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("filter")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> FilterProducts(
         [FromQuery] Guid? categoryId,
@@ -106,7 +106,7 @@ public class ProductsController(ISender sender, IProductQueries productQueries) 
         return products.Select(ProductDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
+    // [AllowAnonymous]
     [HttpGet("get-by-id/{productId:guid}")]
     public async Task<ActionResult<ProductDto>> Get([FromRoute] Guid productId, CancellationToken cancellationToken)
     {

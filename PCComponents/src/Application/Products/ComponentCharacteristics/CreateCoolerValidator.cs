@@ -29,11 +29,11 @@ public class CreateCoolerValidator: AbstractValidator<Cooler>
             .GreaterThan(0)
             .WithMessage("Max TDP must be greater than zero.");
 
-        RuleFor(x => x.Sockets)
-            .NotEmpty()
-            .WithMessage("Sockets list cannot be empty.")
-            .Must(sockets => sockets.All(socket => !string.IsNullOrWhiteSpace(socket)))
-            .WithMessage("All socket values must be non-empty.");
+        // RuleFor(x => x.Sockets)
+        //     .NotEmpty()
+        //     .WithMessage("Sockets list cannot be empty.")
+        //     .Must(sockets => sockets.All(socket => !string.IsNullOrWhiteSpace(socket)))
+        //     .WithMessage("All socket values must be non-empty.");
 
         RuleFor(x => x.FanSupply)
             .MinimumLength(3)

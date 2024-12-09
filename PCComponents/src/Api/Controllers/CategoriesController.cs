@@ -12,12 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("categories")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class CategoriesController(ISender sender, ICategoryQueries categoryQueries) : ControllerBase
 {
-    [AllowAnonymous]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetAll(CancellationToken cancellationToken)
     {
@@ -26,7 +23,6 @@ public class CategoriesController(ISender sender, ICategoryQueries categoryQueri
         return entities.Select(CategoryDto.FromDomainModel).ToList();
     }
     
-    [AllowAnonymous]
     [HttpGet("getById/{categoryId:guid}")]
     public async Task<ActionResult<CategoryDto>> Get([FromRoute] Guid categoryId, CancellationToken cancellationToken)
     {
