@@ -31,6 +31,7 @@ public class ManufacturersController(
         return entities.Select(ManufacturerDto.FromDomainModel).ToList();
     }
 
+    [AllowAnonymous]
     [HttpGet("get-by-id/{manufacturerId:guid}")]
     public async Task<ActionResult<ManufacturerDto>> Get([FromRoute] Guid manufacturerId,
         CancellationToken cancellationToken)
@@ -43,6 +44,7 @@ public class ManufacturersController(
             () => NotFound());
     }
 
+    [AllowAnonymous]
     [HttpGet("get-by-category-id/{categoryId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ManufacturerDto>>> GetByCategory([FromRoute] Guid categoryId,
         CancellationToken cancellationToken)

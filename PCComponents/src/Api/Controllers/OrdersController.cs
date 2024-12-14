@@ -12,11 +12,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("orders")]
-// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-// [Authorize(Roles = AuthSettings.UserRole)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
 public class OrdersController(ISender sender, IOrderQueries orderQueries, IStatusQueries statusQueries) : ControllerBase
 {
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetAll(CancellationToken cancellationToken)
     {
@@ -50,6 +51,7 @@ public class OrdersController(ISender sender, IOrderQueries orderQueries, IStatu
             e => e.ToObjectResult());
     }
     
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpPut("update-status/{orderId:guid}")]
     public async Task<ActionResult<OrderDto>> UpdateStatus(
         [FromRoute] Guid orderId,

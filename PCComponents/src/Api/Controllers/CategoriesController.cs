@@ -13,7 +13,7 @@ namespace Api.Controllers;
 
 [Route("categories")]
 [ApiController]
-public class CategoriesController(ISender sender, ICategoryQueries categoryQueries) : ControllerBase
+public class CategoriesController(ICategoryQueries categoryQueries) : ControllerBase
 {
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CategoryDto>>> GetAll(CancellationToken cancellationToken)

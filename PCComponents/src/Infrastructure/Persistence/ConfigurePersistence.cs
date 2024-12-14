@@ -45,35 +45,35 @@ public static class ConfigurePersistence
         services.AddScoped<ProductRepository>();
         services.AddScoped<IProductRepository>(provider => provider.GetRequiredService<ProductRepository>());
         services.AddScoped<IProductQueries>(provider => provider.GetRequiredService<ProductRepository>());
-        
+
         services.AddScoped<CategoryRepository>();
         services.AddScoped<ICategoryRepository>(provider => provider.GetRequiredService<CategoryRepository>());
         services.AddScoped<ICategoryQueries>(provider => provider.GetRequiredService<CategoryRepository>());
-        
+
         services.AddScoped<ManufacturerRepository>();
         services.AddScoped<IManufacturerRepository>(provider => provider.GetRequiredService<ManufacturerRepository>());
         services.AddScoped<IManufacturerQueries>(provider => provider.GetRequiredService<ManufacturerRepository>());
-        
+
         services.AddScoped<UserRepository>();
         services.AddScoped<IUserRepository>(provider => provider.GetRequiredService<UserRepository>());
         services.AddScoped<IUserQueries>(provider => provider.GetRequiredService<UserRepository>());
-        
+
         services.AddScoped<CartItemRepository>();
         services.AddScoped<ICartItemRepository>(provider => provider.GetRequiredService<CartItemRepository>());
         services.AddScoped<ICartItemQueries>(provider => provider.GetRequiredService<CartItemRepository>());
-        
+
         services.AddScoped<OrderRepository>();
         services.AddScoped<IOrderRepository>(provider => provider.GetRequiredService<OrderRepository>());
         services.AddScoped<IOrderQueries>(provider => provider.GetRequiredService<OrderRepository>());
         services.AddScoped<IStatusQueries>(provider => provider.GetRequiredService<OrderRepository>());
-        
+
         services.AddScoped<RoleRepository>();
         services.AddScoped<IRoleQueries>(provider => provider.GetRequiredService<RoleRepository>());
-        
+
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<IHashPasswordService, HashPasswordService>();
         services.AddScoped<IImageService, ImageService>();
-        
+
         services.AddScoped<RefreshTokenRepository>();
         services.AddScoped<IRefreshTokenRepository>(provider => provider.GetRequiredService<RefreshTokenRepository>());
     }
@@ -95,7 +95,8 @@ public static class ConfigurePersistence
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:key"])),
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder!.Configuration["AuthSettings:key"]!)),
                     ValidIssuer = builder.Configuration["AuthSettings:issuer"],
                     ValidAudience = builder.Configuration["AuthSettings:audience"]
                 };
