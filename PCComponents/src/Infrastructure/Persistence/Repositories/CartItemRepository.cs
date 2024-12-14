@@ -39,20 +39,21 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
             .Where(x => x.UserId == userId && !x.IsFinished)
             .Include(x => x.User)
             .Include(x => x.Product)
-                .ThenInclude(p => p.Images)
+            .ThenInclude(p => p.Images)
             .Include(x => x.Product)
-                .ThenInclude(p => p.Manufacturer)
+            .ThenInclude(p => p.Manufacturer)
             .Include(x => x.Product)
-                .ThenInclude(p => p.Category)
+            .ThenInclude(p => p.Category)
             .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
 
 
-    public async Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken)
+    public async Task<Option<CartItem>> GetByProduct(ProductId id, UserId userId, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
-            .FirstOrDefaultAsync(x => x.ProductId == id && x.IsFinished == false, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ProductId == id && x.UserId == userId && x.IsFinished == false,
+                cancellationToken);
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
     }
