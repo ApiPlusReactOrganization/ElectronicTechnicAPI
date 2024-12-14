@@ -1,8 +1,11 @@
 ﻿using Application.Products.Exceptions;
 using Application.Common;
 using Application.Common.Interfaces.Repositories;
+using Application.Manufacturers.Exceptions;
 using Domain.Products;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Application.Products.Commands;
 
@@ -34,6 +37,10 @@ public class DeleteProductCommandHandler(
         try
         {
             return await productRepository.Delete(product, cancellationToken);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23503")
+        {
+            return new ProductCannotBeDeletedException(product.Id);
         }
         catch (Exception exception)
         {

@@ -21,6 +21,9 @@ public class ProductNameExistsWithSameFieldsException(
 public class ProductNotFoundException(ProductId id)
     : ProductException(id, $"Product under id: {id} not found");
 
+public class ProductCannotBeDeletedException(ProductId id)
+    : ProductException(id, $"Product under id: {id} cannot be deleted");
+
 public class ProductCategoryNotFoundException(CategoryId id)
     : ProductException(ProductId.Empty, $"Product Category under id: {id} not found");
 
