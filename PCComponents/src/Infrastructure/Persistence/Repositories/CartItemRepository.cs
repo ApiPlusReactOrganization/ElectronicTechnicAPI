@@ -36,7 +36,6 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
     public async Task<IReadOnlyList<CartItem>> GetByUserId(UserId userId, CancellationToken cancellationToken)
     {
         return await _context.CartItems
-            .AsNoTracking()
             .Where(x => x.UserId == userId && !x.IsFinished)
             .Include(x => x.User)
             .Include(x => x.Product)
@@ -45,6 +44,7 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
                 .ThenInclude(p => p.Manufacturer)
             .Include(x => x.Product)
                 .ThenInclude(p => p.Category)
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
 

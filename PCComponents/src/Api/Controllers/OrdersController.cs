@@ -12,8 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("orders")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.UserRole)]
+// [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+// [Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
 public class OrdersController(ISender sender, IOrderQueries orderQueries, IStatusQueries statusQueries) : ControllerBase
 {
