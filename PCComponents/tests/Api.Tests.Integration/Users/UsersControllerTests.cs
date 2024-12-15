@@ -213,7 +213,7 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
 
 
         // Act
-        var response = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
+        var response = await Client.PutAsJsonAsync<object>($"users/favorite-product-add/{_mainUser.Id}/{_mainProduct.Id}", null);
 
         // Assert
         response.IsSuccessStatusCode.Should().BeTrue();
@@ -241,11 +241,11 @@ public class UsersControllerTests : BaseIntegrationTest, IAsyncLifetime
     public async Task ShouldRemoveFavoriteProduct()
     {
         // Arrange
-        var addResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-add/{_mainProduct.Id}", null);
+        var addResponse = await Client.PutAsJsonAsync<object>($"users/favorite-product-add/{_mainUser.Id}/{_mainProduct.Id}", null);
         addResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var removeResponse = await Client.PutAsJsonAsync<object>($"users/{_mainUser.Id}/favorite-products-remove/{_mainProduct.Id}", null);
+        var removeResponse = await Client.PutAsJsonAsync<object>($"users/favorite-product-remove/{_mainUser.Id}/{_mainProduct.Id}", null);
 
         // Assert
         removeResponse.IsSuccessStatusCode.Should().BeTrue();
