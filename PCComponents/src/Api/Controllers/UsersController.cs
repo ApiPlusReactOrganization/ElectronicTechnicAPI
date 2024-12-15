@@ -16,11 +16,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("users")]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class UsersController(ISender sender, IUserQueries userQueries) : ControllerBase
 {
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<UserDto>>> GetAll(CancellationToken cancellationToken)
     {
@@ -29,6 +29,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         return entities.Select(UserDto.FromDomainModel).ToList();
     }
     
+    [Authorize(Roles = $"{AuthSettings.AdminRole},{AuthSettings.UserRole}")]
     [HttpGet("get-by-id/{userId:guid}")]
     public async Task<ActionResult<UserDto>> Get([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
@@ -38,7 +39,8 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             p => UserDto.FromDomainModel(p),
             () => NotFound());
     }
-
+    
+    [Authorize(Roles = AuthSettings.UserRole)]
     [HttpGet("get-all-favorite-products/{userId:guid}")]
     public async Task<ActionResult<IReadOnlyList<ProductDto>>> GetAllFavoriteProducts(
         [FromRoute] Guid userId, CancellationToken cancellationToken)
@@ -48,7 +50,8 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
         return favoriteProducts.Select(ProductDto.FromDomainModel).ToList();
     }
 
-    [HttpPut("{userId:guid}/favorite-products-add/{productId:guid}")]
+    [Authorize(Roles = AuthSettings.UserRole)]
+    [HttpPut("favorite-product-add/{userId:guid}/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> AddFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
     {
@@ -65,8 +68,8 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
     
-    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
-    [HttpPut("{userId:guid}/favorite-products-remove/{productId:guid}")]
+    [Authorize(Roles = AuthSettings.UserRole)]
+    [HttpPut("favorite-product-remove/{userId:guid}/{productId:guid}")]
     public async Task<ActionResult<UserFavoriteProductsDto>> RemoveFavoriteProduct(
         [FromRoute] Guid userId, [FromRoute] Guid productId, CancellationToken cancellationToken)
     {
@@ -83,7 +86,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
-
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpDelete("delete/{userId:guid}")]
     public async Task<ActionResult<UserDto>>
         Delete([FromRoute] Guid userId, CancellationToken cancellationToken)
@@ -100,6 +103,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpPut("update-roles/{userId}")]
     public async Task<ActionResult<UserDto>>
         UpdateRoles([FromRoute] Guid userId, [FromBody] List<RoleDto> roles, CancellationToken cancellationToken)
@@ -117,7 +121,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
-    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
+    [Authorize(Roles = AuthSettings.UserRole)]
     [HttpPut("image/{userId}")]
     public async Task<ActionResult<JwtVM>> Upload([FromRoute] Guid userId, IFormFile imageFile,
         CancellationToken cancellationToken)
@@ -135,7 +139,7 @@ public class UsersController(ISender sender, IUserQueries userQueries) : Control
             e => e.ToObjectResult());
     }
 
-    [Authorize(Roles = $"{AuthSettings.UserRole}, {AuthSettings.AdminRole}")]
+    [Authorize(Roles = AuthSettings.UserRole)]
     [HttpPut("update/{userId:guid}")]
     public async Task<ActionResult<JwtVM>> UpdateUser([FromRoute] Guid userId,
         [FromBody] UpdateUserVM user,

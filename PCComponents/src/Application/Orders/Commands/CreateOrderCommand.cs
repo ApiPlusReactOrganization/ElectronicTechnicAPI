@@ -51,14 +51,14 @@ public class CreateOrderCommandHandler(
         try
         {
             var order = Order.New(orderId, user.Id, StatusesConstants.Processing, requestDeliveryAddress, userCart!.ToList());
+            var orderCreated = await orderRepository.Add(order, cancellationToken);
             
-            user.ClearCart();
-            
-            await userRepository.Update(user, cancellationToken);
-
             await productRepository.ChangeStockQuantityForProducts(userCart!.ToList(), cancellationToken);
             
-            return await orderRepository.Add(order, cancellationToken);
+            user.ClearCart();
+            await userRepository.Update(user, cancellationToken);
+            
+            return orderCreated;
         }
         catch (Exception exception)
         {

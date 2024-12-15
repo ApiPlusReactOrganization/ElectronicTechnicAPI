@@ -20,6 +20,7 @@ public static class ProductErrorHandler
                     => StatusCodes.Status404NotFound,
 
                 ProductNameExistsWithSameFieldsException 
+                    or ProductCannotBeDeletedException
                     
                     => StatusCodes.Status409Conflict,
 

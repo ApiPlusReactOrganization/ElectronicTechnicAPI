@@ -11,6 +11,6 @@ public interface ICartItemRepository
     Task<CartItem> Add(CartItem сategory, CancellationToken cancellationToken);
     Task<CartItem> Update(CartItem сategory, CancellationToken cancellationToken);
     Task<CartItem> Delete(CartItem сategory, CancellationToken cancellationToken);
-    Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken);
+    Task<Option<CartItem>> GetByProduct(ProductId id, UserId userId, CancellationToken cancellationToken);
     Task<IReadOnlyList<CartItem>> GetByUserId(UserId userId, CancellationToken cancellationToken);
 }

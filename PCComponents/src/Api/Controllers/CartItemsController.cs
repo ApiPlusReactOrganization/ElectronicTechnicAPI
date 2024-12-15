@@ -18,6 +18,7 @@ namespace Api.Controllers;
 [ApiController]
 public class CartItemsController(ISender sender, ICartItemQueries cartItemQueries) : ControllerBase
 {
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CartItemDto>>> GetAll(CancellationToken cancellationToken)
     {

@@ -5,7 +5,6 @@ using Api.Dtos.Products;
 using Domain.Products.PCComponents;
 using FluentAssertions;
 using Tests.Common;
-using Tests.Data;
 using Xunit;
 
 namespace Api.Tests.Integration.Products;
@@ -368,6 +367,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
         response.IsSuccessStatusCode.Should().BeFalse();
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+    
     [Fact]
     public async Task ShouldNotDeleteProductWithEmptyId()
     {
@@ -386,7 +386,7 @@ public class ProductsControllerTests(IntegrationTestWebFactory factory) : BaseIn
     public async Task ShouldNotDeleteNonexistentProduct()
     {
         // Arrange
-        var nonexistentProductId = Guid.NewGuid(); // ID that doesn't exist
+        var nonexistentProductId = Guid.NewGuid(); 
 
         // Act
         var response = await Client.DeleteAsync($"products/delete/{nonexistentProductId}");
