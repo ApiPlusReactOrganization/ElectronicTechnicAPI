@@ -41,10 +41,11 @@ public class CreateCartItemCommandHandler(
                 var user = await userRepository.GetById(userId, cancellationToken);
 
                 return await user.Match<Task<Result<CartItem, CartItemException>>>(
-                    async c =>
+                    async user1 =>
                     {
                         var existingCartItem = await cartItemRepository.GetByProduct(
                             productId,
+                            userId,
                             cancellationToken);
 
                         return await existingCartItem.Match<Task<Result<CartItem, CartItemException>>>(

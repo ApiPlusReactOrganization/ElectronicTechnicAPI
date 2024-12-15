@@ -36,16 +36,24 @@ public class CartItemRepository : ICartItemRepository, ICartItemQueries
     public async Task<IReadOnlyList<CartItem>> GetByUserId(UserId userId, CancellationToken cancellationToken)
     {
         return await _context.CartItems
-            .Where(x => x.UserId == userId && x.IsFinished == false)
+            .Where(x => x.UserId == userId && !x.IsFinished)
             .Include(x => x.User)
             .Include(x => x.Product)
+            .ThenInclude(p => p.Images)
+            .Include(x => x.Product)
+            .ThenInclude(p => p.Manufacturer)
+            .Include(x => x.Product)
+            .ThenInclude(p => p.Category)
+            .AsSplitQuery()
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Option<CartItem>> GetByProduct(ProductId id, CancellationToken cancellationToken)
+
+    public async Task<Option<CartItem>> GetByProduct(ProductId id, UserId userId, CancellationToken cancellationToken)
     {
         var entity = await _context.CartItems
-            .FirstOrDefaultAsync(x => x.ProductId == id && x.IsFinished == false, cancellationToken);
+            .FirstOrDefaultAsync(x => x.ProductId == id && x.UserId == userId && x.IsFinished == false,
+                cancellationToken);
 
         return entity == null ? Option.None<CartItem>() : Option.Some(entity);
     }

@@ -112,7 +112,7 @@
         public required int FanAmount { get; init; }
         public required int Voltage { get; init; }
         public required int MaxTDP { get; init; }
-        public required List<string> Sockets { get; init; }
+        // public required List<string> Sockets { get; init; }
         public required string FanSupply { get; init; }
     }
 

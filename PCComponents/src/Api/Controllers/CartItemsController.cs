@@ -13,11 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("cart-items")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.UserRole)]*/
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.UserRole)]
 [ApiController]
 public class CartItemsController(ISender sender, ICartItemQueries cartItemQueries) : ControllerBase
 {
+    [Authorize(Roles = AuthSettings.AdminRole)]
     [HttpGet("get-all")]
     public async Task<ActionResult<IReadOnlyList<CartItemDto>>> GetAll(CancellationToken cancellationToken)
     {

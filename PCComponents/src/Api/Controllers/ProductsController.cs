@@ -14,8 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [Route("products")]
-/*[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Authorize(Roles = AuthSettings.AdminRole)]*/
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(Roles = AuthSettings.AdminRole)]
 [ApiController]
 public class ProductsController(ISender sender, IProductQueries productQueries) : ControllerBase
 {
